@@ -1,5 +1,5 @@
-import instructions from './operations/cpuInstructions';
-import memory from '../mmu/mmu';
+import opcodesMap from './opcodes/opcodesMap';
+import mmu from '../mmu/mmu';
 
 const registers = {
   A: 0x00,
@@ -15,7 +15,9 @@ const registers = {
 };
 
 const cpu = {
-  instructions,
+  clock: {
+    c: 0,
+  },
 
   reset: () => {
     registers.A = 0x00;
@@ -33,22 +35,24 @@ const cpu = {
   getFlag: (flag) => {
     switch (flag.toUpperCase()) {
       case 'C':
-        return (F & 0x10) === 0x10;
+        return (registers.F & 0x10) === 0x10;
       case 'H':
-        return (F & 0x20) === 0x20;
+        return (registers.F & 0x20) === 0x20;
       case 'N':
-        return (F & 0x40) === 0x40;
+        return (registers.F & 0x40) === 0x40;
       case 'Z':
-        return (F & 0x80) === 0x80;
+        return (registers.F & 0x80) === 0x80;
+      default:
+        throw new Error(`Invalid flag name ${flag}`);
     }
   },
 
   setFlags: (Z, N, H, C) => {
-    F =
-      ((Z ? 1 : Z === 0 ? 0 : (F & 0x80) >> 7) << 7) |
-      ((N ? 1 : N === 0 ? 0 : (F & 0x40) >> 6) << 6) |
-      ((H ? 1 : H === 0 ? 0 : (F & 0x20) >> 5) << 5) |
-      ((C ? 1 : C === 0 ? 0 : (F & 0x10) >> 4) << 4);
+    registers.F =
+      ((Z ? 1 : Z === 0 ? 0 : (registers.F & 0x80) >> 7) << 7) |
+      ((N ? 1 : N === 0 ? 0 : (registers.F & 0x40) >> 6) << 6) |
+      ((H ? 1 : H === 0 ? 0 : (registers.F & 0x20) >> 5) << 5) |
+      ((C ? 1 : C === 0 ? 0 : (registers.F & 0x10) >> 4) << 4);
   },
 
   readReg8(reg8) {
@@ -75,12 +79,26 @@ const cpu = {
     registers[reg2] = newValue & 0x00ff;
   },
 
+  getPC: () => registers.PC,
+  setPC: (PC) => (registers.PC = PC),
+  incPC: (inc) => (registers.PC += inc),
+
+  getSP: () => registers.SP,
+  setSP: (SP) => (registers.SP = SP),
+  incSP: (inc) => (registers.SP += inc),
+  decSP: (dec) => (registers.SP -= dec),
+
   readImmediate8() {
-    return mmu.read(PC + 1);
+    return mmu.read(registers.PC + 1);
+  },
+
+  readSignedImmediate8() {
+    // TODO: IMPLEMENT
+    return mmu.read(registers.PC + 1);
   },
 
   readImmediate16() {
-    return (mmu.read(PC + 1) >> 8) & mmu.read(PC + 2);
+    return (mmu.read(registers.PC + 1) >> 8) & mmu.read(registers.PC + 2);
   },
 
   readAddress8(add8) {
@@ -95,25 +113,31 @@ const cpu = {
     mmu.write(add8, value & 0xff);
   },
 
-  writeAddress16(add16) {
+  writeAddress16(add16, value) {
     mmu.write(add16, (value & 0xff00) >> 8);
     mmu.write(add16 + 1, value & 0x00ff);
   },
 
   step() {
-    const fetchOpcode = () => {};
-    const decodeOpcode = (opcode) => opcodeToFunctionsMap[opcode];
+    const fetchOpcode = () => this.readAddress8(registers.PC);
+    const decodeOpcode = (opcode) => opcodesMap[opcode];
 
     const opcode = fetchOpcode();
-    const opcodeFn = decodeOpcode(opcode);
+    const executeOpcodeFn = decodeOpcode(opcode);
 
-    const instructionsIncrement = opcodeFn();
+    executeOpcodeFn(this);
+    return this;
+  },
 
-    pc++;
-    instructions += instructionsIncrement;
+  debugAllOpcodes() {
+    for (let opcode = 0; opcode < 0xff; opcode++) {
+      const decodeOpcode = (opcode) => opcodesMap[opcode];
+      const executeOpcodeFn = decodeOpcode(opcode);
+
+      console.log(`Opcode ${opcode}`);
+      executeOpcodeFn(this);
+    }
   },
 };
 
-const rom = Rom.loadRom();
-
-export default CPU;
+export default cpu;

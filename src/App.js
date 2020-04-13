@@ -1,11 +1,15 @@
-import React from 'react';
-// import './App.css';
-import Memory from './components/Memory/Memory';
+import React, { useEffect } from 'react';
+
+import Debugger from './components/Debugger/Debugger';
+
+import gameboy from './gameboy/gameboy';
 
 function App() {
+  useEffect(() => {}, []);
+
   return (
     <div className="App">
-      <Memory />
+      <Debugger gameboy={gameboy} />
     </div>
   );
 }

@@ -3,7 +3,7 @@ import prefixCBOpcodesMap from '../opcodes/prefixCBOpcodesMap';
 // NOP
 // - - - -
 const NOP = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -11,7 +11,7 @@ const NOP = (cpu) => {
 // STOP 0
 // - - - -
 const STOP = (cpu) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -19,7 +19,7 @@ const STOP = (cpu) => {
 // HALT
 // - - - -
 const HALT = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -34,7 +34,7 @@ const PREFIX_CB = (cpu) => {
 // DI
 // - - - -
 const DI = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -42,7 +42,7 @@ const DI = (cpu) => {
 // EI
 // - - - -
 const EI = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };

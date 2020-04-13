@@ -9,7 +9,7 @@ const INC16_RR = (cpu, reg16) => {
   const newValue = (value + 1) & 0xffff;
   cpu.writeReg16(reg16, newValue);
 
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
 };
 
@@ -18,16 +18,16 @@ const INC16_RR = (cpu, reg16) => {
 const INC16_SP = (cpu) => {
   const value = cpu.sp;
   const newValue = (value + 1) & 0xffff;
-  cpu.SP = newValue;
+  cpu.setSP(newValue);
 
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
 };
 
 // DEC RR
 // - - - -
 const DEC16_RR = (cpu, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -37,16 +37,16 @@ const DEC16_RR = (cpu, reg16) => {
 const DEC16_SP = (cpu) => {
   const value = cpu.sp;
   const newValue = (value - 1) & 0xffff;
-  cpu.SP = newValue;
+  cpu.setSP(newValue);
 
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
 };
 
 // ADD RR,RR
 // - 0 H C
 const ADD16_RR_RR = (cpu, reg1, reg2) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -54,7 +54,7 @@ const ADD16_RR_RR = (cpu, reg1, reg2) => {
 // ADD RR,SP
 // - 0 H C
 const ADD16_RR_SP = (cpu, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -62,7 +62,7 @@ const ADD16_RR_SP = (cpu, reg16) => {
 // ADD SP,r8
 // 0 0 H C
 const ADD16_SP_r8 = (cpu) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -82,15 +82,15 @@ const INC8_R = (cpu, reg8) => {
   const n = 0;
   const h = (((value & 0xf) + 1) & 0xf) === 0x10;
   const c = cpu.getFlag('c');
-  cpu.updateFlags(z, n, h, c);
-  cpu.PC += 1;
+  cpu.setFlags(z, n, h, c);
+  cpu.incPC(1);
   cpu.clock.c += 4;
 };
 
 // INC (RR)
 // Z 0 H -
 const INC8_$RR = (cpu, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 12;
   // TODO: IMPLEMENT
 };
@@ -106,15 +106,15 @@ const DEC8_R = (cpu, reg8) => {
   const n = 0;
   const h = (value & 0xf) < 1;
   const c = cpu.getFlag('c');
-  cpu.updateFlags(z, n, h, c);
-  cpu.PC += 1;
+  cpu.setFlags(z, n, h, c);
+  cpu.incPC(1);
   cpu.clock.c += 4;
 };
 
 // DEC (RR)
 // Z 1 H -
 const DEC8_$RR = (cpu, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 12;
   // TODO: IMPLEMENT
 };
@@ -122,7 +122,7 @@ const DEC8_$RR = (cpu, reg16) => {
 // ADD R,R
 // Z O H C
 const ADD8_R_R = (cpu, reg1, reg2) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -130,7 +130,7 @@ const ADD8_R_R = (cpu, reg1, reg2) => {
 // ADD R,(RR)
 // Z O H C
 const ADD8_R_$RR = (cpu, reg8, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -138,7 +138,7 @@ const ADD8_R_$RR = (cpu, reg8, reg16) => {
 // ADD R,d8
 // Z O H C
 const ADD8_R_d8 = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -146,7 +146,7 @@ const ADD8_R_d8 = (cpu, reg8) => {
 // ADC R,R
 // Z O H C
 const ADC8_R_R = (cpu, reg1, reg2) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -154,7 +154,7 @@ const ADC8_R_R = (cpu, reg1, reg2) => {
 // ADC R,(RR)
 // Z O H C
 const ADC8_R_$RR = (cpu, reg8, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -162,7 +162,7 @@ const ADC8_R_$RR = (cpu, reg8, reg16) => {
 // ADC R,d8
 // Z O H C
 const ADC8_R_d8 = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -170,7 +170,7 @@ const ADC8_R_d8 = (cpu, reg8) => {
 // SUB R
 // Z 1 H C
 const SUB8_R = (cpu, reg8) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -178,7 +178,7 @@ const SUB8_R = (cpu, reg8) => {
 // SUB (RR)
 // Z 1 H C
 const SUB8_$RR = (cpu, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -186,7 +186,7 @@ const SUB8_$RR = (cpu, reg16) => {
 // SUB d8
 // Z 1 H C
 const SUB8_d8 = (cpu) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -194,7 +194,7 @@ const SUB8_d8 = (cpu) => {
 // SBC R,R
 // Z 1 H C
 const SBC8_R_R = (cpu, reg1, reg2) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -202,7 +202,7 @@ const SBC8_R_R = (cpu, reg1, reg2) => {
 // SBC R,(RR)
 // Z 1 H C
 const SBC8_R_$RR = (cpu, reg8, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -210,7 +210,7 @@ const SBC8_R_$RR = (cpu, reg8, reg16) => {
 // SBC R,d8
 // Z 1 H C
 const SBC8_R_d8 = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -218,7 +218,7 @@ const SBC8_R_d8 = (cpu, reg8) => {
 // AND R
 // Z 0 1 0
 const AND8_R = (cpu, reg8) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -226,15 +226,15 @@ const AND8_R = (cpu, reg8) => {
 // AND (RR)
 // Z 0 1 0
 const AND8_$RR = (cpu, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
 
 // AND d8
 // Z 0 1 0
-const AND8_R = (cpu) => {
-  cpu.PC += 2;
+const AND8_d8 = (cpu) => {
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -242,7 +242,7 @@ const AND8_R = (cpu) => {
 // XOR R
 // Z 0 0 0
 const XOR8_R = (cpu, reg8) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -250,7 +250,7 @@ const XOR8_R = (cpu, reg8) => {
 // XOR (RR)
 // Z 0 0 0
 const XOR8_$RR = (cpu, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -258,7 +258,7 @@ const XOR8_$RR = (cpu, reg16) => {
 // XOR d8
 // Z 0 0 0
 const XOR8_d8 = (cpu) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -266,15 +266,15 @@ const XOR8_d8 = (cpu) => {
 // OR R
 // Z 0 0 0
 const OR8_R = (cpu, reg8) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
 
 // OR (RR)
 // Z 0 0 0
-const OR8_R_$RR = (cpu, reg16) => {
-  cpu.PC += 1;
+const OR8_$RR = (cpu, reg16) => {
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -282,7 +282,7 @@ const OR8_R_$RR = (cpu, reg16) => {
 // OR d8
 // Z 0 0 0
 const OR8_d8 = (cpu) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -290,7 +290,7 @@ const OR8_d8 = (cpu) => {
 // CP R
 // Z 0 0 0
 const CP8_R = (cpu, reg8) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -298,7 +298,7 @@ const CP8_R = (cpu, reg8) => {
 // CP (RR)
 // Z 1 H C
 const CP8_$RR = (cpu, reg16) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -306,7 +306,7 @@ const CP8_$RR = (cpu, reg16) => {
 // CP d8
 // Z 0 0 0
 const CP8_d8 = (cpu) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -314,7 +314,7 @@ const CP8_d8 = (cpu) => {
 // DAA
 // Z - 0 C
 const DAA8 = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -322,7 +322,7 @@ const DAA8 = (cpu) => {
 // CPL
 // - 1 1 -
 const CPL8 = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -330,7 +330,7 @@ const CPL8 = (cpu) => {
 // SCF
 // - 0 0 1
 const SCF8 = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -338,7 +338,7 @@ const SCF8 = (cpu) => {
 // CCF
 // - 0 0 C
 const CCF8 = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -370,12 +370,12 @@ const arithmeticLogicalOperations = {
   SBC8_R_d8,
   AND8_R,
   AND8_$RR,
-  AND8_R,
+  AND8_d8,
   XOR8_R,
   XOR8_$RR,
   XOR8_d8,
   OR8_R,
-  OR8_R_$RR,
+  OR8_$RR,
   OR8_d8,
   CP8_R,
   CP8_$RR,

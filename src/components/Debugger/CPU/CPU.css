@@ -1,0 +1,19 @@
+.registers {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border: dotted gray 2px;
+  border-radius: 8px;
+}
+
+.registers_pair {
+  display: flex;
+  width: 100px;
+  justify-content: space-between;
+}
+
+.registers_pair {
+  display: flex;
+  width: 100px;
+  justify-content: space-between;
+}

@@ -1,7 +1,7 @@
 // RLCA
 // 0 0 0 C
 const RLCA = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -9,7 +9,7 @@ const RLCA = (cpu) => {
 // RRCA
 // 0 0 0 C
 const RRCA = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -17,7 +17,7 @@ const RRCA = (cpu) => {
 // RLA
 // 0 0 0 C
 const RLA = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -25,7 +25,7 @@ const RLA = (cpu) => {
 // RCA
 // 0 0 0 C
 const RRA = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -33,7 +33,7 @@ const RRA = (cpu) => {
 // RLC R
 // Z 0 0 C
 const RLC_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -41,7 +41,7 @@ const RLC_R = (cpu, reg8) => {
 // RLC (RR)
 // Z 0 0 C
 const RLC_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -49,7 +49,7 @@ const RLC_$RR = (cpu, reg16) => {
 // RRC R
 // Z 0 0 C
 const RRC_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -57,7 +57,7 @@ const RRC_R = (cpu, reg8) => {
 // RRC (RR)
 // Z 0 0 C
 const RRC_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -65,7 +65,7 @@ const RRC_$RR = (cpu, reg16) => {
 // RL R
 // Z 0 0 C
 const RL_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -73,7 +73,7 @@ const RL_R = (cpu, reg8) => {
 // RL (RR)
 // Z 0 0 C
 const RL_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -81,7 +81,7 @@ const RL_$RR = (cpu, reg16) => {
 // RR R
 // Z 0 0 C
 const RR_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -89,7 +89,7 @@ const RR_R = (cpu, reg8) => {
 // RR (RR)
 // Z 0 0 C
 const RR_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -97,7 +97,7 @@ const RR_$RR = (cpu, reg16) => {
 // SLA R
 // Z 0 0 C
 const SLA_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -105,7 +105,7 @@ const SLA_R = (cpu, reg8) => {
 // SLA (RR)
 // Z 0 0 C
 const SLA_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -113,7 +113,7 @@ const SLA_$RR = (cpu, reg16) => {
 // SRA R
 // Z 0 0 0
 const SRA_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -121,7 +121,7 @@ const SRA_R = (cpu, reg8) => {
 // SRA (RR)
 // Z 0 0 0
 const SRA_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -129,7 +129,7 @@ const SRA_$RR = (cpu, reg16) => {
 // SWAP R
 // Z 0 0 0
 const SWAP_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -137,7 +137,7 @@ const SWAP_R = (cpu, reg8) => {
 // SWAP (RR)
 // Z 0 0 0
 const SWAP_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -145,7 +145,7 @@ const SWAP_$RR = (cpu, reg16) => {
 // SRL R
 // Z 0 0 C
 const SRL_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -153,7 +153,7 @@ const SRL_R = (cpu, reg8) => {
 // SRL (RR)
 // Z 0 0 C
 const SRL_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -161,7 +161,7 @@ const SRL_$RR = (cpu, reg16) => {
 // BIT N,R
 // Z 0 1 -
 const BIT_N_R = (cpu, n, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -169,7 +169,7 @@ const BIT_N_R = (cpu, n, reg8) => {
 // BIT N,(RR)
 // Z 0 1 -
 const BIT_N_$RR = (cpu, n, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -177,7 +177,7 @@ const BIT_N_$RR = (cpu, n, reg16) => {
 // RES N,R
 // - - - -
 const RES_N_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -185,7 +185,7 @@ const RES_N_R = (cpu, reg8) => {
 // RES N,(RR)
 // - - - -
 const RES_N_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -193,7 +193,7 @@ const RES_N_$RR = (cpu, reg16) => {
 // SET N,R
 // - - - -
 const SET_N_R = (cpu, reg8) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
 };
@@ -201,7 +201,7 @@ const SET_N_R = (cpu, reg8) => {
 // SET N,(RR)
 // - - - -
 const SET_N_$RR = (cpu, reg16) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };

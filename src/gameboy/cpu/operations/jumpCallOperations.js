@@ -1,7 +1,7 @@
 // JR r8
 // - - - -
 const JR_r8 = (cpu) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 12;
   // TODO: IMPLEMENT
 };
@@ -9,7 +9,7 @@ const JR_r8 = (cpu) => {
 // JR NF,r8
 // - - - -
 const JR_NF_r8 = (cpu, F) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 12 / 8;
   // TODO: IMPLEMENT
 };
@@ -17,31 +17,15 @@ const JR_NF_r8 = (cpu, F) => {
 // JR F,r8
 // - - - -
 const JR_F_r8 = (cpu, F) => {
-  cpu.PC += 2;
+  cpu.incPC(2);
   cpu.clock.c += 12 / 8;
-  // TODO: IMPLEMENT
-};
-
-// RET NF
-// - - - -
-const RET_NF = (cpu, F) => {
-  cpu.PC += 1;
-  cpu.clock.c += 20 / 8;
-  // TODO: IMPLEMENT
-};
-
-// RET F
-// - - - -
-const RET_F = (cpu, F) => {
-  cpu.PC += 1;
-  cpu.clock.c += 20 / 8;
   // TODO: IMPLEMENT
 };
 
 // JP a16
 // - - - -
 const JP_a16 = (cpu) => {
-  cpu.PC += 3;
+  cpu.incPC(3);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -49,7 +33,7 @@ const JP_a16 = (cpu) => {
 // JP NF,a16
 // - - - -
 const JP_NF_a16 = (cpu, F) => {
-  cpu.PC += 3;
+  cpu.incPC(3);
   cpu.clock.c += 16 / 12;
   // TODO: IMPLEMENT
 };
@@ -57,7 +41,7 @@ const JP_NF_a16 = (cpu, F) => {
 // JP F,a16
 // - - - -
 const JP_F_a16 = (cpu, F) => {
-  cpu.PC += 3;
+  cpu.incPC(3);
   cpu.clock.c += 16 / 12;
   // TODO: IMPLEMENT
 };
@@ -65,7 +49,7 @@ const JP_F_a16 = (cpu, F) => {
 // JP (RR)
 // - - - -
 const JP_$RR = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
 };
@@ -73,7 +57,7 @@ const JP_$RR = (cpu) => {
 // RST XXH
 // - - - -
 const RST_XXH = (cpu, xx) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -81,7 +65,7 @@ const RST_XXH = (cpu, xx) => {
 // RET
 // - - - -
 const RET = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -89,7 +73,7 @@ const RET = (cpu) => {
 // RETI
 // - - - -
 const RETI = (cpu) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
 };
@@ -97,7 +81,15 @@ const RETI = (cpu) => {
 // RET F
 // - - - -
 const RET_F = (cpu, F) => {
-  cpu.PC += 1;
+  cpu.incPC(1);
+  cpu.clock.c += 20 / 8;
+  // TODO: IMPLEMENT
+};
+
+// RET NF
+// - - - -
+const RET_NF = (cpu, F) => {
+  cpu.incPC(1);
   cpu.clock.c += 20 / 8;
   // TODO: IMPLEMENT
 };
@@ -105,7 +97,7 @@ const RET_F = (cpu, F) => {
 // CALL a16
 // - - - -
 const CALL_a16 = (cpu) => {
-  cpu.PC += 3;
+  cpu.incPC(3);
   cpu.clock.c += 24;
   // TODO: IMPLEMENT
 };
@@ -113,7 +105,15 @@ const CALL_a16 = (cpu) => {
 // CALL F,a16
 // - - - -
 const CALL_F_a16 = (cpu, F) => {
-  cpu.PC += 3;
+  cpu.incPC(3);
+  cpu.clock.c += 24 / 12;
+  // TODO: IMPLEMENT
+};
+
+// CALL NF,a16
+// - - - -
+const CALL_NF_a16 = (cpu, F) => {
+  cpu.incPC(3);
   cpu.clock.c += 24 / 12;
   // TODO: IMPLEMENT
 };
@@ -122,8 +122,6 @@ const jumpCallOperations = {
   JR_r8,
   JR_NF_r8,
   JR_F_r8,
-  RET_NF,
-  RET_F,
   JP_a16,
   JP_NF_a16,
   JP_F_a16,
@@ -132,8 +130,10 @@ const jumpCallOperations = {
   RET,
   RETI,
   RET_F,
+  RET_NF,
   CALL_a16,
   CALL_F_a16,
+  CALL_NF_a16,
 };
 
 export default jumpCallOperations;

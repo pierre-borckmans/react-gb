@@ -10,6 +10,9 @@ const instructions = {
   ...loadStoreMoveOperations,
   ...rotationShiftBitOperations,
   ...arithmeticLogicalOperations,
+  NOT_IMPLEMENTED: (cpu, opcode) => {
+    console.warn(`Opcode ${opcode} not implemented`);
+  },
 };
 
 export default instructions;
