@@ -1,4 +1,4 @@
-import { instructions as inst } from '../CpuInstructions';
+import { instructions as inst } from '../operations/cpuInstructions';
 
 // prettier-ignore
 const opcodesMap = [
