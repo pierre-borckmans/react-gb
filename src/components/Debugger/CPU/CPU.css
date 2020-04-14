@@ -2,18 +2,36 @@
   display: flex;
   flex-direction: column;
   padding: 5px;
-  border: dotted gray 2px;
-  border-radius: 8px;
+  border: dotted gray 1px;
 }
 
 .registers_pair {
   display: flex;
-  width: 100px;
+  /* width: 100px; */
   justify-content: space-between;
 }
 
 .registers_pair {
   display: flex;
-  width: 100px;
+  width: 90px;
   justify-content: space-between;
+}
+
+.flags {
+  margin-top: 8px;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  height: 21px;
+}
+
+.flag {
+  color: lightgray;
+  width: 16px;
+  text-align: center;
+}
+
+.flag_active {
+  color: black;
+  border: solid 1px gray;
 }

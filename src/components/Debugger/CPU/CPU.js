@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import classNames from 'classnames';
 
 import { toHex } from '../../../utils/utils';
 import './CPU.css';
@@ -23,6 +24,16 @@ const CPU = (props) => {
         <div className="registers_pair">
           <div className="register_8bit">H={toHex(cpu.readReg8('H'))}</div>
           <div className="register_8bit">L={toHex(cpu.readReg8('L'))}</div>
+        </div>
+        <div className="flags">
+          {['Z', 'N', 'H', 'C'].map((flag) => (
+            <div
+              key={flag}
+              className={classNames('flag', { flag_active: cpu.getFlag(flag) })}
+            >
+              {flag}
+            </div>
+          ))}
         </div>
         <div className="register_16bit">PC={toHex(cpu.getPC(), 4)}</div>
         <div className="register_16bit">SP={toHex(cpu.getSP(), 4)}</div>

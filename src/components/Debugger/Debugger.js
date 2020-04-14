@@ -12,8 +12,32 @@ const Debugger = (props) => {
 
   const keyListener = (event) => {
     if (event.code === 'Space') {
-      const newCPU = cpu.step();
-      setCPU({ ...newCPU, /* hack to get a new object */ x: 0 });
+      cpu.step();
+      setCPU({ ...cpu });
+    }
+    if (event.code === 'PageDown') {
+      cpu.incPC(256);
+      setCPU({ ...cpu });
+    }
+    if (event.code === 'PageUp') {
+      cpu.decPC(256);
+      setCPU({ ...cpu });
+    }
+    if (event.code === 'ArrowDown') {
+      cpu.incPC(16);
+      setCPU({ ...cpu });
+    }
+    if (event.code === 'ArrowUp') {
+      cpu.decPC(16);
+      setCPU({ ...cpu });
+    }
+    if (event.code === 'ArrowRight') {
+      cpu.incPC(1);
+      setCPU({ ...cpu });
+    }
+    if (event.code === 'ArrowLeft') {
+      cpu.decPC(1);
+      setCPU({ ...cpu });
     }
     if (event.code === 'Enter') {
       cpu.debugAllOpcodes();

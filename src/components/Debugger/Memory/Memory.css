@@ -1,10 +1,14 @@
+.memory {
+  display: flex;
+  margin-right: 10px;
+}
+
 .table {
   display: flex;
   flex-direction: column;
   padding: 5px;
-  border: dotted gray 2px;
-  border-radius: 8px;
-  width: 450px;
+  border: dotted gray 1px;
+  width: 730px;
 }
 
 .table_header {
@@ -14,8 +18,15 @@
   border-bottom: solid 1px lightgray;
 }
 
+.table_header_bytes {
+  width: 450px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .table_header_item {
-  width: 26px;
+  width: 30px;
   color: gray;
   text-align: center;
 }
@@ -30,10 +41,39 @@
   justify-content: space-between;
 }
 
+.row_bytes {
+  width: 450px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.row_ascii {
+  display: flex;
+  width: 170px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.ascii {
+  color: gray;
+  display: flex;
+  border: 1px solid;
+  border-color: transparent;
+  font-size: 13px;
+  width: 7px;
+  text-align: center;
+}
+
+.ascii_selected {
+  border: lightblue 1px solid;
+}
+
 .row_offset {
-  width: 52px;
+  width: 110px;
   text-align: center;
   border-right: solid 1px lightgray;
+  color: gray;
 }
 
 .row_offset_selected {
@@ -41,7 +81,7 @@
 }
 
 .byte {
-  width: 26px;
+  width: 30px;
   color: black;
   text-align: center;
 }

@@ -81,7 +81,8 @@ const cpu = {
 
   getPC: () => registers.PC,
   setPC: (PC) => (registers.PC = PC),
-  incPC: (inc) => (registers.PC += inc),
+  incPC: (inc) => (registers.PC = Math.min(0xffff, registers.PC + inc)),
+  decPC: (dec) => (registers.PC = Math.max(0x0000, registers.PC - dec)),
 
   getSP: () => registers.SP,
   setSP: (SP) => (registers.SP = SP),

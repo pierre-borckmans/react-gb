@@ -1,4 +1,6 @@
 .debugger {
   display: flex;
   padding: 10px;
+  font-family: 'Menlo', monospace;
+  font-size: medium;
 }
