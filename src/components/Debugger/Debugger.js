@@ -23,6 +23,14 @@ const Debugger = (props) => {
       cpu.decPC(256);
       setCPU({ ...cpu });
     }
+    if (event.code === 'Home') {
+      cpu.setPC(0);
+      setCPU({ ...cpu });
+    }
+    if (event.code === 'End') {
+      cpu.setPC(0xffff);
+      setCPU({ ...cpu });
+    }
     if (event.code === 'ArrowDown') {
       cpu.incPC(16);
       setCPU({ ...cpu });

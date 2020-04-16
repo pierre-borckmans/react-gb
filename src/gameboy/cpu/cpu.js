@@ -35,13 +35,13 @@ const cpu = {
   getFlag: (flag) => {
     switch (flag.toUpperCase()) {
       case 'C':
-        return (registers.F & 0x10) === 0x10;
+        return (registers.F & 0x10) === 0x10 ? 1 : 0;
       case 'H':
-        return (registers.F & 0x20) === 0x20;
+        return (registers.F & 0x20) === 0x20 ? 1 : 0;
       case 'N':
-        return (registers.F & 0x40) === 0x40;
+        return (registers.F & 0x40) === 0x40 ? 1 : 0;
       case 'Z':
-        return (registers.F & 0x80) === 0x80;
+        return (registers.F & 0x80) === 0x80 ? 1 : 0;
       default:
         throw new Error(`Invalid flag name ${flag}`);
     }
@@ -66,7 +66,7 @@ const cpu = {
   readReg16(reg16) {
     const reg1 = reg16[0];
     const reg2 = reg16[1];
-    return registers[reg1] >> 8 && registers[reg2];
+    return (registers[reg1] << 8) | registers[reg2];
   },
 
   writeReg16: (reg16, value) => {
@@ -94,12 +94,12 @@ const cpu = {
   },
 
   readSignedImmediate8() {
-    // TODO: IMPLEMENT
-    return mmu.read(registers.PC + 1);
+    const unsigned = mmu.read(registers.PC + 1);
+    return unsigned > 127 ? unsigned - 128 : unsigned;
   },
 
   readImmediate16() {
-    return (mmu.read(registers.PC + 1) >> 8) & mmu.read(registers.PC + 2);
+    return (mmu.read(registers.PC + 2) << 8) | mmu.read(registers.PC + 1);
   },
 
   readAddress8(add8) {
@@ -107,7 +107,7 @@ const cpu = {
   },
 
   readAddress16(add16) {
-    return (mmu.read(add16) >> 8) & mmu.read(add16 + 1);
+    return (mmu.read(add16 + 1) << 8) | mmu.read(add16);
   },
 
   writeAddress8(add8, value) {

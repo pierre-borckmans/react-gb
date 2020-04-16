@@ -14,7 +14,7 @@ const OAM = 'OAM';
 const IO = 'I/O';
 const HIGH_RAM = 'HRAM';
 const INTERRUPT_SWITCH = 'ITSW';
-const INVALID = 'INVALID';
+const INVALID = '????';
 
 const START_ROM0 = 0x0000;
 const END_ROM0 = 0x3fff;

@@ -4,6 +4,7 @@ const RLCA = (cpu) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RRCA
@@ -12,6 +13,7 @@ const RRCA = (cpu) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RLA
@@ -20,6 +22,7 @@ const RLA = (cpu) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RCA
@@ -28,6 +31,7 @@ const RRA = (cpu) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RLC R
@@ -36,6 +40,7 @@ const RLC_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RLC (RR)
@@ -44,6 +49,7 @@ const RLC_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RRC R
@@ -52,6 +58,7 @@ const RRC_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RRC (RR)
@@ -60,6 +67,7 @@ const RRC_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RL R
@@ -68,6 +76,7 @@ const RL_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RL (RR)
@@ -76,6 +85,7 @@ const RL_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RR R
@@ -84,6 +94,7 @@ const RR_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RR (RR)
@@ -92,6 +103,7 @@ const RR_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SLA R
@@ -100,6 +112,7 @@ const SLA_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SLA (RR)
@@ -108,6 +121,7 @@ const SLA_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SRA R
@@ -116,6 +130,7 @@ const SRA_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SRA (RR)
@@ -124,6 +139,7 @@ const SRA_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SWAP R
@@ -132,6 +148,7 @@ const SWAP_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SWAP (RR)
@@ -140,6 +157,7 @@ const SWAP_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SRL R
@@ -148,6 +166,7 @@ const SRL_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SRL (RR)
@@ -156,22 +175,40 @@ const SRL_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // BIT N,R
 // Z 0 1 -
 const BIT_N_R = (cpu, n, reg8) => {
+  const value = cpu.readReg8(reg8);
+  const bit = (value & (1 << n)) === 1 << n;
+
+  const Z = bit;
+  const N = 0;
+  const H = 1;
+  const C = cpu.getFlag('C');
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.clock.c += 8;
-  // TODO: IMPLEMENT
 };
 
 // BIT N,(RR)
 // Z 0 1 -
 const BIT_N_$RR = (cpu, n, reg16) => {
+  const address = cpu.readReg8(reg16);
+  const value = cpu.readAddress8(address);
+  const bit = (value & (1 << n)) === 1 << n;
+
+  const Z = bit;
+  const N = 0;
+  const H = 1;
+  const C = cpu.getFlag('C');
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.clock.c += 16;
-  // TODO: IMPLEMENT
 };
 
 // RES N,R
@@ -180,6 +217,7 @@ const RES_N_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // RES N,(RR)
@@ -188,6 +226,7 @@ const RES_N_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SET N,R
@@ -196,6 +235,7 @@ const SET_N_R = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SET N,(RR)
@@ -204,6 +244,7 @@ const SET_N_$RR = (cpu, reg16) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 const rotationShiftBitOperations = {

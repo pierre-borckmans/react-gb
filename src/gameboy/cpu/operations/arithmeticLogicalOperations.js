@@ -30,6 +30,7 @@ const DEC16_RR = (cpu, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // DEC SP
@@ -49,6 +50,7 @@ const ADD16_RR_RR = (cpu, reg1, reg2) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // ADD RR,SP
@@ -57,6 +59,7 @@ const ADD16_RR_SP = (cpu, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // ADD SP,r8
@@ -65,6 +68,7 @@ const ADD16_SP_r8 = (cpu) => {
   cpu.incPC(2);
   cpu.clock.c += 16;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // --------------------------------------------------------------------------------
@@ -93,6 +97,7 @@ const INC8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 12;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // DEC R
@@ -117,6 +122,7 @@ const DEC8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 12;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // ADD R,R
@@ -125,6 +131,7 @@ const ADD8_R_R = (cpu, reg1, reg2) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // ADD R,(RR)
@@ -133,6 +140,7 @@ const ADD8_R_$RR = (cpu, reg8, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // ADD R,d8
@@ -141,6 +149,7 @@ const ADD8_R_d8 = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // ADC R,R
@@ -149,6 +158,7 @@ const ADC8_R_R = (cpu, reg1, reg2) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // ADC R,(RR)
@@ -157,6 +167,7 @@ const ADC8_R_$RR = (cpu, reg8, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // ADC R,d8
@@ -165,6 +176,7 @@ const ADC8_R_d8 = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SUB R
@@ -173,6 +185,7 @@ const SUB8_R = (cpu, reg8) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SUB (RR)
@@ -181,6 +194,7 @@ const SUB8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SUB d8
@@ -189,6 +203,7 @@ const SUB8_d8 = (cpu) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SBC R,R
@@ -197,6 +212,7 @@ const SBC8_R_R = (cpu, reg1, reg2) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SBC R,(RR)
@@ -205,6 +221,7 @@ const SBC8_R_$RR = (cpu, reg8, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SBC R,d8
@@ -213,6 +230,7 @@ const SBC8_R_d8 = (cpu, reg8) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // AND R
@@ -221,6 +239,7 @@ const AND8_R = (cpu, reg8) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // AND (RR)
@@ -229,6 +248,7 @@ const AND8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // AND d8
@@ -237,6 +257,7 @@ const AND8_d8 = (cpu) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // XOR R
@@ -245,6 +266,7 @@ const XOR8_R = (cpu, reg8) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // XOR (RR)
@@ -253,6 +275,7 @@ const XOR8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // XOR d8
@@ -261,6 +284,7 @@ const XOR8_d8 = (cpu) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // OR R
@@ -269,6 +293,7 @@ const OR8_R = (cpu, reg8) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // OR (RR)
@@ -277,6 +302,7 @@ const OR8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // OR d8
@@ -285,6 +311,7 @@ const OR8_d8 = (cpu) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // CP R
@@ -293,6 +320,7 @@ const CP8_R = (cpu, reg8) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // CP (RR)
@@ -301,6 +329,7 @@ const CP8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // CP d8
@@ -309,6 +338,7 @@ const CP8_d8 = (cpu) => {
   cpu.incPC(2);
   cpu.clock.c += 8;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // DAA
@@ -317,6 +347,7 @@ const DAA8 = (cpu) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // CPL
@@ -325,6 +356,7 @@ const CPL8 = (cpu) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // SCF
@@ -333,6 +365,7 @@ const SCF8 = (cpu) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 // CCF
@@ -341,6 +374,7 @@ const CCF8 = (cpu) => {
   cpu.incPC(1);
   cpu.clock.c += 4;
   // TODO: IMPLEMENT
+  alert('not implemented');
 };
 
 const arithmeticLogicalOperations = {

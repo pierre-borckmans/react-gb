@@ -1,19 +1,18 @@
 .registers {
   display: flex;
   flex-direction: column;
+  width: 240px;
   padding: 5px;
   border: dotted gray 1px;
 }
 
 .registers_pair {
   display: flex;
-  /* width: 100px; */
   justify-content: space-between;
 }
 
 .registers_pair {
   display: flex;
-  width: 90px;
   justify-content: space-between;
 }
 
@@ -34,4 +33,11 @@
 .flag_active {
   color: black;
   border: solid 1px gray;
+}
+
+.operation_label {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  /* text-align: center; */
+  font-size: 10pt;
 }
