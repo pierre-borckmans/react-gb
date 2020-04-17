@@ -50,6 +50,11 @@ const Debugger = (props) => {
     if (event.code === 'Enter') {
       cpu.debugAllOpcodes();
     }
+    if (event.code === 'KeyJ') {
+      const PC = parseInt(prompt('PC?'));
+      cpu.setPC(PC);
+      setCPU({ ...cpu });
+    }
   };
 
   useEffect(() => {

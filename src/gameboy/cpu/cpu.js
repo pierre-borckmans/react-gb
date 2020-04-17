@@ -14,6 +14,8 @@ const registers = {
   SP: 0x0000,
 };
 
+const ime = false;
+
 const cpu = {
   clock: {
     c: 0,
@@ -55,12 +57,32 @@ const cpu = {
       ((C ? 1 : C === 0 ? 0 : (registers.F & 0x10) >> 4) << 4);
   },
 
+  setFlag: (flag, value) => {
+    const bit = value ? 1 : 0;
+    switch (flag) {
+      case 'Z':
+        registers.F = registers.F | (bit << 7);
+        break;
+      case 'N':
+        registers.F = registers.F | (bit << 6);
+        break;
+      case 'H':
+        registers.F = registers.F | (bit << 5);
+        break;
+      case 'C':
+        registers.F = registers.F | (bit << 4);
+        break;
+      default:
+        throw new Error(`Invalid flag ${flag}`);
+    }
+  },
+
   readReg8(reg8) {
     return registers[reg8];
   },
 
   writeReg8(reg8, value) {
-    cpu[reg8] = value & 0xff;
+    registers[reg8] = value & 0xff;
   },
 
   readReg16(reg16) {
@@ -88,6 +110,9 @@ const cpu = {
   setSP: (SP) => (registers.SP = SP),
   incSP: (inc) => (registers.SP += inc),
   decSP: (dec) => (registers.SP -= dec),
+
+  setIME: () => (ime = true),
+  getIME: () => ime,
 
   readImmediate8() {
     return mmu.read(registers.PC + 1);

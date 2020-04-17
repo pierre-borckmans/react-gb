@@ -1,109 +1,136 @@
 // JR r8
 // - - - -
 const JR_r8 = (cpu) => {
-  cpu.incPC(2);
+  const r8 = cpu.readSignedImmediate8();
+  cpu.incPC(r8);
   cpu.clock.c += 12;
-  // TODO: IMPLEMENT
-  alert('not implemented');
 };
 
 // JR NF,r8
 // - - - -
 const JR_NF_r8 = (cpu, F) => {
-  cpu.incPC(2);
-  cpu.clock.c += 12 / 8;
-  // TODO: IMPLEMENT
-  alert('not implemented');
+  const flag = cpu.getFlag(F);
+  if (!flag) {
+    const r8 = cpu.readSignedImmediate8();
+    cpu.incPC(r8);
+    cpu.clock.c += 12;
+  } else {
+    cpu.incPC(2);
+    cpu.clock.c += 8;
+  }
 };
 
 // JR F,r8
 // - - - -
 const JR_F_r8 = (cpu, F) => {
-  cpu.incPC(2);
-  cpu.clock.c += 12 / 8;
-  // TODO: IMPLEMENT
-  alert('not implemented');
+  const flag = cpu.getFlag(F);
+  if (flag) {
+    const r8 = cpu.readSignedImmediate8();
+    cpu.incPC(r8);
+    cpu.clock.c += 12;
+  } else {
+    cpu.incPC(2);
+    cpu.clock.c += 8;
+  }
 };
 
 // JP a16
 // - - - -
 const JP_a16 = (cpu) => {
-  cpu.incPC(3);
+  const a16 = cpu.readImmediate16();
+  cpu.setPC(a16);
   cpu.clock.c += 16;
-  // TODO: IMPLEMENT
-  alert('not implemented');
 };
 
 // JP NF,a16
 // - - - -
 const JP_NF_a16 = (cpu, F) => {
-  cpu.incPC(3);
-  cpu.clock.c += 16 / 12;
-  // TODO: IMPLEMENT
-  alert('not implemented');
+  const flag = cpu.getFlag(F);
+  if (!flag) {
+    const a16 = cpu.readImmediate16();
+    cpu.setPC(a16);
+    cpu.clock.c += 16;
+  } else {
+    cpu.incPC(3);
+    cpu.clock.c += 12;
+  }
 };
 
 // JP F,a16
 // - - - -
 const JP_F_a16 = (cpu, F) => {
-  cpu.incPC(3);
-  cpu.clock.c += 16 / 12;
-  // TODO: IMPLEMENT
-  alert('not implemented');
+  const flag = cpu.getFlag(F);
+  if (flag) {
+    const a16 = cpu.readImmediate16();
+    cpu.setPC(a16);
+    cpu.clock.c += 16;
+  } else {
+    cpu.incPC(3);
+    cpu.clock.c += 12;
+  }
 };
 
 // JP (RR)
 // - - - -
-const JP_$RR = (cpu) => {
-  cpu.incPC(1);
+const JP_$RR = (cpu, reg16) => {
+  const address = cpu.readReg16(reg16);
+
+  cpu.setPC(address);
   cpu.clock.c += 4;
-  // TODO: IMPLEMENT
-  alert('not implemented');
 };
 
 // RST XXH
 // - - - -
-const RST_XXH = (cpu, xx) => {
-  cpu.incPC(1);
+const RST_XXH = (cpu, XX) => {
+  cpu.stackPush(cpu.getPC());
+
+  cpu.setPC(XX);
   cpu.clock.c += 16;
-  // TODO: IMPLEMENT
-  alert('not implemented');
 };
 
 // RET
 // - - - -
 const RET = (cpu) => {
-  cpu.incPC(1);
+  const popValue = cpu.stackPop(cpu);
+  cpu.setPC(popValue);
   cpu.clock.c += 16;
-  // TODO: IMPLEMENT
-  alert('not implemented');
 };
 
 // RETI
 // - - - -
 const RETI = (cpu) => {
-  cpu.incPC(1);
+  const popValue = cpu.stackPop(cpu);
+  cpu.setPC(popValue);
+  cpu.setIME();
   cpu.clock.c += 16;
-  // TODO: IMPLEMENT
-  alert('not implemented');
 };
 
 // RET F
 // - - - -
 const RET_F = (cpu, F) => {
-  cpu.incPC(1);
-  cpu.clock.c += 20 / 8;
-  // TODO: IMPLEMENT
-  alert('not implemented');
+  const flag = cpu.getFlag(F);
+  if (!flag) {
+    const popValue = cpu.stackPop(cpu);
+    cpu.setPC(popValue);
+    cpu.clock.c += 20;
+  } else {
+    cpu.incPC(1);
+    cpu.clock.c += 8;
+  }
 };
 
 // RET NF
 // - - - -
 const RET_NF = (cpu, F) => {
-  cpu.incPC(1);
-  cpu.clock.c += 20 / 8;
-  // TODO: IMPLEMENT
-  alert('not implemented');
+  const flag = cpu.getFlag(F);
+  if (flag) {
+    const popValue = cpu.stackPop(cpu);
+    cpu.setPC(popValue);
+    cpu.clock.c += 20;
+  } else {
+    cpu.incPC(1);
+    cpu.clock.c += 8;
+  }
 };
 
 // CALL a16

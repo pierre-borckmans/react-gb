@@ -260,13 +260,16 @@ const AND8_d8 = (cpu) => {
   alert('not implemented');
 };
 
-// XOR R
+// XOR A,R
 // Z 0 0 0
-const XOR8_R = (cpu, reg8) => {
+const XOR8_A_R = (cpu, reg8) => {
+  const value = cpu.readReg8(reg8) ^ cpu.readReg8(reg8);
+  cpu.writeReg8(value);
+
+  cpu.setFlag('Z', value === 0);
+
   cpu.incPC(1);
   cpu.clock.c += 4;
-  // TODO: IMPLEMENT
-  alert('not implemented');
 };
 
 // XOR (RR)
@@ -405,7 +408,7 @@ const arithmeticLogicalOperations = {
   AND8_R,
   AND8_$RR,
   AND8_d8,
-  XOR8_R,
+  XOR8_A_R,
   XOR8_$RR,
   XOR8_d8,
   OR8_R,

@@ -1,4 +1,10 @@
 import cartridge from '../cartridge/cartridge';
+import videoRam from './videoRam/videoRam';
+import externalRam from './externalRam/externalRam';
+import workRam from './workRam/workRam';
+import oam from './oam/oam';
+import io from './io/io';
+import highRam from './highRam/highRam';
 
 import { range } from 'lodash';
 
@@ -43,20 +49,21 @@ const read = (address) => {
     case ROM1:
       return cartridge.read(address - START_ROM0);
     case VIDEO_RAM:
-      return 0;
+      return videoRam.read(address - START_VIDEO_RAM);
     case EXTERNAL_RAM:
-      return 0;
+      return externalRam.read(address - START_EXTERNAL_RAM);
     case WORK_RAM:
-      return 0;
+      return workRam.read(address - START_WORK_RAM);
     case ECHO_RAM:
-      return 0;
+      return workRam.read(address - START_ECHO_RAM);
     case OAM:
-      return 0;
+      return oam.read(address - START_OAM);
     case IO:
-      return 0;
+      return io.read(address - START_IO_MAPPING);
     case HIGH_RAM:
-      return 0;
+      return highRam.read(address - START_HIGH_RAM);
     case INTERRUPT_SWITCH:
+      // TODO
       return 0;
     default:
       console.error(`Trying to read from invalid memory address: ${address}`);
@@ -71,20 +78,21 @@ const write = (address, value) => {
     case ROM1:
       return cartridge.write(address - START_ROM0, value);
     case VIDEO_RAM:
-      return 0;
+      return videoRam.write(address - START_VIDEO_RAM, value);
     case EXTERNAL_RAM:
-      return 0;
+      return externalRam.write(address - START_EXTERNAL_RAM, value);
     case WORK_RAM:
-      return 0;
+      return workRam.write(address - START_WORK_RAM, value);
     case ECHO_RAM:
-      return 0;
+      return workRam.write(address - START_ECHO_RAM, value);
     case OAM:
-      return 0;
+      return oam.write(address - START_OAM, value);
     case IO:
-      return 0;
+      return io.write(address - START_IO_MAPPING, value);
     case HIGH_RAM:
-      return 0;
+      return highRam.write(address - START_HIGH_RAM, value);
     case INTERRUPT_SWITCH:
+      // TODO
       return 0;
     default:
       console.error(`Trying to write to invalid memory address: ${address}`);
