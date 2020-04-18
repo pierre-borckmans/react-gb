@@ -1,6 +1,8 @@
 import opcodesMap from './opcodes/opcodesMap';
 import mmu from '../mmu/mmu';
 
+import { format } from '../../utils/utils';
+
 const registers = {
   A: 0x00,
   F: 0x00,
@@ -14,13 +16,15 @@ const registers = {
   SP: 0x0000,
 };
 
-const ime = false;
+const clock = {
+  c: 0,
+};
+
+let ime = false;
+let halt = false;
+let haltBug = false;
 
 const cpu = {
-  clock: {
-    c: 0,
-  },
-
   reset: () => {
     registers.A = 0x00;
     registers.F = 0x00;
@@ -32,6 +36,10 @@ const cpu = {
     registers.L = 0x00;
     registers.PC = 0x0000;
     registers.SP = 0x0000;
+
+    clock.c = 0;
+
+    mmu.reset();
   },
 
   getFlag: (flag) => {
@@ -111,8 +119,19 @@ const cpu = {
   incSP: (inc) => (registers.SP += inc),
   decSP: (dec) => (registers.SP -= dec),
 
-  setIME: () => (ime = true),
+  getCycles: () => clock.c,
+  incCycles: (inc) => (clock.c += inc),
+
+  setIME: (active) => (ime = active),
   getIME: () => ime,
+
+  setHalt: (active) => (halt = active),
+  getHalt: () => halt,
+
+  setHaltBug: (active) => (haltBug = active),
+  getHaltBug: () => haltBug,
+
+  /// --------
 
   readImmediate8() {
     return mmu.read(registers.PC + 1);
@@ -120,7 +139,7 @@ const cpu = {
 
   readSignedImmediate8() {
     const unsigned = mmu.read(registers.PC + 1);
-    return unsigned > 127 ? unsigned - 128 : unsigned;
+    return unsigned > 127 ? -128 + (unsigned ^ (1 << 7)) : unsigned;
   },
 
   readImmediate16() {
@@ -140,8 +159,21 @@ const cpu = {
   },
 
   writeAddress16(add16, value) {
-    mmu.write(add16, (value & 0xff00) >> 8);
-    mmu.write(add16 + 1, value & 0x00ff);
+    mmu.write(add16 + 1, (value & 0xff00) >> 8);
+    mmu.write(add16, value & 0x00ff);
+  },
+
+  stackPush(value) {
+    // console.log(format('hex', this.getSP(), 16), format('hex', value, 16));
+    this.writeAddress16(this.getSP() - 2, value);
+    this.decSP(2);
+  },
+
+  stackPop() {
+    const value = this.readAddress16(this.getSP());
+    // console.log(format('hex', this.getSP(), 16), format('hex', value, 16));
+    this.incSP(2);
+    return value;
   },
 
   step() {
@@ -151,8 +183,11 @@ const cpu = {
     const opcode = fetchOpcode();
     const executeOpcodeFn = decodeOpcode(opcode);
 
-    executeOpcodeFn(this);
-    return this;
+    const result = executeOpcodeFn(this);
+    if (result === -1) {
+      alert(`Opcode ${format('hex', opcode)} not implemented`);
+    }
+    return result;
   },
 
   debugAllOpcodes() {

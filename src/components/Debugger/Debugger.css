@@ -1,6 +1,31 @@
 .debugger {
-  display: flex;
   padding: 10px;
   font-family: 'Menlo', monospace;
   font-size: medium;
+  display: flex;
+  flex-direction: column;
+}
+
+.debugger_row {
+  display: flex;
+  flex-direction: row;
+}
+
+.debugger_controls {
+  display: flex;
+  margin-bottom: 4px;
+}
+
+.debugger_controls > button {
+  margin-right: 4px;
+}
+
+.steps_per_second {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.spacer {
+  width: 20px;
 }

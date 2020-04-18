@@ -3,57 +3,62 @@ import React, { Fragment, useEffect, useState } from 'react';
 import Memory from './Memory/Memory';
 import CPU from './CPU/CPU';
 
+import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
 
 const Debugger = (props) => {
   const gameboy = props.gameboy;
+  const [debugger_, setDebugger] = useState(dbg);
+  const [stepsPerSecond, setStepsPerSecond] = useState(0);
   const [cpu, setCPU] = useState(gameboy.getCpu());
   const mmu = gameboy.getMmu();
 
+  const handleCPUChange = () => {
+    setCPU({ ...cpu });
+    setStepsPerSecond(debugger_.getStepsPerSecond());
+  };
+  const handleDebuggerChange = () => setDebugger({ ...debugger_ });
+
+  const removeAllBreakBoints = () => {
+    debugger_.removeAllBreakpoints();
+    setDebugger({ ...debugger_ });
+  };
+
+  const run = () => {
+    debugger_.run(handleCPUChange);
+  };
+
+  const pause = () => {
+    debugger_.pause();
+    setCPU({ ...cpu });
+  };
+
+  const step = () => {
+    debugger_.step(handleCPUChange);
+  };
+
+  const reset = () => {
+    debugger_.reset();
+    handleCPUChange();
+  };
+
   const keyListener = (event) => {
+    document.activeElement.blur();
     if (event.code === 'Space') {
-      cpu.step();
-      setCPU({ ...cpu });
+      if (!debugger_.isRunning()) {
+        debugger_.run(handleCPUChange);
+      } else {
+        debugger_.pause();
+      }
+      return;
     }
-    if (event.code === 'PageDown') {
-      cpu.incPC(256);
-      setCPU({ ...cpu });
-    }
-    if (event.code === 'PageUp') {
-      cpu.decPC(256);
-      setCPU({ ...cpu });
-    }
-    if (event.code === 'Home') {
-      cpu.setPC(0);
-      setCPU({ ...cpu });
-    }
-    if (event.code === 'End') {
-      cpu.setPC(0xffff);
-      setCPU({ ...cpu });
-    }
-    if (event.code === 'ArrowDown') {
-      cpu.incPC(16);
-      setCPU({ ...cpu });
-    }
-    if (event.code === 'ArrowUp') {
-      cpu.decPC(16);
-      setCPU({ ...cpu });
-    }
-    if (event.code === 'ArrowRight') {
-      cpu.incPC(1);
-      setCPU({ ...cpu });
-    }
-    if (event.code === 'ArrowLeft') {
-      cpu.decPC(1);
-      setCPU({ ...cpu });
-    }
+
     if (event.code === 'Enter') {
-      cpu.debugAllOpcodes();
+      step();
     }
-    if (event.code === 'KeyJ') {
-      const PC = parseInt(prompt('PC?'));
-      cpu.setPC(PC);
-      setCPU({ ...cpu });
+
+    if (event.code === 'Backspace') {
+      reset();
     }
   };
 
@@ -66,13 +71,37 @@ const Debugger = (props) => {
 
   return (
     <Fragment>
-      {cpu ? (
-        <div className="debugger">
-          <Memory cpu={cpu} mmu={mmu}></Memory>
-          <CPU cpu={cpu}></CPU>
+      <div className="debugger">
+        <div className="debugger_controls">
+          <button onClick={run}>Run</button>
+          <button onClick={pause}>Pause</button>
+          <button onClick={step}>Step</button>
+          <div className="spacer" />
+          <button onClick={reset}>Reset</button>
+          <button onClick={removeAllBreakBoints}>Remove all breakpoints</button>
+          <div className="spacer" />
+          <span className="steps_per_second">{`${cpu.getCycles()} cycles`}</span>
+          <div className="spacer" />
+          <span className="steps_per_second">{`${stepsPerSecond.toFixed(
+            2
+          )} ops/s`}</span>
         </div>
-      ) : null}
-      SPACE=step, ENTER=test all opcodes
+        <div className="debugger_row">
+          <Memory
+            debugger_={debugger_}
+            cpu={cpu}
+            mmu={mmu}
+            onCPUChange={handleCPUChange}
+            onDebuggerChange={handleDebuggerChange}
+          ></Memory>
+          <CPU
+            cpu={cpu}
+            onCPUChange={handleCPUChange}
+            onDebuggerChange={handleDebuggerChange}
+          ></CPU>
+        </div>
+      </div>
+      SPACE=Run until next breakpoint, ENTER=Step
     </Fragment>
   );
 };

@@ -20,7 +20,7 @@ const OAM = 'OAM';
 const IO = 'I/O';
 const HIGH_RAM = 'HRAM';
 const INTERRUPT_SWITCH = 'ITSW';
-const INVALID = '????';
+const INVALID = '----';
 
 const START_ROM0 = 0x0000;
 const END_ROM0 = 0x3fff;
@@ -66,8 +66,8 @@ const read = (address) => {
       // TODO
       return 0;
     default:
-      console.error(`Trying to read from invalid memory address: ${address}`);
-      return 0;
+      // console.error(`Trying to read from invalid memory address: ${address}`);
+      return '--';
   }
 };
 
@@ -95,8 +95,8 @@ const write = (address, value) => {
       // TODO
       return 0;
     default:
-      console.error(`Trying to write to invalid memory address: ${address}`);
-      return 0;
+      // console.error(`Trying to write to invalid memory address: ${address}`);
+      return '?';
   }
 };
 
@@ -109,11 +109,11 @@ const getMemoryType = (address) => {
     return VIDEO_RAM;
   } else if (address >= START_EXTERNAL_RAM && address <= END_EXTERNAL_RAM) {
     return EXTERNAL_RAM;
-  } else if (
-    (address >= START_WORK_RAM && address <= END_WORK_RAM) ||
-    (address >= START_ECHO_RAM && address <= END_ECHO_RAM)
-  ) {
+  } else if (address >= START_WORK_RAM && address <= END_WORK_RAM) {
     return WORK_RAM;
+  }
+  if (address >= START_ECHO_RAM && address <= END_ECHO_RAM) {
+    return ECHO_RAM;
   } else if (address >= START_OAM && address <= END_OAM) {
     // OAM (Sprite Attribute Table)
     return OAM;
@@ -137,12 +137,32 @@ const getMemoryPage = (page) => {
   return memoryRange.map((i) => mmu.read(i));
 };
 
+const reset = () => {
+  cartridge.reset();
+  videoRam.reset();
+  externalRam.reset();
+  workRam.reset();
+  oam.reset();
+  io.reset();
+  highRam.reset();
+};
+
 const mmu = {
   MEMORY_SIZE,
+  START_ROM0,
+  START_ROM1,
+  START_VIDEO_RAM,
+  START_EXTERNAL_RAM,
+  START_WORK_RAM,
+  START_ECHO_RAM,
+  START_OAM,
+  START_IO_MAPPING,
+  START_HIGH_RAM,
   read,
   write,
   getMemoryPage,
   getMemoryType,
+  reset,
 };
 
 export default mmu;

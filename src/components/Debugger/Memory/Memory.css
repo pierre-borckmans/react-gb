@@ -1,6 +1,27 @@
 .memory {
   display: flex;
+  flex-direction: column;
   margin-right: 10px;
+}
+
+.page_count {
+  font-size: 10px;
+  justify-content: space-between;
+}
+
+.page_arrow {
+  margin-left: 4px;
+  margin-right: 4px;
+  cursor: pointer;
+}
+
+.shortcuts {
+  margin-top: 4px;
+  display: flex;
+}
+
+.shortcuts > button {
+  margin-right: 4px;
 }
 
 .table {
@@ -9,6 +30,7 @@
   padding: 5px;
   border: dotted gray 1px;
   width: 730px;
+  user-select: none;
 }
 
 .table_header {
@@ -16,6 +38,7 @@
   flex-direction: row;
   justify-content: space-between;
   border-bottom: solid 1px lightgray;
+  margin-bottom: 1px;
 }
 
 .table_header_bytes {
@@ -70,10 +93,13 @@
 }
 
 .row_offset {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 110px;
-  text-align: center;
   border-right: solid 1px lightgray;
   color: gray;
+  margin-right: 1px;
 }
 
 .row_offset_selected {
@@ -84,10 +110,25 @@
   width: 30px;
   color: black;
   text-align: center;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
 }
 
 .byte_selected {
   font-weight: bold;
   background-color: lightblue;
   color: white;
+}
+
+.byte_breakpoint {
+  background-color: red;
+  color: white;
+}
+
+.byte_selected.byte_breakpoint {
+  border: 3px solid lightblue;
+  box-sizing: border-box;
 }
