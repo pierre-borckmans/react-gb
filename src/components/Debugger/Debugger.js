@@ -62,6 +62,11 @@ const Debugger = (props) => {
     }
   };
 
+  const loadROM = async () => {
+    await gameboy.getCartridge().loadROM();
+    handleDebuggerChange();
+  };
+
   useEffect(() => {
     document.addEventListener('keydown', keyListener, false);
     return () => {
@@ -85,6 +90,8 @@ const Debugger = (props) => {
           <span className="steps_per_second">{`${stepsPerSecond.toFixed(
             2
           )} ops/s`}</span>
+          <div className="spacer" />
+          <button onClick={loadROM}>Load rom</button>
         </div>
         <div className="debugger_row">
           <Memory
