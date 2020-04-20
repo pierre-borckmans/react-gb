@@ -292,7 +292,7 @@ const prefixCBOpcodesMap = [
     /* 0xFF SET 7,A    */ cpu => { inst.SET_N_R(cpu, 7, 'A'); }, 
 ];
 
-const getPrefixCBOpcodeLabels = (base, cpu) => {
+const getPrefixCBOpcodeLabel = (address) => {
   const labels = [
     // OFFSET 0x00 ----------------------------------------------------------
     `RLC B`,
@@ -582,7 +582,9 @@ const getPrefixCBOpcodeLabels = (base, cpu) => {
     `SET 7,(HL)`,
     `SET 7,A`,
   ];
+};
 
+const getPrefixCBOpcodeLabels = (base, cpu) => {
   const A = format(base, cpu.readReg8('A'));
   const B = format(base, cpu.readReg8('B'));
   const C = format(base, cpu.readReg8('C'));
@@ -884,7 +886,7 @@ const getPrefixCBOpcodeLabels = (base, cpu) => {
   ];
 
   const opcode = cpu.readAddress8(cpu.getPC() + 1);
-  return [labels[opcode], labelsWithValues[opcode]];
+  return [getPrefixCBOpcodeLabel(opcode), labelsWithValues[opcode]];
 };
 export default prefixCBOpcodesMap;
-export { getPrefixCBOpcodeLabels };
+export { getPrefixCBOpcodeLabels, getPrefixCBOpcodeLabel };

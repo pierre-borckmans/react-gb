@@ -1,7 +1,10 @@
 import inst from '../operations/cpuInstructions';
 import { format } from '../../../utils/utils';
 
-import { getPrefixCBOpcodeLabels } from './prefixCBOpcodesMap';
+import {
+  getPrefixCBOpcodeLabels,
+  getPrefixCBOpcodeLabel,
+} from './prefixCBOpcodesMap';
 
 // prettier-ignore
 const opcodesMap = [
@@ -295,7 +298,7 @@ const opcodesMap = [
     /* 0xFF RST 38H     */ cpu => inst.RST_XXH(cpu, 0x38),
 ];
 
-const getOpcodeLabels = (base, cpu) => {
+const getOpcodeLabel = (address) => {
   const labels = [
     // OFFSET 0x00 ----------------------------------------------------------
     `NOP`,
@@ -525,7 +528,7 @@ const getOpcodeLabels = (base, cpu) => {
     `RET Z`,
     `RET`,
     `JP Z,a16`,
-    `(PRE CB) ${getPrefixCBOpcodeLabels(base, cpu)[0]}`,
+    `(PRE CB) ${getPrefixCBOpcodeLabel(address + 1)}`,
     `CALL Z,a16`,
     `CALL a16`,
     `ADC A,d8`,
@@ -586,6 +589,10 @@ const getOpcodeLabels = (base, cpu) => {
     `RST 38H`,
   ];
 
+  return labels[address];
+};
+
+const getOpcodeLabels = (base, cpu) => {
   const A = format(base, cpu.readReg8('A'));
   const B = format(base, cpu.readReg8('B'));
   const C = format(base, cpu.readReg8('C'));
@@ -598,11 +605,16 @@ const getOpcodeLabels = (base, cpu) => {
   const BC = format(base, cpu.readReg16('BC'), 16);
   const DE = format(base, cpu.readReg16('DE'), 16);
   const HL = format(base, cpu.readReg16('HL'), 16);
-  const PC = format(base, cpu.getPC(), 16);
+  const PCp2 = format(base, cpu.getPC() + 2, 16);
   const SP = format(base, cpu.getSP(), 16);
 
+  const signedImm = cpu.readSignedImmediate8();
+
   const d8 = format(base, cpu.readImmediate8());
-  const r8 = `${PC}+${format(base, cpu.readSignedImmediate8())}`;
+  const r8 = `${PCp2}${signedImm > 0 ? '+' : '-'}${format(
+    base,
+    Math.abs(signedImm)
+  )}`;
   const d16 = format(base, cpu.readImmediate16(), 16);
   const a8 = format(base, 0xff00 + cpu.readImmediate8(), 16);
   const a16 = format(base, cpu.readImmediate16(), 16);
@@ -903,7 +915,7 @@ const getOpcodeLabels = (base, cpu) => {
   ];
 
   const $RR = (reg16) => format(cpu.readAddress16(cpu.readReg16(reg16)), 16);
-  const r8Value = format(base, cpu.getPC() + cpu.readSignedImmediate8());
+  const r8Value = format(base, cpu.getPC() + 2 + cpu.readSignedImmediate8());
   const a8Value = format(base, 0xff00 + cpu.readImmediate8(), 16);
   const Cpff = format(base, 0xff00 + cpu.readAddress8(cpu.readReg8('C')), 16);
 
@@ -1199,7 +1211,7 @@ const getOpcodeLabels = (base, cpu) => {
 
   const opcode = cpu.readAddress8(cpu.getPC());
   return [
-    labels[opcode],
+    getOpcodeLabel(opcode),
     labelsWithPartialValues[opcode],
     labelsWithValues[opcode],
   ];

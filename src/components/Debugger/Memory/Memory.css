@@ -73,9 +73,9 @@
 
 .row_ascii {
   display: flex;
-  width: 170px;
-  margin-right: 10px;
-  margin-left: 10px;
+  width: 160px;
+  border-left: solid 1px lightgray;
+  justify-content: center;
 }
 
 .ascii {
@@ -96,7 +96,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 110px;
+  width: 105px;
   border-right: solid 1px lightgray;
   color: gray;
   margin-right: 1px;
