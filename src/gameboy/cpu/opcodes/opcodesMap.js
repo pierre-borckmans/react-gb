@@ -616,7 +616,7 @@ const getOpcodeLabels = (base, cpu) => {
     Math.abs(signedImm)
   )}`;
   const d16 = format(base, cpu.readImmediate16(), 16);
-  const a8 = format(base, 0xff00 + cpu.readImmediate8(), 16);
+  const a8 = `0xFF00+${format(base, +cpu.readImmediate8(), 8)}`;
   const a16 = format(base, cpu.readImmediate16(), 16);
 
   const Zflag = cpu.getFlag('Z') ? true : false;
@@ -914,10 +914,15 @@ const getOpcodeLabels = (base, cpu) => {
     `RST 38H`,
   ];
 
-  const $RR = (reg16) => format(cpu.readAddress16(cpu.readReg16(reg16)), 16);
-  const r8Value = format(base, cpu.getPC() + 2 + cpu.readSignedImmediate8());
+  const $RR = (reg16) =>
+    format(base, cpu.readAddress8(cpu.readReg16(reg16)), 8);
+  const r8Value = format(
+    base,
+    cpu.getPC() + 2 + cpu.readSignedImmediate8(),
+    16
+  );
   const a8Value = format(base, 0xff00 + cpu.readImmediate8(), 16);
-  const Cpff = format(base, 0xff00 + cpu.readAddress8(cpu.readReg8('C')), 16);
+  const Cpff = format(base, 0xff00 + cpu.readReg8('C'), 16);
 
   const labelsWithValues = [
     // OFFSET 0x00 ----------------------------------------------------------
