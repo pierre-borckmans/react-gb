@@ -4,6 +4,7 @@ import MMU from './MMU/MMU';
 import CPU from './CPU/CPU';
 import PPU from './PPU/PPU';
 import Cartridge from './Cartridge/Cartridge';
+import Joypad from './Joypad/Joypad';
 
 import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
@@ -116,6 +117,7 @@ const Debugger = (props) => {
             onDebuggerChange={handleDebuggerChange}
           />
           <Cartridge cartridge={gameboy.getCartridge()} />
+          <Joypad joypad={gameboy.getJoypad()} />
         </div>
       </div>
       SPACE=Run until next breakpoint, ENTER=Step

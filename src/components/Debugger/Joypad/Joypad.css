@@ -1,0 +1,17 @@
+.joypad {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin-left: 10px;
+  padding: 5px;
+  border: dotted gray 1px;
+  font-size: 14px;
+}
+
+.button {
+  color: lightgray;
+}
+
+.button_pressed {
+  color: black;
+}

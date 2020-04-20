@@ -7,8 +7,11 @@ const Cartridge = (props) => {
   return (
     <Fragment>
       <div className="cartridge">
-        <div>Title: {cartridge.getTitle()}</div>
-        <div>Manufacturer: {cartridge.getManufacturer()}</div>
+        <div className="section">
+          <span>Cartridge</span>
+          <div>Title: {cartridge.getTitle()}</div>
+          <div>Manufacturer: {cartridge.getManufacturer()}</div>
+        </div>
       </div>
     </Fragment>
   );

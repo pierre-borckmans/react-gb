@@ -1,3 +1,7 @@
+.cpu {
+  font-size: 14px;
+}
+
 .registers {
   display: flex;
   flex-direction: column;
@@ -6,19 +10,17 @@
   border: dotted gray 1px;
 }
 
-.registers_pair {
-  display: flex;
-  justify-content: space-between;
+.section > div {
+  font-weight: normal;
 }
 
 .registers_pair {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .flags {
-  margin-top: 8px;
-  margin-bottom: 4px;
+  margin-top: 2px;
   display: flex;
   justify-content: space-between;
   height: 21px;
@@ -36,8 +38,5 @@
 }
 
 .operation_label {
-  margin-top: 8px;
-  margin-bottom: 8px;
-  /* text-align: center; */
   font-size: 10pt;
 }
