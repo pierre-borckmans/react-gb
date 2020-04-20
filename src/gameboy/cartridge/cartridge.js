@@ -2,6 +2,13 @@ import cpu from '../cpu/cpu';
 
 import rom from '../../assets/roms/test.gb';
 
+import { range } from 'lodash';
+
+const TITLE_START_ADDR = 0x134;
+const TITLE_END_ADDR = 0x143;
+const MANUFACTURER_START_ADDR = 0x144;
+const MANUFACTURER_END_ADDR = 0x143;
+
 let loadedROM = new Array(0x7fff).fill(0);
 
 // prettier-ignore
@@ -46,11 +53,23 @@ const reset = () => {
   loadedROM = new Array(0x7fff).fill(0);
 };
 
+const getTitle = () =>
+  range(TITLE_START_ADDR, TITLE_END_ADDR)
+    .map((addr) => String.fromCharCode(loadedROM[addr]))
+    .join('');
+
+const getManufacturer = () =>
+  range(MANUFACTURER_START_ADDR, MANUFACTURER_END_ADDR)
+    .map((addr) => String.fromCharCode(loadedROM[addr]))
+    .join('');
+
 const cartridge = {
   loadROM,
   read,
   write,
   reset,
+  getTitle,
+  getManufacturer,
 };
 
 export default cartridge;

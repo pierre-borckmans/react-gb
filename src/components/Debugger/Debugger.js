@@ -1,7 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
 
-import Memory from './Memory/Memory';
+import MMU from './MMU/MMU';
 import CPU from './CPU/CPU';
+import PPU from './PPU/PPU';
+import Cartridge from './Cartridge/Cartridge';
 
 import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
@@ -12,11 +14,13 @@ const Debugger = (props) => {
   const [stepsPerSecond, setStepsPerSecond] = useState(0);
   const [cpu, setCPU] = useState(gameboy.getCpu());
   const mmu = gameboy.getMmu();
+  const ppu = gameboy.getPpu();
 
   const handleCPUChange = () => {
     setCPU({ ...cpu });
     setStepsPerSecond(debugger_.getStepsPerSecond());
   };
+
   const handleDebuggerChange = () => setDebugger({ ...debugger_ });
 
   const removeAllBreakBoints = () => {
@@ -94,18 +98,24 @@ const Debugger = (props) => {
           <button onClick={loadROM}>Load rom</button>
         </div>
         <div className="debugger_row">
-          <Memory
+          <MMU
             debugger_={debugger_}
             cpu={cpu}
             mmu={mmu}
             onCPUChange={handleCPUChange}
             onDebuggerChange={handleDebuggerChange}
-          ></Memory>
+          />
           <CPU
             cpu={cpu}
             onCPUChange={handleCPUChange}
             onDebuggerChange={handleDebuggerChange}
-          ></CPU>
+          />
+          <PPU
+            config={gameboy.getConfig()}
+            ppu={ppu}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <Cartridge cartridge={gameboy.getCartridge()} />
         </div>
       </div>
       SPACE=Run until next breakpoint, ENTER=Step

@@ -40,6 +40,8 @@ const START_IO_MAPPING = 0xff00;
 const END_IO_MAPPING = 0xff7f;
 const START_HIGH_RAM = 0xff80;
 const END_HIGH_RAM = 0xfffe;
+
+const BOOTROM_LOADED_ADDR = 0xff50;
 const INTERRUPT_SWITCH_ADDR = 0xffff;
 
 const read = (address) => {
@@ -71,6 +73,11 @@ const read = (address) => {
   }
 };
 
+const readBit = (address, bitIdx) => {
+  const value = read(address);
+  return value & (1 << bitIdx === 1 << bitIdx);
+};
+
 const write = (address, value) => {
   switch (getMemoryType(address)) {
     case ROM0:
@@ -98,6 +105,12 @@ const write = (address, value) => {
       // console.error(`Trying to write to invalid memory address: ${address}`);
       return '?';
   }
+};
+
+const writeBit = (address, bitIdx, bit) => {
+  const value = read(address);
+  const newValue = value | (bit << bitIdx);
+  write(address, newValue);
 };
 
 const getMemoryType = (address) => {
@@ -147,6 +160,8 @@ const reset = () => {
   highRam.reset();
 };
 
+const isBootComplete = () => read(BOOTROM_LOADED_ADDR) !== 0x00;
+
 const mmu = {
   MEMORY_SIZE,
   START_ROM0,
@@ -159,10 +174,13 @@ const mmu = {
   START_IO_MAPPING,
   START_HIGH_RAM,
   read,
+  readBit,
   write,
+  writeBit,
   getMemoryPage,
   getMemoryType,
   reset,
+  isBootComplete,
 };
 
 export default mmu;

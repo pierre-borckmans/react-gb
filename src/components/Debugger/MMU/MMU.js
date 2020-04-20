@@ -4,9 +4,9 @@ import { toHex } from '../../../utils/utils';
 
 import { chunk, find, range } from 'lodash';
 
-import './Memory.css';
+import './MMU.css';
 
-const Memory = (props) => {
+const MMU = (props) => {
   const cpu = props.cpu;
   const mmu = props.mmu;
   const debugger_ = props.debugger_;
@@ -81,7 +81,7 @@ const Memory = (props) => {
 
   return (
     <Fragment>
-      <div className="memory">
+      <div className="mmu">
         <div className="table">
           <div className="table_header">
             <div className={classNames('row_offset', 'page_count')}>
@@ -190,4 +190,4 @@ const Memory = (props) => {
   );
 };
 
-export default Memory;
+export default MMU;

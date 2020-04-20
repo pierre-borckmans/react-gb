@@ -131,7 +131,7 @@ const cpu = {
   setHaltBug: (active) => (haltBug = active),
   getHaltBug: () => haltBug,
 
-  isBootComplete: () => registers.PC > 0x255,
+  isBootComplete: () => mmu.isBootComplete(),
   /// --------
 
   readImmediate8() {

@@ -1,0 +1,30 @@
+.ppu {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin-left: 10px;
+  padding: 5px;
+  border: dotted gray 1px;
+  font-size: 14px;
+}
+
+.section {
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.section > div {
+  font-weight: normal;
+}
+
+.palette {
+  display: flex;
+  width: 100px;
+  justify-content: space-between;
+}
+
+.palette_color {
+  width: 16px;
+  height: 16px;
+  border: solid 1px lightgray;
+}
