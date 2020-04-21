@@ -165,14 +165,12 @@ const cpu = {
   },
 
   stackPush(value) {
-    // console.log(format('hex', this.getSP(), 16), format('hex', value, 16));
     this.writeAddress16(this.getSP() - 2, value);
     this.decSP(2);
   },
 
   stackPop() {
     const value = this.readAddress16(this.getSP());
-    // console.log(format('hex', this.getSP(), 16), format('hex', value, 16));
     this.incSP(2);
     return value;
   },

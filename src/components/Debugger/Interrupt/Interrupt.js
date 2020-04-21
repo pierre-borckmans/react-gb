@@ -7,9 +7,7 @@ const Interrupt = (props) => {
   return (
     <Fragment>
       <div className="interrupt">
-        <div className="section">
-          <span>Interrupt</span>
-        </div>
+        <div className="section">Interrupt</div>
       </div>
     </Fragment>
   );

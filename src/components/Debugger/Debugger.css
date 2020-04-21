@@ -4,6 +4,7 @@
   font-size: medium;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
 .debugger_row {
@@ -29,4 +30,16 @@
 
 .spacer {
   width: 20px;
+}
+
+.section {
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.subsection {
+  margin-bottom: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: bold;
 }

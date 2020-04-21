@@ -21,7 +21,6 @@ const PixelGrid = (props) => {
           const y = Math.floor(i / width);
           const offset =
             ((y * scale + s1) * width * scale + x * scale + s2) * 4;
-          // console.log(i, x, y, offset);
           imageData.data[offset] = pixels[3 * i];
 
           imageData.data[offset + 1] = pixels[3 * i + 1];
@@ -30,9 +29,6 @@ const PixelGrid = (props) => {
         }
       }
     }
-
-    // console.log(pixels);
-    // console.log(imageData);
 
     ctx.putImageData(imageData, 0, 0);
   };

@@ -19,22 +19,20 @@ const Joypad = (props) => {
   return (
     <Fragment>
       <div className="joypad">
-        <div className="section">
-          <span>Joypad</span>
-          {getButton('A', joypad.getAButton())}
-          {getButton('B', joypad.getBButton())}
+        <div className="section">Joypad</div>
+        {getButton('A', joypad.getAButton())}
+        {getButton('B', joypad.getBButton())}
 
-          {getButton('Start', joypad.getStartButton())}
+        {getButton('Start', joypad.getStartButton())}
 
-          {getButton('Select', joypad.getSelectButton())}
+        {getButton('Select', joypad.getSelectButton())}
 
-          {getButton('Up', joypad.getUpButton())}
-          {getButton('Down', joypad.getDownButton())}
+        {getButton('Up', joypad.getUpButton())}
+        {getButton('Down', joypad.getDownButton())}
 
-          {getButton('Right', joypad.getRightButton())}
+        {getButton('Right', joypad.getRightButton())}
 
-          {getButton('Left', joypad.getLeftButton())}
-        </div>
+        {getButton('Left', joypad.getLeftButton())}
       </div>
     </Fragment>
   );

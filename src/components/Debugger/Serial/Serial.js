@@ -7,9 +7,7 @@ const Serial = (props) => {
   return (
     <Fragment>
       <div className="serial">
-        <div className="section">
-          <span>Serial</span>
-        </div>
+        <div className="section">Serial</div>
       </div>
     </Fragment>
   );

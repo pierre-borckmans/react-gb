@@ -1,17 +1,10 @@
 .cpu {
   font-size: 14px;
-}
-
-.registers {
   display: flex;
   flex-direction: column;
   width: 240px;
   padding: 5px;
   border: dotted gray 1px;
-}
-
-.section > div {
-  font-weight: normal;
 }
 
 .registers_pair {

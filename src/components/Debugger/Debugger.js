@@ -10,6 +10,8 @@ import PPU from './PPU/PPU';
 import Serial from './Serial/Serial';
 import Timer from './Timer/Timer';
 
+import Gamepad from './Gamepad/Gamepad';
+
 import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
 
@@ -136,6 +138,7 @@ const Debugger = (props) => {
           <Joypad joypad={joypad} />
           <Serial serial={serial} />
           <Timer timer={timer} />
+          <Gamepad />
         </div>
       </div>
       SPACE=Run until next breakpoint, ENTER=Step

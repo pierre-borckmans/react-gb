@@ -7,9 +7,7 @@ const APU = (props) => {
   return (
     <Fragment>
       <div className="apu">
-        <div className="section">
-          <span>APU</span>
-        </div>
+        <div className="section">APU</div>
       </div>
     </Fragment>
   );

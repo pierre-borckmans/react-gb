@@ -7,9 +7,7 @@ const Timer = (props) => {
   return (
     <Fragment>
       <div className="timer">
-        <div className="section">
-          <span>Timer</span>
-        </div>
+        <div className="section">Timer</div>
       </div>
     </Fragment>
   );

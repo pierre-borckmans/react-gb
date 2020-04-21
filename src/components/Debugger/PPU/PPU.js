@@ -29,42 +29,31 @@ const PPU = (props) => {
   return (
     <Fragment>
       <div className="ppu">
-        <div className="section">
-          <span>Background palette</span>
-          {getPalette(backgroundPalette)}
+        <div className="section">CPU</div>
+        <div className="subsection">Background palette</div>
+        {getPalette(backgroundPalette)}
+        <div className="subsection">Object palette 0</div>
+        {getPalette(objectPalette0)}
+        <div className="subsection">Object palette 1</div>
+        {getPalette(objectPalette1)}
+        <div className="subsection">Scroll</div>
+        <div>
+          X: {ppu.getScrollX()}, Y: {ppu.getScrollY()}
         </div>
-        <div className="section">
-          <span>Object palette 0</span>
-          {getPalette(objectPalette0)}
+        <div className="subsection">Window</div>
+        <div>
+          X: {ppu.getWindowX()}, Y: {ppu.getWindowY()}
         </div>
-        <div className="section">
-          <span>Object palette 1</span>
-          {getPalette(objectPalette1)}
+        <div className="subsection">LCDC</div>
+        <div>LCD: {ppu.getLCDCLCDEnable()}</div>
+        <div>background: {ppu.getLCDCBackgroundEnable()}</div>
+        <div>object: {ppu.getLCDCObjectEnable()}</div>
+        <div>window: {ppu.getLCDCWindowEnable()}</div>
+        <div>bg tilemap: {ppu.getLCDCBackgroundTilemapAdress()}</div>
+        <div>
+          bg&amp;win timemap: {ppu.getLCDCBackgroundAndWindowTilemapAdress()}
         </div>
-        <div className="section">
-          <span>Scroll</span>
-          <div>
-            X: {ppu.getScrollX()}, Y: {ppu.getScrollY()}
-          </div>
-        </div>
-        <div className="section">
-          <span>Window</span>
-          <div>
-            X: {ppu.getWindowX()}, Y: {ppu.getWindowY()}
-          </div>
-        </div>
-        <div className="section">
-          <span>LCDC</span>
-          <div>LCD: {ppu.getLCDCLCDEnable()}</div>
-          <div>background: {ppu.getLCDCBackgroundEnable()}</div>
-          <div>object: {ppu.getLCDCObjectEnable()}</div>
-          <div>window: {ppu.getLCDCWindowEnable()}</div>
-          <div>bg tilemap: {ppu.getLCDCBackgroundTilemapAdress()}</div>
-          <div>
-            bg&amp;win timemap: {ppu.getLCDCBackgroundAndWindowTilemapAdress()}
-          </div>
-          <div>window tilemap: {ppu.getLCDCWindowTilemapAdress()}</div>
-        </div>
+        <div>window tilemap: {ppu.getLCDCWindowTilemapAdress()}</div>
       </div>
     </Fragment>
   );

@@ -82,6 +82,7 @@ const MMU = (props) => {
   return (
     <Fragment>
       <div className="mmu">
+        <div className="section">MMU</div>
         <div className="table">
           <div className="table_header">
             <div className={classNames('row_offset', 'page_count')}>
