@@ -1,0 +1,9 @@
+.serial {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin-left: 10px;
+  padding: 5px;
+  border: dotted gray 1px;
+  font-size: 14px;
+}

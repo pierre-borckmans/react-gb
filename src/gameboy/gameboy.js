@@ -1,27 +1,45 @@
 import config from './config';
+
+import apu from './apu/apu';
+import cartridge from './cartridge/cartridge';
 import cpu from './cpu/cpu';
+import interrupt from './interrupt/interrupt';
+import joypad from './joypad/joypad';
 import mmu from './mmu/mmu';
 import ppu from './ppu/ppu';
-import cartridge from './cartridge/cartridge';
-import joypad from './joypad/joypad';
+import serial from './serial/serial';
+import timer from './timer/timer';
+
 import debugger_ from './debugger/debugger';
 
 const getConfig = () => config;
-const getDebugger = () => debugger_;
+
+const getApu = () => apu;
+const getCartridge = () => cartridge;
 const getCpu = () => cpu;
+const getInterruptController = () => interrupt;
+const getJoypad = () => joypad;
 const getMmu = () => mmu;
 const getPpu = () => ppu;
-const getCartridge = () => cartridge;
-const getJoypad = () => joypad;
+const getSerial = () => serial;
+const getTimer = () => timer;
+
+const getDebugger = () => debugger_;
 
 const gameboy = {
-  getDebugger,
+  getConfig,
+
+  getApu,
+  getCartridge,
   getCpu,
+  getInterruptController,
+  getJoypad,
   getMmu,
   getPpu,
-  getCartridge,
-  getConfig,
-  getJoypad,
+  getSerial,
+  getTimer,
+
+  getDebugger,
 };
 
 export default gameboy;

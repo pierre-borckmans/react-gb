@@ -20,7 +20,7 @@ const Joypad = (props) => {
     <Fragment>
       <div className="joypad">
         <div className="section">
-          <span>Buttons</span>
+          <span>Joypad</span>
           {getButton('A', joypad.getAButton())}
           {getButton('B', joypad.getBButton())}
 

@@ -1,21 +1,35 @@
 import React, { Fragment, useEffect, useState } from 'react';
 
-import MMU from './MMU/MMU';
-import CPU from './CPU/CPU';
-import PPU from './PPU/PPU';
+import APU from './APU/APU';
 import Cartridge from './Cartridge/Cartridge';
+import CPU from './CPU/CPU';
+import Interrupt from './Interrupt/Interrupt';
 import Joypad from './Joypad/Joypad';
+import MMU from './MMU/MMU';
+import PPU from './PPU/PPU';
+import Serial from './Serial/Serial';
+import Timer from './Timer/Timer';
 
 import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
 
 const Debugger = (props) => {
   const gameboy = props.gameboy;
+
   const [debugger_, setDebugger] = useState(dbg);
   const [stepsPerSecond, setStepsPerSecond] = useState(0);
+
+  const config = gameboy.getConfig();
+
+  const apu = gameboy.getApu();
+  const cartridge = gameboy.getCartridge();
   const [cpu, setCPU] = useState(gameboy.getCpu());
+  const interrupt = gameboy.getInterruptController();
+  const joypad = gameboy.getJoypad();
   const mmu = gameboy.getMmu();
   const ppu = gameboy.getPpu();
+  const serial = gameboy.getSerial();
+  const timer = gameboy.getTimer();
 
   const handleCPUChange = () => {
     setCPU({ ...cpu });
@@ -68,7 +82,7 @@ const Debugger = (props) => {
   };
 
   const loadROM = async () => {
-    await gameboy.getCartridge().loadROM();
+    await cartridge.loadROM();
     handleDebuggerChange();
   };
 
@@ -112,12 +126,16 @@ const Debugger = (props) => {
             onDebuggerChange={handleDebuggerChange}
           />
           <PPU
-            config={gameboy.getConfig()}
+            config={config}
             ppu={ppu}
             onDebuggerChange={handleDebuggerChange}
           />
-          <Cartridge cartridge={gameboy.getCartridge()} />
-          <Joypad joypad={gameboy.getJoypad()} />
+          <APU apu={apu} />
+          <Cartridge cartridge={cartridge} />
+          <Interrupt interrupt={interrupt} />
+          <Joypad joypad={joypad} />
+          <Serial serial={serial} />
+          <Timer timer={timer} />
         </div>
       </div>
       SPACE=Run until next breakpoint, ENTER=Step
