@@ -5,8 +5,10 @@ let breakpoints = [];
 let running = false;
 let totalSteps = 0;
 let stepsPerSecond = 0;
+let cyclesPerSecond = 0;
 
 const getStepsPerSecond = () => stepsPerSecond;
+const getCyclesPerSecond = () => cyclesPerSecond;
 const getTotalSteps = () => totalSteps;
 
 const getBreakpoints = () => breakpoints;
@@ -31,24 +33,24 @@ const removeAllBreakpoints = () => {
   breakpoints = [];
 };
 
-const run = (callback) => {
+const run = (mod, callback) => {
+  if (running) return;
   running = true;
+  let frames = 0;
+  let steps = 0;
+  let cycles = 0;
+
   const startPC = cpu.getPC();
-  let prevStartTime = new Date().getTime();
-  let stepsCount = 0;
+
+  totalSteps = 0;
   stepsPerSecond = 0;
 
-  const runLoop = () => {
-    for (let i = 0; i < 10000; i++) {
-      const now = new Date().getTime();
-      stepsCount++;
-      totalSteps++;
-      if (now - prevStartTime > 2000) {
-        stepsPerSecond = (stepsCount / (now - prevStartTime)) * 1000;
-        stepsCount = 0;
-        prevStartTime = now;
-      }
-
+  let startTime;
+  const frame = (timestamp) => {
+    if (!startTime) startTime = timestamp;
+    frames++;
+    const targetClock = cpu.getCycles() + 17556;
+    while (cpu.getCycles() < targetClock && running) {
       const breakpoint = find(
         breakpoints,
         (bp) => cpu.getPC() > startPC && cpu.getPC() === bp.address
@@ -57,25 +59,38 @@ const run = (callback) => {
         running = false;
         break;
       }
-      const result = cpu.step();
+      const result = step();
       if (result === -1) {
         running = false;
         break;
       }
+      steps++;
     }
-    callback();
-    if (running) setTimeout(runLoop, 0);
+    const elapsedTime = timestamp - startTime;
+    cycles = cpu.getCycles();
+    if (elapsedTime > 0) {
+      stepsPerSecond = (steps / elapsedTime) * 1000;
+      cyclesPerSecond = (cycles / elapsedTime) * 1000;
+    }
+
+    if (frames % mod === 0 || !running) {
+      callback && callback();
+    }
+
+    if (running) requestAnimationFrame(frame);
   };
-  runLoop();
+  requestAnimationFrame(frame);
 };
 
-const pause = () => {
+const pause = (callback) => {
   running = false;
+  callback && callback();
 };
 
 const step = (callback) => {
   cpu.step();
-  callback();
+  totalSteps++;
+  callback && callback();
 };
 
 const isRunning = () => running;
@@ -85,6 +100,7 @@ const reset = () => {
   running = false;
   totalSteps = 0;
   stepsPerSecond = 0;
+  cyclesPerSecond = 0;
 };
 
 const debugger_ = {
@@ -97,6 +113,7 @@ const debugger_ = {
   step,
   isRunning,
   getStepsPerSecond,
+  getCyclesPerSecond,
   getTotalSteps,
   reset,
 };

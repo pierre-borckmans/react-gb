@@ -53,6 +53,16 @@ const CYCLES_COMPLETE_FRAME =
   (SCREEN_HEIGHT + LINES_VBLANK) *
   (CYCLES_OAM_SEARCH + CYCLES_PIXEL_TRANSFER + CYCLES_HBLANK); // 17556
 
+// 17556 cycles/frames * 60 fps = 1053360 cycles / s
+
+// 8000-87FF	Tile set #1: tiles 0-127
+// 8800-8FFF	Tile set #1: tiles 128-255
+//            OR
+//            Tile set #0: tiles -1 to -128
+// 9000-97FF	Tile set #0: tiles 0-127
+// 9800-9BFF	Tile map #0
+// 9C00-9FFF	Tile map #1
+
 const getPalette = (addr) => {
   const paletteByte = mmu.read(addr);
   const palette = [

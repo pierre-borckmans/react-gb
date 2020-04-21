@@ -4,12 +4,13 @@ import rom from '../../assets/roms/test.gb';
 
 import { range } from 'lodash';
 
+const SIZE = 0x8000;
 const TITLE_START_ADDR = 0x134;
 const TITLE_END_ADDR = 0x143;
 const MANUFACTURER_START_ADDR = 0x144;
 const MANUFACTURER_END_ADDR = 0x143;
 
-let loadedROM = new Array(0x7fff).fill(0);
+let loadedROM = new Uint8Array(SIZE).fill(0);
 
 // prettier-ignore
 const bootROM = [
@@ -50,7 +51,7 @@ const write = (address, value) => {
 };
 
 const reset = () => {
-  loadedROM = new Array(0x7fff).fill(0);
+  loadedROM = new Array(SIZE).fill(0);
 };
 
 const getTitle = () =>

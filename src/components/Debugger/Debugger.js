@@ -20,6 +20,7 @@ const Debugger = (props) => {
 
   const [debugger_, setDebugger] = useState(dbg);
   const [stepsPerSecond, setStepsPerSecond] = useState(0);
+  const [cyclesPerSecond, setCyclesPerSecond] = useState(0);
 
   const config = gameboy.getConfig();
 
@@ -36,6 +37,7 @@ const Debugger = (props) => {
   const handleCPUChange = () => {
     setCPU({ ...cpu });
     setStepsPerSecond(debugger_.getStepsPerSecond());
+    setCyclesPerSecond(debugger_.getCyclesPerSecond());
   };
 
   const handleDebuggerChange = () => setDebugger({ ...debugger_ });
@@ -46,12 +48,11 @@ const Debugger = (props) => {
   };
 
   const run = () => {
-    debugger_.run(handleCPUChange);
+    debugger_.run(1, handleCPUChange);
   };
 
   const pause = () => {
-    debugger_.pause();
-    setCPU({ ...cpu });
+    debugger_.pause(handleCPUChange);
   };
 
   const step = () => {
@@ -67,9 +68,9 @@ const Debugger = (props) => {
     document.activeElement.blur();
     if (event.code === 'Space') {
       if (!debugger_.isRunning()) {
-        debugger_.run(handleCPUChange);
+        run();
       } else {
-        debugger_.pause();
+        pause();
       }
       return;
     }
@@ -108,9 +109,19 @@ const Debugger = (props) => {
           <div className="spacer" />
           <span className="steps_per_second">{`${cpu.getCycles()} cycles`}</span>
           <div className="spacer" />
+          <span className="steps_per_second">{`${debugger_.getTotalSteps()} ops`}</span>
+          <div className="spacer" />
           <span className="steps_per_second">{`${stepsPerSecond.toFixed(
             2
           )} ops/s`}</span>
+          <div className="spacer" />
+          <span className="steps_per_second">{`${cyclesPerSecond.toFixed(
+            2
+          )} cycles/s`}</span>
+          <div className="spacer" />
+          <span className="steps_per_second">{`${(
+            cyclesPerSecond / 17556
+          ).toFixed(2)} f/s`}</span>
           <div className="spacer" />
           <button onClick={loadROM}>Load rom</button>
         </div>
