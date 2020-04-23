@@ -48,7 +48,7 @@ const Debugger = (props) => {
   };
 
   const run = () => {
-    debugger_.run(1, handleCPUChange);
+    debugger_.run(20, handleCPUChange);
   };
 
   const pause = () => {
@@ -100,6 +100,8 @@ const Debugger = (props) => {
     <Fragment>
       <div className="debugger">
         <div className="debugger_controls">
+          <button onClick={loadROM}>Load rom</button>
+          <div className="spacer" />
           <button onClick={run}>Run</button>
           <button onClick={pause}>Pause</button>
           <button onClick={step}>Step</button>
@@ -122,8 +124,6 @@ const Debugger = (props) => {
           <span className="steps_per_second">{`${(
             cyclesPerSecond / 17556
           ).toFixed(2)} f/s`}</span>
-          <div className="spacer" />
-          <button onClick={loadROM}>Load rom</button>
         </div>
         <div className="debugger_row">
           <MMU

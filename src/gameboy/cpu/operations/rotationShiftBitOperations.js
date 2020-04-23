@@ -23,7 +23,7 @@ const RLA = (cpu) => {
   const msb = value & 0x80 ? 1 : 0;
 
   let newValue = value << 1;
-  newValue |= msb;
+  newValue |= cpu.getFlag('C');
 
   cpu.writeReg8('A', newValue);
 

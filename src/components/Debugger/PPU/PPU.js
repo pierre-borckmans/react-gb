@@ -74,7 +74,7 @@ const PPU = (props) => {
         <div>window tilemap: {ppu.getLCDCWindowTilemapAdress()}</div>
         tileset:
         <div className="tileset">
-          {tileSet.slice(0, 64).map((tile) => {
+          {tileSet.slice(0, 255).map((tile) => {
             const pixels = tileToPixels(tile);
             return (
               <div className="tile">

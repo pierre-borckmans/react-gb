@@ -7,6 +7,37 @@ BB BB 67 63 6E 0E EC CC DD DC 99 9F BB B9 33 3E
 https://www.ngemu.com/threads/how-to-decode-the-nintendo-logo-from-gameboy.159631/
 
 ```
+                A=11001110,CE
+$95
+LD C,A          C=11001110
+LD B,4
+PUSH 04CE
+RL C            C=10011100  Cf=1
+RLA             A=10011101  Cf=1
+POP BC          C=11001110
+RL C            C=10011101,9D  Cf=1
+RLA             A=00111011  Cf=1
+DEC B           B=3
+JR NZ, 0x98
+PUSH 039D
+RL C            C=00111011  Cf=1
+RLA             A=01110110  Cf=0
+POP BC          C=10011101
+RL C            C=00111010,3A  Cf=1
+RLA             A=11101101,EC  Cf=0
+DEC B           B=2
+JR NZ, 0x98
+PUSH 029A
+RL C            C=01110100,74  Cf=0
+RLA             A=11011010  Cf=1
+POP BC          C=
+RL C            C=  Cf=1
+RLA             A=  Cf=0
+DEC B           B=2
+JR NZ, 0x98
+```
+
+```
 foreach uint8_t d in logo_data
 
    // unpack horizontal data,

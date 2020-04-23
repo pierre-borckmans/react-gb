@@ -249,7 +249,7 @@ const opcodesMap = [
     /* 0xD2 JP NC,a16   */ cpu => inst.JP_NF_a16(cpu, 'C'),
     /* 0xD3 NOT_IMPL    */ cpu => inst.NOT_IMPLEMENTED(cpu, '0xD3'),
     /* 0xD4 CALL NC,a16 */ cpu => inst.CALL_NF_a16(cpu, 'C'),
-    /* 0xD5 PUSH DE     */ cpu => inst.POP16_RR(cpu, 'DE'),
+    /* 0xD5 PUSH DE     */ cpu => inst.PUSH16_RR(cpu, 'DE'),
     /* 0xD6 SUB d8      */ cpu => inst.SUB8_d8(cpu),
     /* 0xD7 RST 10H     */ cpu => inst.RST_XXH(cpu, 0x10),
     /* 0xD8 RET C       */ cpu => inst.RET_F(cpu, 'C'),
@@ -844,11 +844,11 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xC0 ----------------------------------------------------------
     `RET ${NZflag}`,
-    `POP BC`,
+    `POP BC <- ${BC}`,
     `JP ${NZflag},${a16}`,
     `JP ${a16}`,
     `CALL ${NZflag},${a16}`,
-    `PUSH BC`,
+    `PUSH ${BC}`,
     `ADD A,${d8}`,
     `RST 00H`,
     `RET Z`,
@@ -862,7 +862,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xD0 ----------------------------------------------------------
     `RET ${NCflag}`,
-    `POP DE`,
+    `POP DE <- ${DE}`,
     `JP ${NCflag},${a16}`,
     `NOT_IMPL`,
     `CALL ${NCflag},${a16}`,
@@ -880,7 +880,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xE0 ----------------------------------------------------------
     `LDH (${a8}),${A}`,
-    `POP HL`,
+    `POP HL <- ${HL}`,
     `LD (0xFF00+${C}),${A}`,
     `NOT_IMPL`,
     `NOT_IMPL`,
@@ -898,7 +898,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xF0 ----------------------------------------------------------
     `LDH A,(${a8})`,
-    `POP AF`,
+    `POP AF <- ${AF}`,
     `LD A,(${C}+0xFF00)`,
     `DI`,
     `NOT_IMPL`,
@@ -1144,11 +1144,11 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xC0 ----------------------------------------------------------
     `RET ${NZflag}`,
-    `POP BC`,
+    `POP BC <- ${BC}`,
     `JP ${NZflag},${a16}`,
     `JP ${a16}`,
     `CALL ${NZflag},${a16}`,
-    `PUSH BC`,
+    `PUSH ${BC}`,
     `ADD A,${d8}`,
     `RST 00H`,
     `RET Z`,
@@ -1162,7 +1162,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xD0 ----------------------------------------------------------
     `RET ${NCflag}`,
-    `POP DE`,
+    `POP DE <- ${DE}`,
     `JP ${NCflag},${a16}`,
     `NOT_IMPL`,
     `CALL ${NCflag},${a16}`,
@@ -1180,7 +1180,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xE0 ----------------------------------------------------------
     `LDH (${a8Value}),${A}`,
-    `POP HL`,
+    `POP HL <- ${HL}`,
     `LD (${Cpff}),${A}`,
     `NOT_IMPL`,
     `NOT_IMPL`,
@@ -1198,7 +1198,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xF0 ----------------------------------------------------------
     `LDH A,(${a8Value})`,
-    `POP AF`,
+    `POP AF <- ${AF}`,
     `LD A,(${Cpff})`,
     `DI`,
     `NOT_IMPL`,

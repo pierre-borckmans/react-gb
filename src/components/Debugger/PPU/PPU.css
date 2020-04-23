@@ -27,7 +27,8 @@
 .tile {
   /* margin-right: 1px;
   margin-bottom: 1px; */
-  border: solid 1px red;
+  border-bottom: solid 1px red;
+  border-right: solid 1px red;
   width: 16px;
   height: 16px;
 }
