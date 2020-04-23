@@ -298,7 +298,7 @@ const opcodesMap = [
     /* 0xFF RST 38H     */ cpu => inst.RST_XXH(cpu, 0x38),
 ];
 
-const getOpcodeLabel = (address) => {
+const getOpcodeLabel = (address, cpu) => {
   const labels = [
     // OFFSET 0x00 ----------------------------------------------------------
     `NOP`,
@@ -528,7 +528,7 @@ const getOpcodeLabel = (address) => {
     `RET Z`,
     `RET`,
     `JP Z,a16`,
-    `(PRE CB) ${getPrefixCBOpcodeLabel(address + 1)}`,
+    `(PRE CB) ${getPrefixCBOpcodeLabel(cpu.readAddress8(cpu.getPC() + 1))}`,
     `CALL Z,a16`,
     `CALL a16`,
     `ADC A,d8`,
@@ -589,7 +589,8 @@ const getOpcodeLabel = (address) => {
     `RST 38H`,
   ];
 
-  return labels[address];
+  const opcode = cpu.readAddress8(address);
+  return labels[opcode];
 };
 
 const getOpcodeLabels = (base, cpu) => {
@@ -1214,13 +1215,14 @@ const getOpcodeLabels = (base, cpu) => {
     `RST 38H`,
   ];
 
-  const opcode = cpu.readAddress8(cpu.getPC());
+  const pc = cpu.getPC();
+  const opcode = cpu.readAddress8(pc);
   return [
-    getOpcodeLabel(opcode),
+    getOpcodeLabel(pc, cpu),
     labelsWithPartialValues[opcode],
     labelsWithValues[opcode],
   ];
 };
 
 export default opcodesMap;
-export { getOpcodeLabels };
+export { getOpcodeLabel, getOpcodeLabels };

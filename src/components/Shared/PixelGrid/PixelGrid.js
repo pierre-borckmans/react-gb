@@ -33,11 +33,7 @@ const PixelGrid = (props) => {
     ctx.putImageData(imageData, 0, 0);
   };
 
-  return (
-    <div>
-      <canvas ref={canvas} width={width * scale} height={height * scale} />
-    </div>
-  );
+  return <canvas ref={canvas} width={width * scale} height={height * scale} />;
 };
 
 export default PixelGrid;

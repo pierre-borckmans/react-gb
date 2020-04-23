@@ -582,6 +582,8 @@ const getPrefixCBOpcodeLabel = (address) => {
     `SET 7,(HL)`,
     `SET 7,A`,
   ];
+
+  return labels[address];
 };
 
 const getPrefixCBOpcodeLabels = (base, cpu) => {

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 
 import { range } from 'lodash';
 
+import PixelGrid from '../../Shared/PixelGrid/PixelGrid';
 import './PPU.css';
 
 const PPU = (props) => {
@@ -12,6 +13,23 @@ const PPU = (props) => {
   const backgroundPalette = ppu.getBackgroundPalette();
   const objectPalette0 = ppu.getObjectPalette0();
   const objectPalette1 = ppu.getObjectPalette1();
+  const tileSet = ppu.getTileSet();
+
+  const tileToPixels = (tile) => {
+    const colors = [
+      [255, 255, 255],
+      [170, 170, 170],
+      [85, 85, 85],
+      [0, 0, 0],
+    ];
+    const pixels = [];
+    tile.forEach((row) =>
+      row.forEach((col) => {
+        pixels.push(...colors[col]);
+      })
+    );
+    return pixels;
+  };
 
   const getPalette = (palette) => (
     <div className="palette">
@@ -29,7 +47,7 @@ const PPU = (props) => {
   return (
     <Fragment>
       <div className="ppu">
-        <div className="section">CPU</div>
+        <div className="section">PPU</div>
         <div className="subsection">Background palette</div>
         {getPalette(backgroundPalette)}
         <div className="subsection">Object palette 0</div>
@@ -54,6 +72,17 @@ const PPU = (props) => {
           bg&amp;win timemap: {ppu.getLCDCBackgroundAndWindowTilemapAdress()}
         </div>
         <div>window tilemap: {ppu.getLCDCWindowTilemapAdress()}</div>
+        tileset:
+        <div className="tileset">
+          {tileSet.slice(0, 64).map((tile) => {
+            const pixels = tileToPixels(tile);
+            return (
+              <div className="tile">
+                <PixelGrid width={8} height={8} scale={2} pixels={pixels} />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </Fragment>
   );

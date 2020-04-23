@@ -20,28 +20,22 @@ const RRCA = (cpu) => {
 // 0 0 0 C
 const RLA = (cpu) => {
   const value = cpu.readReg8('A');
-  const significantBit = (value & 0x80) !== 0 ? 1 : 0;
+  const msb = value & 0x80 ? 1 : 0;
 
   let newValue = value << 1;
-
-  if (cpu.getFlag('C')) {
-    newValue &= 0x01;
-  } else {
-    newValue ^= 0x01;
-  }
+  newValue |= msb;
 
   cpu.writeReg8('A', newValue);
 
   const Z = 0;
   const N = 0;
   const H = 0;
-  const C = significantBit;
+  const C = msb;
 
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(1);
   cpu.incCycles(4);
-  // TODO: check
 };
 
 // RCA
@@ -56,10 +50,23 @@ const RRA = (cpu) => {
 // RLC R
 // Z 0 0 C
 const RLC_R = (cpu, reg8) => {
+  const value = cpu.readReg8(reg8);
+  const msb = value & 0x80 ? 1 : 0;
+
+  let newValue = value << 1;
+  newValue |= msb;
+
+  cpu.writeReg8(reg8, newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = msb;
+
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // RLC (RR)
@@ -93,28 +100,23 @@ const RRC_$RR = (cpu, reg16) => {
 // Z 0 0 C
 const RL_R = (cpu, reg8) => {
   const value = cpu.readReg8(reg8);
-  const significantBit = (value & 0x80) !== 0 ? 1 : 0;
+  const msb = value & 0x80 ? 1 : 0;
 
-  let newValue = value << 1;
+  let newValue = (value << 1) & 0xff;
 
-  if (cpu.getFlag('C')) {
-    newValue &= 0x01;
-  } else {
-    newValue ^= 0x01;
-  }
+  newValue |= cpu.getFlag('C');
 
   cpu.writeReg8(reg8, newValue);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 0;
   const H = 0;
-  const C = significantBit;
+  const C = msb;
 
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
   cpu.incCycles(8);
-  // TODO check
 };
 
 // RL (RR)

@@ -1,7 +1,7 @@
 .ppu {
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 290px;
   padding: 5px;
   border: dotted gray 1px;
   font-size: 14px;
@@ -17,4 +17,17 @@
   width: 16px;
   height: 16px;
   border: solid 1px lightgray;
+}
+
+.tileset {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tile {
+  /* margin-right: 1px;
+  margin-bottom: 1px; */
+  border: solid 1px red;
+  width: 16px;
+  height: 16px;
 }

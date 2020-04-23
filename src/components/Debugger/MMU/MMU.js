@@ -1,6 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { toHex } from '../../../utils/utils';
+
+import { getOpcodeLabel } from '../../../gameboy/cpu/opcodes/opcodesMap';
+
+import { toHex, format } from '../../../utils/utils';
 
 import { chunk, find, range } from 'lodash';
 
@@ -13,6 +16,7 @@ const MMU = (props) => {
   const PC = cpu.getPC();
   const selectedAddress = PC;
   const [selectedPage, setSelectedPage] = useState(0);
+  const [highlightedAddress, setHighlightedAddress] = useState(null);
   const breakpoints = debugger_.getBreakpoints();
 
   const nextPage = () => {
@@ -73,6 +77,18 @@ const MMU = (props) => {
       debugger_.setBreakpoint(address);
     }
     props.onDebuggerChange();
+  };
+
+  const changeValue = (address) => {
+    const value = prompt('New value:');
+    if (value && parseInt(value) !== NaN) {
+      mmu.write(address, value);
+      props.onDebuggerChange();
+    }
+  };
+
+  const highlightAddress = (address) => {
+    setHighlightedAddress(address);
   };
 
   // const page = Math.floor(selectedAddress / 256);
@@ -138,6 +154,12 @@ const MMU = (props) => {
                       <div
                         key={indexInPage}
                         onClick={() => toggleBreakpoint(byteAddress)}
+                        onContextMenu={(e) => {
+                          e.preventDefault();
+                          changeValue(byteAddress);
+                        }}
+                        onMouseEnter={() => highlightAddress(byteAddress)}
+                        onMouseLeave={() => highlightAddress(null)}
                         className={classNames('byte', {
                           byte_selected: selected,
                           byte_breakpoint: isBreakpoint,
@@ -185,6 +207,14 @@ const MMU = (props) => {
           <button onClick={() => goTo('OAM')}>OAM</button>
           <button onClick={() => goTo('IO_MAPPING')}>I/O</button>
           <button onClick={() => goTo('HIGH_RAM')}>HIGH RAM</button>
+        </div>
+        <div>
+          {highlightedAddress != null
+            ? `${format('hex', highlightedAddress, 16)}: ${getOpcodeLabel(
+                highlightedAddress,
+                cpu
+              )}`
+            : null}
         </div>
       </div>
     </Fragment>

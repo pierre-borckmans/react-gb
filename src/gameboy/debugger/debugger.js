@@ -51,16 +51,18 @@ const run = (mod, callback) => {
     frames++;
     const targetClock = cpu.getCycles() + 17556;
     while (cpu.getCycles() < targetClock && running) {
-      const breakpoint = find(
-        breakpoints,
-        (bp) => cpu.getPC() > startPC && cpu.getPC() === bp.address
-      );
-      if (breakpoint && (!breakpoint.condition || breakpoint.condition(cpu))) {
+      const result = step();
+      if (result === -1) {
         running = false;
         break;
       }
-      const result = step();
-      if (result === -1) {
+
+      const breakpoint = find(
+        breakpoints,
+        // (bp) => cpu.getPC() > startPC && cpu.getPC() === bp.address
+        (bp) => cpu.getPC() === bp.address
+      );
+      if (breakpoint && (!breakpoint.condition || breakpoint.condition(cpu))) {
         running = false;
         break;
       }

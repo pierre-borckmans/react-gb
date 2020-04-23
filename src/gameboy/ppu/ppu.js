@@ -74,6 +74,36 @@ const getPalette = (addr) => {
   return palette;
 };
 
+const getTileSet = () => {
+  // 384 tiles
+  // 8x8 pixels
+  // each pixel = 2 bits
+  // each row = 8 pixels * 2 bits = 2 bytes
+  // each tile = 8 rows = 16 bytes
+
+  // 2 maps of 32x32 tiles
+  // one map can be used at a time
+  // each map can only use max 256 different tiles
+
+  const tileSet = [];
+  for (let tile = 0; tile < 384; tile++) {
+    tileSet[tile] = [];
+    for (let row = 0; row < 8; row++) {
+      tileSet[tile][row] = [];
+      const offset = 0x8000 + tile * 16 + row * 2;
+      const byte1 = mmu.read(offset);
+      const byte2 = mmu.read(offset + 1);
+      for (let col = 7; col >= 0; col--) {
+        const bit1 = (byte1 & (0x01 << col)) >> col;
+        const bit2 = (byte2 & (0x01 << col)) >> col;
+        const pixel = (bit2 << 1) + bit1;
+        tileSet[tile][row][7 - col] = pixel;
+      }
+    }
+  }
+  return tileSet;
+};
+
 const getBackgroundPalette = () => getPalette(BG_PALETTE_ADDR);
 const getObjectPalette0 = () => getPalette(OBJ_PALETTE0_ADDR);
 const getObjectPalette1 = () => getPalette(OBJ_PALETTE1_ADDR);
@@ -92,6 +122,7 @@ const ppu = {
   getScrollY,
   getWindowX,
   getWindowY,
+  getTileSet,
 
   getLCDCBackgroundEnable,
   getLCDCObjectEnable,
