@@ -75,7 +75,7 @@ const read = (address) => {
 
 const readBit = (address, bitIdx) => {
   const value = read(address);
-  return (value & (1 << bitIdx)) === 1 << bitIdx;
+  return (value & (1 << bitIdx)) === 1 << bitIdx ? 1 : 0;
 };
 
 const write = (address, value) => {

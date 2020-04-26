@@ -17,10 +17,10 @@ const WINX_ADDR = 0xff4b;
 const LCD_CTRL_BACKGROUND_ENABLE_BIT = 0;
 const LCD_CTRL_OBJ_ENABLE_BIT = 1;
 const LCD_CTRL_OBJ_SIZE_BIT = 2;
-const LCD_CTRL_BG_TILEMAP_ADDRESS_BIT = 3;
-const LCD_CTRL_BG_AND_WINDOW_TILEMAP_ADDRESS_BIT = 4;
+const LCD_CTRL_BG_TILEMAP_BIT = 3;
+const LCD_CTRL_BG_AND_WINDOW_TILESET_BIT = 4;
 const LCD_CTRL_WINDOW_ENABLE_BIT = 5;
-const LCD_CTRL_WINDOW_TILEMAP_ADDRESS_BIT = 6;
+const LCD_CTRL_WINDOW_TILEMAP_BIT = 6;
 const LCD_CTRL_LCD_ENABLE_BIT = 7;
 
 const getLCDCBackgroundEnable = () =>
@@ -30,13 +30,13 @@ const getLCDCObjectEnable = () =>
 const getLCDCObjectSize = () =>
   mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_OBJ_SIZE_BIT);
 const getLCDCBackgroundTilemapAdress = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_BG_TILEMAP_ADDRESS_BIT);
+  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_BG_TILEMAP_BIT);
 const getLCDCBackgroundAndWindowTilemapAdress = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_BG_AND_WINDOW_TILEMAP_ADDRESS_BIT);
+  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_BG_AND_WINDOW_TILESET_BIT);
 const getLCDCWindowEnable = () =>
   mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_WINDOW_ENABLE_BIT);
 const getLCDCWindowTilemapAdress = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_WINDOW_TILEMAP_ADDRESS_BIT);
+  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_WINDOW_TILEMAP_BIT);
 const getLCDCLCDEnable = () =>
   mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_LCD_ENABLE_BIT);
 

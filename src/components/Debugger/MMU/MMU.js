@@ -71,10 +71,14 @@ const MMU = (props) => {
   };
 
   const toggleBreakpoint = (address) => {
-    if (find(breakpoints, (bp) => bp.address === address)) {
-      debugger_.removeBreakpoint(address);
+    const exisistingBreakpoint = find(
+      breakpoints,
+      (bp) => bp.address === address
+    );
+    if (exisistingBreakpoint) {
+      debugger_.removeBreakpoint(exisistingBreakpoint.id);
     } else {
-      debugger_.setBreakpoint(address);
+      debugger_.addBreakpoint({ address });
     }
     props.onDebuggerChange();
   };
@@ -150,6 +154,8 @@ const MMU = (props) => {
                     const isBreakpoint = breakpoints
                       .map((bp) => bp.address)
                       .includes(byteAddress);
+                    // TODO
+                    // const isBreakpointEnabled = isBreakpoint &&
                     return (
                       <div
                         key={indexInPage}
@@ -163,6 +169,7 @@ const MMU = (props) => {
                         className={classNames('byte', {
                           byte_selected: selected,
                           byte_breakpoint: isBreakpoint,
+                          byte_breakpoint_disabled: false, // TODO
                         })}
                       >
                         {toHex(byte)}

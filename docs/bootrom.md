@@ -97,3 +97,11 @@ destination(c)=11110011=F3
 destination(d)=00000000=00
 destination(e)=11110011=F3
 destination(f)=00000000=00
+
+# INIT TILEMAP
+
+#
+
+0x55
+Logo Tileset loaded 0x8010
+Logo Tilemap loaded 0x9900

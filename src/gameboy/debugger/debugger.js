@@ -1,7 +1,6 @@
 import cpu from '../cpu/cpu';
-import { find } from 'lodash';
+import breakpoints from './breakpoints';
 
-let breakpoints = [];
 let running = false;
 let totalSteps = 0;
 let stepsPerSecond = 0;
@@ -10,28 +9,6 @@ let cyclesPerSecond = 0;
 const getStepsPerSecond = () => stepsPerSecond;
 const getCyclesPerSecond = () => cyclesPerSecond;
 const getTotalSteps = () => totalSteps;
-
-const getBreakpoints = () => breakpoints;
-
-const setBreakpoint = (address, condition) => {
-  breakpoints = [
-    ...breakpoints.filter((breakpoint) => breakpoint.address !== address),
-    {
-      address,
-      condition,
-    },
-  ].sort((b1, b2) => (b1.address > b2.address ? 1 : -1));
-};
-
-const removeBreakpoint = (address) => {
-  breakpoints = [
-    ...breakpoints.filter((breakpoint) => breakpoint.address !== address),
-  ];
-};
-
-const removeAllBreakpoints = () => {
-  breakpoints = [];
-};
 
 const run = (mod, callback) => {
   if (running) return;
@@ -57,12 +34,8 @@ const run = (mod, callback) => {
         break;
       }
 
-      const breakpoint = find(
-        breakpoints,
-        // (bp) => cpu.getPC() > startPC && cpu.getPC() === bp.address
-        (bp) => cpu.getPC() === bp.address
-      );
-      if (breakpoint && (!breakpoint.condition || breakpoint.condition(cpu))) {
+      const breakpoint = breakpoints.findMatchingBreakpoint();
+      if (breakpoint) {
         running = false;
         break;
       }
@@ -106,10 +79,10 @@ const reset = () => {
 };
 
 const debugger_ = {
-  getBreakpoints,
-  setBreakpoint,
-  removeBreakpoint,
-  removeAllBreakpoints,
+  // getBreakpoints: breakpoints.getBreakpoints,
+  // addBreakpoint: breakpoints.addBreakpoint,
+  // removeBreakpoint: breakpoints.removeBreakpoint,
+  // removeAllBreakpoints: breakpoints.removeAllBreakpoints,
   run,
   pause,
   step,
@@ -118,6 +91,8 @@ const debugger_ = {
   getCyclesPerSecond,
   getTotalSteps,
   reset,
+
+  ...breakpoints,
 };
 
 export default debugger_;

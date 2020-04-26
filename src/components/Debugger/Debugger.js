@@ -1,5 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 
+import Breakpoints from './Breakpoints/Breakpoints';
+
 import APU from './APU/APU';
 import Cartridge from './Cartridge/Cartridge';
 import CPU from './CPU/CPU';
@@ -99,6 +101,10 @@ const Debugger = (props) => {
   return (
     <Fragment>
       <div className="debugger">
+        <Breakpoints
+          debugger_={debugger_}
+          onDebuggerChange={handleDebuggerChange}
+        />
         <div className="debugger_controls">
           <button onClick={loadROM}>Load rom</button>
           <div className="spacer" />

@@ -22,6 +22,8 @@
 .tileset {
   display: flex;
   flex-wrap: wrap;
+  border-top: solid 1px red;
+  border-left: solid 1px red;
 }
 
 .tile {

@@ -182,10 +182,22 @@ const ADC8_R_d8 = (cpu, reg8) => {
 // SUB R
 // Z 1 H C
 const SUB8_R = (cpu, reg8) => {
+  const regAValue = cpu.readReg8('A');
+  const reg8Value = cpu.readReg8(reg8);
+  const newValue = (regAValue - reg8Value) & 0xff;
+  cpu.writeReg8('A', newValue);
+
+  const Z = newValue === 0;
+  const N = 1;
+  const H = 0; // TODO fix this
+  const C = cpu.getFlag('C');
+
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incCycles(4);
-  // TODO: IMPLEMENT
-  return -1;
+
+  // TODO: CHECK
 };
 
 // SUB (RR)
