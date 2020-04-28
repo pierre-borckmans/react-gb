@@ -9,6 +9,7 @@ import Interrupt from './Interrupt/Interrupt';
 import Joypad from './Joypad/Joypad';
 import MMU from './MMU/MMU';
 import PPU from './PPU/PPU';
+import Tiles from './PPU/Tiles/Tiles';
 import Serial from './Serial/Serial';
 import Timer from './Timer/Timer';
 
@@ -151,11 +152,14 @@ const Debugger = (props) => {
               <Cartridge cartridge={cartridge} />
             </div>
           </div>
-          <PPU
-            config={config}
-            ppu={ppu}
-            onDebuggerChange={handleDebuggerChange}
-          />
+          <div>
+            <PPU
+              config={config}
+              ppu={ppu}
+              onDebuggerChange={handleDebuggerChange}
+            />
+            <Tiles config={config} ppu={ppu} />
+          </div>
           <APU apu={apu} />
           <Joypad joypad={joypad} />
           <Interrupt interrupt={interrupt} />

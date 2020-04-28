@@ -18,8 +18,3 @@
   height: 16px;
   border: solid 1px lightgray;
 }
-
-.tileset {
-  display: flex;
-  flex-wrap: wrap;
-}

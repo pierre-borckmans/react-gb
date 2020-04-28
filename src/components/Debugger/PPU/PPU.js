@@ -1,7 +1,5 @@
 import React, { Fragment } from 'react';
 
-import TilesGrid from '../../Shared/TilesGrid/TilesGrid';
-
 import { range } from 'lodash';
 
 import './PPU.css';
@@ -14,23 +12,6 @@ const PPU = (props) => {
   const backgroundPalette = ppu.getBackgroundPalette();
   const objectPalette0 = ppu.getObjectPalette0();
   const objectPalette1 = ppu.getObjectPalette1();
-  const tileSet = ppu.getTileSet();
-
-  const tileToPixels = (tile) => {
-    const colors = [
-      [255, 255, 255],
-      [170, 170, 170],
-      [85, 85, 85],
-      [0, 0, 0],
-    ];
-    const pixels = [];
-    tile.forEach((row) =>
-      row.forEach((col) => {
-        pixels.push(...colors[col]);
-      })
-    );
-    return pixels;
-  };
 
   const getPalette = (palette) => (
     <div className="palette">
@@ -70,21 +51,9 @@ const PPU = (props) => {
         <div>window: {ppu.getLCDCWindowEnable()}</div>
         <div>bg tilemap: {ppu.getLCDCBackgroundTilemapAdress()}</div>
         <div>
-          bg&amp;win timemap: {ppu.getLCDCBackgroundAndWindowTilemapAdress()}
+          bg&amp;win tileset: {ppu.getLCDCBackgroundAndWindowTilemapAdress()}
         </div>
         <div>window tilemap: {ppu.getLCDCWindowTilemapAdress()}</div>
-        tileset:
-        <div className="tileset">
-          <TilesGrid
-            tiles={tileSet.map(tileToPixels)}
-            tilesPerRow={16}
-            tilesPerColumn={24}
-            tileWidth={8}
-            tileHeight={8}
-            scale={1.4}
-            gridColor={[230, 80, 90]}
-          />
-        </div>
       </div>
     </Fragment>
   );
