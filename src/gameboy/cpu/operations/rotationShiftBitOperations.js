@@ -275,79 +275,175 @@ const RR_$RR = (cpu, reg16) => {
 };
 
 // --------------------------------------------------------------------------------
-// Shift operations ------------------------------------------------------------
+// Shift operations ---------------------------------------------------------------
 // --------------------------------------------------------------------------------
 
 // SLA R
 // Z 0 0 C
 const SLA_R = (cpu, reg8) => {
+  const value = cpu.readReg8(reg8);
+  const msb = value & 0x80 ? 1 : 0;
+
+  const newValue = (value << 1) & 0xff;
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = msb;
+
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SLA (RR)
 // Z 0 0 C
 const SLA_$RR = (cpu, reg16) => {
+  const address = cpu.readReg16(reg16);
+  const value = cpu.readAddress8(address);
+  const msb = value & 0x80 ? 1 : 0;
+
+  const newValue = (value << 1) & 0xff;
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = msb;
+
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incCycles(16);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SRA R
 // Z 0 0 0
 const SRA_R = (cpu, reg8) => {
+  const value = cpu.readReg8(reg8);
+  const lsb = value & 0x01;
+  const msb = (value & 0x80) >> 7;
+
+  let newValue = (value >> 1) & 0xff;
+  newValue |= msb << 7;
+
+  cpu.writeReg8(reg8, newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = lsb;
+
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SRA (RR)
 // Z 0 0 0
 const SRA_$RR = (cpu, reg16) => {
+  const address = cpu.readReg16(reg16);
+  const value = cpu.readAddress8(address);
+  const lsb = value & 0x01;
+  const msb = (value & 0x80) >> 7;
+
+  let newValue = (value >> 1) & 0xff;
+  newValue |= msb << 7;
+
+  cpu.writeAddress8(address, newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = lsb;
+
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incCycles(16);
-  // TODO: IMPLEMENT
-  return -1;
-};
-
-// SWAP R
-// Z 0 0 0
-const SWAP_R = (cpu, reg8) => {
-  cpu.incPC(2);
-  cpu.incCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
-};
-
-// SWAP (RR)
-// Z 0 0 0
-const SWAP_$RR = (cpu, reg16) => {
-  cpu.incPC(2);
-  cpu.incCycles(16);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SRL R
 // Z 0 0 C
 const SRL_R = (cpu, reg8) => {
+  const value = cpu.readReg8(reg8);
+  const lsb = value & 0x01;
+
+  let newValue = (value >> 1) & 0xff;
+  newValue |= 0 << 7;
+
+  cpu.writeReg8(reg8, newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = lsb;
+
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SRL (RR)
 // Z 0 0 C
 const SRL_$RR = (cpu, reg16) => {
+  const address = cpu.readReg16(reg16);
+  const value = cpu.readAddress8(address);
+  const lsb = value & 0x01;
+
+  let newValue = (value >> 1) & 0xff;
+  newValue |= 0 << 7;
+
+  cpu.writeAddress8(address, newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = lsb;
+
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incCycles(16);
-  // TODO: IMPLEMENT
-  return -1;
+};
+
+// --------------------------------------------------------------------------------
+// Bit operations -----------------------------------------------------------------
+// --------------------------------------------------------------------------------
+
+// SWAP R
+// Z 0 0 0
+const SWAP_R = (cpu, reg8) => {
+  const value = cpu.readReg8(reg8);
+  const lowNibble = value & 0x0f;
+  const highNibble = (value & 0xf0) >> 4;
+
+  const newValue = (lowNibble << 4) | highNibble;
+  cpu.writeReg8(reg8, newValue);
+
+  cpu.setFlag('Z', newValue === 0);
+
+  cpu.incPC(2);
+  cpu.incCycles(8);
+};
+
+// SWAP (RR)
+// Z 0 0 0
+const SWAP_$RR = (cpu, reg16) => {
+  const address = cpu.readReg16(reg16);
+  const value = cpu.readAddress8(address);
+  const lowNibble = value & 0x0f;
+  const highNibble = (value & 0xf0) >> 4;
+
+  const newValue = (lowNibble << 4) | highNibble;
+  cpu.writeAddress8(address, newValue);
+
+  cpu.setFlag('Z', newValue === 0);
+
+  cpu.incPC(2);
+  cpu.incCycles(16);
 };
 
 // BIT N,R
@@ -369,7 +465,7 @@ const BIT_N_R = (cpu, n, reg8) => {
 // BIT N,(RR)
 // Z 0 1 -
 const BIT_N_$RR = (cpu, n, reg16) => {
-  const address = cpu.readReg8(reg16);
+  const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
   const bit = (value & (1 << n)) === 1 << n;
 
@@ -385,38 +481,48 @@ const BIT_N_$RR = (cpu, n, reg16) => {
 
 // RES N,R
 // - - - -
-const RES_N_R = (cpu, reg8) => {
+const RES_N_R = (cpu, n, reg8) => {
+  const value = cpu.readReg8(reg8);
+  const newValue = value & ~(1 << n);
+  cpu.writeReg8(newValue);
+
   cpu.incPC(2);
   cpu.incCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // RES N,(RR)
 // - - - -
-const RES_N_$RR = (cpu, reg16) => {
+const RES_N_$RR = (cpu, n, reg16) => {
+  const address = cpu.readReg16(reg16);
+  const value = cpu.readAddress8(address);
+  const newValue = value & ~(1 << n);
+  cpu.writeAddress8(newValue);
+
   cpu.incPC(2);
   cpu.incCycles(16);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SET N,R
 // - - - -
-const SET_N_R = (cpu, reg8) => {
+const SET_N_R = (cpu, n, reg8) => {
+  const value = cpu.readReg8(reg8);
+  const newValue = value | (1 << n);
+  cpu.writeReg8(newValue);
+
   cpu.incPC(2);
   cpu.incCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SET N,(RR)
 // - - - -
-const SET_N_$RR = (cpu, reg16) => {
+const SET_N_$RR = (cpu, n, reg16) => {
+  const address = cpu.readReg16(reg16);
+  const value = cpu.readAddress8(address);
+  const newValue = value | (1 << n);
+  cpu.writeAddress8(newValue);
+
   cpu.incPC(2);
   cpu.incCycles(16);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 const rotationShiftBitOperations = {
