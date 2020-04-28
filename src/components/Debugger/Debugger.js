@@ -101,10 +101,6 @@ const Debugger = (props) => {
   return (
     <Fragment>
       <div className="debugger">
-        <Breakpoints
-          debugger_={debugger_}
-          onDebuggerChange={handleDebuggerChange}
-        />
         <div className="debugger_controls">
           <button onClick={loadROM}>Load rom</button>
           <div className="spacer" />
@@ -132,27 +128,37 @@ const Debugger = (props) => {
           ).toFixed(2)} f/s`}</span>
         </div>
         <div className="debugger_row">
-          <MMU
-            debugger_={debugger_}
-            cpu={cpu}
-            mmu={mmu}
-            onCPUChange={handleCPUChange}
-            onDebuggerChange={handleDebuggerChange}
-          />
-          <CPU
-            cpu={cpu}
-            onCPUChange={handleCPUChange}
-            onDebuggerChange={handleDebuggerChange}
-          />
+          <div>
+            <div className="debugger_row">
+              <MMU
+                debugger_={debugger_}
+                cpu={cpu}
+                mmu={mmu}
+                onCPUChange={handleCPUChange}
+                onDebuggerChange={handleDebuggerChange}
+              />
+              <CPU
+                cpu={cpu}
+                onCPUChange={handleCPUChange}
+                onDebuggerChange={handleDebuggerChange}
+              />
+            </div>
+            <div className="debugger_row">
+              <Breakpoints
+                debugger_={debugger_}
+                onDebuggerChange={handleDebuggerChange}
+              />
+              <Cartridge cartridge={cartridge} />
+            </div>
+          </div>
           <PPU
             config={config}
             ppu={ppu}
             onDebuggerChange={handleDebuggerChange}
           />
           <APU apu={apu} />
-          <Cartridge cartridge={cartridge} />
-          <Interrupt interrupt={interrupt} />
           <Joypad joypad={joypad} />
+          <Interrupt interrupt={interrupt} />
           <Serial serial={serial} />
           <Timer timer={timer} />
           <Gamepad />

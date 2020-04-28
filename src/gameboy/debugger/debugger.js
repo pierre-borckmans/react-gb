@@ -10,6 +10,9 @@ const getStepsPerSecond = () => stepsPerSecond;
 const getCyclesPerSecond = () => cyclesPerSecond;
 const getTotalSteps = () => totalSteps;
 
+let currentBreakpoint = null;
+const getCurrentBreakpoint = () => currentBreakpoint;
+
 const run = (mod, callback) => {
   if (running) return;
   running = true;
@@ -21,6 +24,8 @@ const run = (mod, callback) => {
 
   totalSteps = 0;
   stepsPerSecond = 0;
+
+  currentBreakpoint = null;
 
   let startTime;
   const frame = (timestamp) => {
@@ -36,9 +41,11 @@ const run = (mod, callback) => {
 
       const breakpoint = breakpoints.findMatchingBreakpoint();
       if (breakpoint) {
+        currentBreakpoint = breakpoint;
         running = false;
         break;
       }
+
       steps++;
     }
     const elapsedTime = timestamp - startTime;
@@ -76,6 +83,7 @@ const reset = () => {
   totalSteps = 0;
   stepsPerSecond = 0;
   cyclesPerSecond = 0;
+  currentBreakpoint = null;
 };
 
 const debugger_ = {
@@ -91,6 +99,7 @@ const debugger_ = {
   getCyclesPerSecond,
   getTotalSteps,
   reset,
+  getCurrentBreakpoint,
 
   ...breakpoints,
 };

@@ -215,13 +215,13 @@ const MMU = (props) => {
           <button onClick={() => goTo('IO_MAPPING')}>I/O</button>
           <button onClick={() => goTo('HIGH_RAM')}>HIGH RAM</button>
         </div>
-        <div>
+        <div className="highlighted_address">
           {highlightedAddress != null
             ? `${format('hex', highlightedAddress, 16)}: ${getOpcodeLabel(
                 highlightedAddress,
                 cpu
               )}`
-            : null}
+            : '-'}
         </div>
       </div>
     </Fragment>

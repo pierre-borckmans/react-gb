@@ -132,3 +132,7 @@
   border: 3px solid lightblue;
   box-sizing: border-box;
 }
+
+.highlighted_address {
+  font-size: 12px;
+}

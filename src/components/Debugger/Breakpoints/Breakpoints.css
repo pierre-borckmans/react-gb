@@ -1,7 +1,28 @@
 .breakpoints {
-  font-size: 9px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border: dotted gray 1px;
+  width: 730px;
+  height: 250px;
+  user-select: none;
 }
 
 .disabled {
   color: lightgray;
+}
+
+.breakpoint {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.highlighted {
+  background-color: red;
+}
+
+.breakpoint_details {
+  padding-left: 8px;
 }

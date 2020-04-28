@@ -11,7 +11,15 @@ const addBreakpoint = (breakpoint) => {
     : 1;
   breakpoints = [
     ...breakpoints,
-    { ...breakpoint, id, enabled: true },
+    {
+      id,
+      enabled: true,
+      address: null,
+      opcode: null,
+      registers: [],
+      flags: [],
+      ...breakpoint,
+    },
   ].sort((b1, b2) => (b1.address > b2.address ? 1 : -1));
 };
 
@@ -20,12 +28,11 @@ const removeBreakpoint = (id) => {
 };
 
 const toggleBreakpoint = (id) => {
-  const breakpoint = breakpoints.find((bp) => bp.id === id);
-  breakpoints = [
-    ...breakpoints.filter((breakpoint) => breakpoint.id !== id),
-    { ...breakpoint, enabled: !breakpoint.enabled },
-  ];
-  console.log(breakpoints);
+  breakpoints = breakpoints.map((breakpoint) =>
+    breakpoint.id !== id
+      ? breakpoint
+      : { ...breakpoint, enabled: !breakpoint.enabled }
+  );
 };
 
 const removeAllBreakpoints = () => {
@@ -39,20 +46,21 @@ const findMatchingBreakpoint = () => {
     const addressMatch = bp.address !== undefined && cpu.getPC() === bp.address;
     const opcodeMatch =
       bp.opcode !== undefined && cpu.readAddress8(cpu.getPC()) === bp.opcode;
-    const allRegistersMatch = every(bp.registers, (register) => {
-      if (register.name.length === 1) {
-        return cpu.readReg8(bp.register.name) === bp.register.value;
-      }
-      if (register.name === 'SP') {
-        return cpu.getSP() === bp.register.value;
-      } else {
-        return cpu.readReg16(bp.register.name) === bp.register.value;
-      }
-    });
-    const allFlagsMatch = every(
-      bp.flags,
-      (flag) => cpu.getFlag(flag.name) === flag.value
-    );
+    const allRegistersMatch =
+      bp.registers.length &&
+      every(bp.registers, (register) => {
+        if (register.name.length === 1) {
+          return cpu.readReg8(bp.register.name) === bp.register.value;
+        }
+        if (register.name === 'SP') {
+          return cpu.getSP() === bp.register.value;
+        } else {
+          return cpu.readReg16(bp.register.name) === bp.register.value;
+        }
+      });
+    const allFlagsMatch =
+      bp.flags.length &&
+      every(bp.flags, (flag) => cpu.getFlag(flag.name) === flag.value);
     return addressMatch || opcodeMatch || allRegistersMatch || allFlagsMatch;
   });
   return breakpoint;
