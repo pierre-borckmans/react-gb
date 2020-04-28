@@ -50,7 +50,7 @@ const Debugger = (props) => {
   };
 
   const run = () => {
-    debugger_.run(20, handleCPUChange);
+    debugger_.run(25, handleCPUChange);
   };
 
   const pause = () => {
@@ -116,16 +116,16 @@ const Debugger = (props) => {
           <span className="steps_per_second">{`${debugger_.getTotalSteps()} ops`}</span>
           <div className="spacer" />
           <span className="steps_per_second">{`${stepsPerSecond.toFixed(
-            2
+            0
           )} ops/s`}</span>
           <div className="spacer" />
           <span className="steps_per_second">{`${cyclesPerSecond.toFixed(
-            2
+            0
           )} cycles/s`}</span>
           <div className="spacer" />
           <span className="steps_per_second">{`${(
             cyclesPerSecond / 17556
-          ).toFixed(2)} f/s`}</span>
+          ).toFixed(2)} frames/s`}</span>
         </div>
         <div className="debugger_row">
           <div>

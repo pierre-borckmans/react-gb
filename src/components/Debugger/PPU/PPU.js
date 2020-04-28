@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react';
 
+import TilesGrid from '../../Shared/TilesGrid/TilesGrid';
+
 import { range } from 'lodash';
 
-import PixelGrid from '../../Shared/PixelGrid/PixelGrid';
 import './PPU.css';
 
 const PPU = (props) => {
@@ -74,14 +75,15 @@ const PPU = (props) => {
         <div>window tilemap: {ppu.getLCDCWindowTilemapAdress()}</div>
         tileset:
         <div className="tileset">
-          {tileSet.slice(0, 255).map((tile, idx) => {
-            const pixels = tileToPixels(tile);
-            return (
-              <div key={idx} className="tile">
-                <PixelGrid width={8} height={8} scale={2} pixels={pixels} />
-              </div>
-            );
-          })}
+          <TilesGrid
+            tiles={tileSet.map(tileToPixels)}
+            tilesPerRow={16}
+            tilesPerColumn={24}
+            tileWidth={8}
+            tileHeight={8}
+            scale={1.4}
+            gridColor={[230, 80, 90]}
+          />
         </div>
       </div>
     </Fragment>

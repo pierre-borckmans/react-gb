@@ -18,16 +18,17 @@ const run = (mod, callback) => {
   running = true;
   let frames = 0;
   let steps = 0;
-  let cycles = 0;
 
+  const startCycles = cpu.getCycles();
   const startPC = cpu.getPC();
 
   totalSteps = 0;
   stepsPerSecond = 0;
+  cyclesPerSecond = 0;
 
   currentBreakpoint = null;
 
-  let startTime;
+  let startTime = null;
   const frame = (timestamp) => {
     if (!startTime) startTime = timestamp;
     frames++;
@@ -49,7 +50,7 @@ const run = (mod, callback) => {
       steps++;
     }
     const elapsedTime = timestamp - startTime;
-    cycles = cpu.getCycles();
+    const cycles = cpu.getCycles() - startCycles;
     if (elapsedTime > 0) {
       stepsPerSecond = (steps / elapsedTime) * 1000;
       cyclesPerSecond = (cycles / elapsedTime) * 1000;

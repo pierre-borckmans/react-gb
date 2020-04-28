@@ -70,6 +70,7 @@
   width: 160px;
   border-left: solid 1px lightgray;
   justify-content: center;
+  align-items: center;
 }
 
 .ascii {
