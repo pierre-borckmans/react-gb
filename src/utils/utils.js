@@ -22,4 +22,8 @@ const format = (base, value, length) => {
       return value;
   }
 };
-export { toHex, toBin, format };
+
+const readBit = (value, bitIdx) =>
+  (value & (1 << bitIdx)) === 1 << bitIdx ? 1 : 0;
+
+export { toHex, toBin, format, readBit };

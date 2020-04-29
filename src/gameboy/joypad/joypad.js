@@ -1,6 +1,6 @@
 import mmu from '../mmu/mmu';
+import { readBit } from '../../utils/utils';
 
-const JOYPAD_ADDR = 0xff00;
 const BUTTON_KEYS_BIT = 5;
 const DIRECTION_KEYS_BIT = 4;
 const DOWN_START_BIT = 3;
@@ -8,37 +8,51 @@ const UP_SELECT_BIT = 2;
 const LEFT_B_BIT = 1;
 const RIGHT_A_BIT = 0;
 
+const registers = {
+  joypad: 0x00,
+};
+
+const reset = () => {
+  registers.joypad = 0x00;
+};
+
 const getAButton = () =>
-  mmu.readBit(JOYPAD_ADDR, BUTTON_KEYS_BIT) &&
-  mmu.readBit(JOYPAD_ADDR, RIGHT_A_BIT);
+  readBit(registers.joypad, BUTTON_KEYS_BIT) &&
+  readBit(registers.joypad, RIGHT_A_BIT);
 
 const getBButton = () =>
-  mmu.readBit(JOYPAD_ADDR, BUTTON_KEYS_BIT) &&
-  mmu.readBit(JOYPAD_ADDR, LEFT_B_BIT);
+  readBit(registers.joypad, BUTTON_KEYS_BIT) &&
+  readBit(registers.joypad, LEFT_B_BIT);
 
 const getSelectButton = () =>
-  mmu.readBit(JOYPAD_ADDR, BUTTON_KEYS_BIT) &&
-  mmu.readBit(JOYPAD_ADDR, UP_SELECT_BIT);
+  readBit(registers.joypad, BUTTON_KEYS_BIT) &&
+  readBit(registers.joypad, UP_SELECT_BIT);
 
 const getStartButton = () =>
-  mmu.readBit(JOYPAD_ADDR, BUTTON_KEYS_BIT) &&
-  mmu.readBit(JOYPAD_ADDR, DOWN_START_BIT);
+  readBit(registers.joypad, BUTTON_KEYS_BIT) &&
+  readBit(registers.joypad, DOWN_START_BIT);
 
 const getRightButton = () =>
-  mmu.readBit(JOYPAD_ADDR, DIRECTION_KEYS_BIT) &&
-  mmu.readBit(JOYPAD_ADDR, RIGHT_A_BIT);
+  readBit(registers.joypad, DIRECTION_KEYS_BIT) &&
+  readBit(registers.joypad, RIGHT_A_BIT);
 
 const getLeftButton = () =>
-  mmu.readBit(JOYPAD_ADDR, DIRECTION_KEYS_BIT) &&
-  mmu.readBit(JOYPAD_ADDR, LEFT_B_BIT);
+  readBit(registers.joypad, DIRECTION_KEYS_BIT) &&
+  readBit(registers.joypad, LEFT_B_BIT);
 
 const getUpButton = () =>
-  mmu.readBit(JOYPAD_ADDR, DIRECTION_KEYS_BIT) &&
-  mmu.readBit(JOYPAD_ADDR, UP_SELECT_BIT);
+  readBit(registers.joypad, DIRECTION_KEYS_BIT) &&
+  readBit(registers.joypad, UP_SELECT_BIT);
 
 const getDownButton = () =>
-  mmu.readBit(JOYPAD_ADDR, DIRECTION_KEYS_BIT) &&
-  mmu.readBit(JOYPAD_ADDR, DOWN_START_BIT);
+  readBit(registers.joypad, DIRECTION_KEYS_BIT) &&
+  readBit(registers.joypad, DOWN_START_BIT);
+
+const read = () => registers.joypad;
+
+const write = (value) => {
+  registers.joypad = value;
+};
 
 const joypad = {
   getAButton,
@@ -49,6 +63,10 @@ const joypad = {
   getLeftButton,
   getUpButton,
   getDownButton,
+
+  reset,
+  read,
+  write,
 };
 
 export default joypad;
