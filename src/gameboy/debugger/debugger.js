@@ -1,6 +1,10 @@
-import cpu from '../cpu/cpu';
 import breakpoints from './breakpoints';
+
+import cpu from '../cpu/cpu';
+import ppu from '../ppu/ppu';
+import apu from '../apu/apu';
 import timer from '../timer/timer';
+import joypad from '../joypad/joypad';
 
 let running = false;
 let totalSteps = 0;
@@ -82,6 +86,10 @@ const isRunning = () => running;
 const reset = () => {
   cpu.reset();
   timer.reset();
+  apu.reset();
+  ppu.reset();
+  joypad.reset();
+
   running = false;
   totalSteps = 0;
   stepsPerSecond = 0;

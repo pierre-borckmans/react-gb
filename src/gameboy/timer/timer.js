@@ -11,26 +11,23 @@ const TIMER_CONTROL_INPUT_CLOCK_SELECT_BITS = 3; // bits 1 and 0
 // 00 -   4096Hz - 128
 const TIMER_CONTROL_START_BIT = 2; // 1 to run timer, 0 to stop
 
-const cycles = {
-  DIV: 0,
-  TIMA: 0,
-};
-
-const registers = {
-  DIV: 0x00,
-  TIMA: 0x00,
-  TMA: 0x00,
-  TAC: 0x00 & 7,
-};
+let cycles = {};
+let registers = {};
 
 const reset = () => {
-  cycles.DIV = 0;
-  cycles.TIMA = 0;
-  registers.DIV = 0x00;
-  registers.TIMA = 0x00;
-  registers.TMA = 0x00;
-  registers.TAC = 0x00 & 7;
+  cycles = {
+    DIV: 0,
+    TIMA: 0,
+  };
+  registers = {
+    DIV: 0x00,
+    TIMA: 0x00,
+    TMA: 0x00,
+    TAC: 0x00 & 7,
+  };
 };
+
+reset();
 
 const step = (stepCycles) => {
   cycles.DIV += stepCycles;

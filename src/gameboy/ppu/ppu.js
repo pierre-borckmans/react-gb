@@ -1,4 +1,5 @@
 import mmu from '../mmu/mmu';
+import { readBit } from '../../utils/utils';
 
 const LCD_CTRL_ADDR = 0xff40;
 const LCDC_STATUS_ADDR = 0xff41;
@@ -23,20 +24,7 @@ const LCD_CTRL_WINDOW_ENABLE_BIT = 5;
 const LCD_CTRL_WINDOW_TILEMAP_BIT = 6;
 const LCD_CTRL_LCD_ENABLE_BIT = 7;
 
-const registers = {
-  LCD_CTRL: 0x00,
-  LCDC_STATUS: 0x00,
-  SCROLLY: 0x00,
-  SCROLLX: 0x00,
-  LCDC_YCOORD: 0x00,
-  LCDC_YCOORD_COMPARE: 0x00,
-  DMA_TRANSFER_AND_START: 0x00,
-  BG_PALETTE: 0x00,
-  OBJ_PALETTE0: 0x00,
-  OBJ_PALETTE1: 0x00,
-  WINY: 0x00,
-  WINX: 0x00,
-};
+let registers = {};
 
 const reset = () => {
   registers = {
@@ -54,23 +42,24 @@ const reset = () => {
     WINX: 0x00,
   };
 };
+reset();
 
 const getLCDCBackgroundEnable = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_BACKGROUND_ENABLE_BIT);
+  readBit(registers.LCD_CTRL, LCD_CTRL_BACKGROUND_ENABLE_BIT);
 const getLCDCObjectEnable = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_OBJ_ENABLE_BIT);
+  readBit(registers.LCD_CTRL, LCD_CTRL_OBJ_ENABLE_BIT);
 const getLCDCObjectSize = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_OBJ_SIZE_BIT);
+  readBit(registers.LCD_CTRL, LCD_CTRL_OBJ_SIZE_BIT);
 const getLCDCBackgroundTilemapAdress = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_BG_TILEMAP_BIT);
+  readBit(registers.LCD_CTRL, LCD_CTRL_BG_TILEMAP_BIT);
 const getLCDCBackgroundAndWindowTilemapAdress = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_BG_AND_WINDOW_TILESET_BIT);
+  readBit(registers.LCD_CTRL, LCD_CTRL_BG_AND_WINDOW_TILESET_BIT);
 const getLCDCWindowEnable = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_WINDOW_ENABLE_BIT);
+  readBit(registers.LCD_CTRL, LCD_CTRL_WINDOW_ENABLE_BIT);
 const getLCDCWindowTilemapAdress = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_WINDOW_TILEMAP_BIT);
+  readBit(registers.LCD_CTRL, LCD_CTRL_WINDOW_TILEMAP_BIT);
 const getLCDCLCDEnable = () =>
-  mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_LCD_ENABLE_BIT);
+  readBit(registers.LCD_CTRL, LCD_CTRL_LCD_ENABLE_BIT);
 
 const SCREEN_WIDTH = 160;
 const SCREEN_HEIGHT = 144;

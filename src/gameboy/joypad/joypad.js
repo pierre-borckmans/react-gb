@@ -1,4 +1,3 @@
-import mmu from '../mmu/mmu';
 import { readBit } from '../../utils/utils';
 
 const BUTTON_KEYS_BIT = 5;
@@ -8,13 +7,13 @@ const UP_SELECT_BIT = 2;
 const LEFT_B_BIT = 1;
 const RIGHT_A_BIT = 0;
 
-const registers = {
-  joypad: 0x00,
-};
+let registers = {};
 
 const reset = () => {
-  registers.joypad = 0x00;
+  registers = { joypad: 0x00 };
 };
+
+reset();
 
 const getAButton = () =>
   readBit(registers.joypad, BUTTON_KEYS_BIT) &&

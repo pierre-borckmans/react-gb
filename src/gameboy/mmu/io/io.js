@@ -1,6 +1,7 @@
-import timer from '../../timer/timer';
-import joypad from '../../joypad/joypad';
 import ppu from '../../ppu/ppu';
+import apu from '../../apu/apu';
+import joypad from '../../joypad/joypad';
+import timer from '../../timer/timer';
 
 const SIZE = 0x80;
 const data = new Uint8Array(SIZE).fill(0);
@@ -8,6 +9,8 @@ const data = new Uint8Array(SIZE).fill(0);
 const JOYPAD_ADDR = 0xff00;
 const START_TIMER_ADDR = 0xff04;
 const END_TIMER_ADDR = 0xff07;
+const START_APU_ADDR = 0xff10;
+const END_APU_ADDR = 0xff26;
 const START_PPU_ADDR = 0xff40;
 const END_PPU_ADDR = 0xff4b;
 
@@ -16,6 +19,8 @@ const read = (address) => {
     return joypad.read();
   } else if (address >= START_TIMER_ADDR && address <= END_TIMER_ADDR) {
     return timer.read(address);
+  } else if (address >= START_APU_ADDR && address <= END_APU_ADDR) {
+    return apu.read(address);
   } else if (address >= START_PPU_ADDR && address <= END_PPU_ADDR) {
     return ppu.read(address);
   } else {
@@ -28,6 +33,8 @@ const write = (address, value) => {
     return joypad.write(value);
   } else if (address >= START_TIMER_ADDR && address <= END_TIMER_ADDR) {
     timer.write(address, value);
+  } else if (address >= START_APU_ADDR && address <= END_APU_ADDR) {
+    return apu.write(address, value);
   } else if (address >= START_PPU_ADDR && address <= END_PPU_ADDR) {
     return ppu.write(address, value);
   } else {
