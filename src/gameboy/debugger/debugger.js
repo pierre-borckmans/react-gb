@@ -98,10 +98,6 @@ const reset = () => {
 };
 
 const debugger_ = {
-  // getBreakpoints: breakpoints.getBreakpoints,
-  // addBreakpoint: breakpoints.addBreakpoint,
-  // removeBreakpoint: breakpoints.removeBreakpoint,
-  // removeAllBreakpoints: breakpoints.removeAllBreakpoints,
   run,
   pause,
   step,
