@@ -23,6 +23,38 @@ const LCD_CTRL_WINDOW_ENABLE_BIT = 5;
 const LCD_CTRL_WINDOW_TILEMAP_BIT = 6;
 const LCD_CTRL_LCD_ENABLE_BIT = 7;
 
+const registers = {
+  LCD_CTRL: 0x00,
+  LCDC_STATUS: 0x00,
+  SCROLLY: 0x00,
+  SCROLLX: 0x00,
+  LCDC_YCOORD: 0x00,
+  LCDC_YCOORD_COMPARE: 0x00,
+  DMA_TRANSFER_AND_START: 0x00,
+  BG_PALETTE: 0x00,
+  OBJ_PALETTE0: 0x00,
+  OBJ_PALETTE1: 0x00,
+  WINY: 0x00,
+  WINX: 0x00,
+};
+
+const reset = () => {
+  registers = {
+    LCD_CTRL: 0x00,
+    LCDC_STATUS: 0x00,
+    SCROLLY: 0x00,
+    SCROLLX: 0x00,
+    LCDC_YCOORD: 0x00,
+    LCDC_YCOORD_COMPARE: 0x00,
+    DMA_TRANSFER_AND_START: 0x00,
+    BG_PALETTE: 0x00,
+    OBJ_PALETTE0: 0x00,
+    OBJ_PALETTE1: 0x00,
+    WINY: 0x00,
+    WINX: 0x00,
+  };
+};
+
 const getLCDCBackgroundEnable = () =>
   mmu.readBit(LCD_CTRL_ADDR, LCD_CTRL_BACKGROUND_ENABLE_BIT);
 const getLCDCObjectEnable = () =>
@@ -115,6 +147,80 @@ const getScrollY = () => mmu.read(SCROLLY_ADDR);
 const getWindowX = () => mmu.read(WINX_ADDR);
 const getWindowY = () => mmu.read(WINY_ADDR);
 
+const read = (address) => {
+  switch (address) {
+    case LCD_CTRL_ADDR:
+      return registers.LCD_CTRL_ADDR;
+    case LCDC_STATUS_ADDR:
+      return registers.LCDC_STATUS_ADDR;
+    case SCROLLY_ADDR:
+      return registers.SCROLLY_ADDR;
+    case SCROLLX_ADDR:
+      return registers.SCROLLX_ADDR;
+    case LCDC_YCOORD_ADDR:
+      return registers.LCDC_YCOORD_ADDR;
+    case LCDC_YCOORD_COMPARE_ADDR:
+      return registers.LCDC_YCOORD_COMPARE_ADDR;
+    case DMA_TRANSFER_AND_START_ADDR:
+      return registers.DMA_TRANSFER_AND_START_ADDR;
+    case BG_PALETTE_ADDR:
+      return registers.BG_PALETTE_ADDR;
+    case OBJ_PALETTE0_ADDR:
+      return registers.OBJ_PALETTE0_ADDR;
+    case OBJ_PALETTE1_ADDR:
+      return registers.OBJ_PALETTE1_ADDR;
+    case WINY_ADDR:
+      return registers.WINY_ADDR;
+    case WINX_ADDR:
+      return registers.WINX_ADDR;
+    default:
+      throw new Error(`Trying to read from invalid ppu address ${address}`);
+  }
+};
+
+const write = (address, value) => {
+  switch (address) {
+    case LCD_CTRL_ADDR:
+      registers.LCD_CTRL_ADDR = value;
+      break;
+    case LCDC_STATUS_ADDR:
+      registers.LCDC_STATUS_ADDR = value;
+      break;
+    case SCROLLY_ADDR:
+      registers.SCROLLY_ADDR = value;
+      break;
+    case SCROLLX_ADDR:
+      registers.SCROLLX_ADDR = value;
+      break;
+    case LCDC_YCOORD_ADDR:
+      registers.LCDC_YCOORD_ADDR = value;
+      break;
+    case LCDC_YCOORD_COMPARE_ADDR:
+      registers.LCDC_YCOORD_COMPARE_ADDR = value;
+      break;
+    case DMA_TRANSFER_AND_START_ADDR:
+      registers.DMA_TRANSFER_AND_START_ADDR = value;
+      break;
+    case BG_PALETTE_ADDR:
+      registers.BG_PALETTE_ADDR = value;
+      break;
+    case OBJ_PALETTE0_ADDR:
+      registers.OBJ_PALETTE0_ADDR = value;
+      break;
+    case OBJ_PALETTE1_ADDR:
+      registers.OBJ_PALETTE1_ADDR = value;
+      break;
+    case WINY_ADDR:
+      registers.WINY_ADDR = value;
+      break;
+    case WINX_ADDR:
+      registers.WINX_ADDR = value;
+      break;
+    default:
+      throw new Error(`Trying to write to invalid ppu address ${address}`);
+  }
+};
+
 const ppu = {
   getBackgroundPalette,
   getObjectPalette0,
@@ -133,6 +239,10 @@ const ppu = {
   getLCDCWindowEnable,
   getLCDCWindowTilemapAdress,
   getLCDCLCDEnable,
+
+  read,
+  write,
+  reset,
 };
 
 export default ppu;
