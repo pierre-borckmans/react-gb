@@ -1,5 +1,6 @@
 import cpu from '../cpu/cpu';
 import breakpoints from './breakpoints';
+import timer from '../timer/timer';
 
 let running = false;
 let totalSteps = 0;
@@ -80,6 +81,7 @@ const isRunning = () => running;
 
 const reset = () => {
   cpu.reset();
+  timer.reset();
   running = false;
   totalSteps = 0;
   stepsPerSecond = 0;

@@ -59,7 +59,7 @@ const read = (address) => {
     case ECHO_RAM:
       return workRam.read(address - START_ECHO_RAM);
     case OAM:
-      return oam.read(address - START_OAM);
+      return oam.read(address);
     case IO:
       return io.read(address - START_IO_MAPPING);
     case HIGH_RAM:
@@ -93,7 +93,7 @@ const write = (address, value) => {
     case ECHO_RAM:
       return workRam.write(address - START_ECHO_RAM, value);
     case OAM:
-      return oam.write(address - START_OAM, value);
+      return oam.write(address, value);
     case IO:
       return io.write(address - START_IO_MAPPING, value);
     case HIGH_RAM:

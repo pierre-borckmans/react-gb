@@ -42,8 +42,8 @@ const getLCDCLCDEnable = () =>
 
 const SCREEN_WIDTH = 160;
 const SCREEN_HEIGHT = 144;
-const BUFFER_WIDTH = 256; // TODO check
-const BUFFER_HEIGHT = 256; // TODO check
+const BUFFER_WIDTH = 256;
+const BUFFER_HEIGHT = 256;
 
 const CYCLES_OAM_SEARCH = 20;
 const CYCLES_PIXEL_TRANSFER = 43;
@@ -54,6 +54,7 @@ const CYCLES_COMPLETE_FRAME =
   (CYCLES_OAM_SEARCH + CYCLES_PIXEL_TRANSFER + CYCLES_HBLANK); // 17556
 
 // 17556 cycles/frames * 60 fps = 1053360 cycles / s
+// 1mbHz (1024*1024) / 17556 cycles/frames = 59.7275 fps
 
 // 8000-87FF	Tile set #1: tiles 0-127
 // 8800-8FFF	Tile set #1: tiles 128-255

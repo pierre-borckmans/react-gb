@@ -8,6 +8,10 @@ const Timer = (props) => {
     <Fragment>
       <div className="timer">
         <div className="section">Timer</div>
+        <div>DIV: {timer.getDIV()}</div>
+        <div>TIMA: {timer.getTIMA()}</div>
+        <div>TMA: {timer.getTMA()}</div>
+        <div>TAC: {timer.getTAC()}</div>
       </div>
     </Fragment>
   );

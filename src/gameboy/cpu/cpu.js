@@ -1,5 +1,6 @@
 import opcodesMap from './opcodes/opcodesMap';
 import mmu from '../mmu/mmu';
+import timer from '../timer/timer';
 
 import { format } from '../../utils/utils';
 
@@ -182,7 +183,11 @@ const cpu = {
     const opcode = fetchOpcode();
     const executeOpcodeFn = decodeOpcode(opcode);
 
+    const previousCycles = this.getCycles();
     const result = executeOpcodeFn(this);
+
+    timer.step(this.getCycles() - previousCycles);
+
     if (result === -1) {
       alert(`Opcode ${format('hex', opcode)} not implemented`);
     }
