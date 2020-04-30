@@ -21,7 +21,7 @@ const RLCA = (cpu) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // RRCA
@@ -43,7 +43,7 @@ const RRCA = (cpu) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // RLA
@@ -65,7 +65,7 @@ const RLA = (cpu) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // RCA
@@ -86,7 +86,7 @@ const RRA = (cpu) => {
 
   cpu.setFlags(Z, N, H, C);
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // RLC R
@@ -108,7 +108,7 @@ const RLC_R = (cpu, reg8) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // RLC (RR)
@@ -132,7 +132,7 @@ const RLC_$RR = (cpu, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // RRC R
@@ -154,7 +154,7 @@ const RRC_R = (cpu, reg8) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // RRC (RR)
@@ -178,7 +178,7 @@ const RRC_$RR = (cpu, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // RL R
@@ -201,7 +201,7 @@ const RL_R = (cpu, reg8) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // RL (RR)
@@ -225,7 +225,7 @@ const RL_$RR = (cpu, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // RR R
@@ -247,7 +247,7 @@ const RR_R = (cpu, reg8) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // RR (RR)
@@ -271,7 +271,7 @@ const RR_$RR = (cpu, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // --------------------------------------------------------------------------------
@@ -294,7 +294,7 @@ const SLA_R = (cpu, reg8) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // SLA (RR)
@@ -314,7 +314,7 @@ const SLA_$RR = (cpu, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // SRA R
@@ -337,7 +337,7 @@ const SRA_R = (cpu, reg8) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // SRA (RR)
@@ -361,7 +361,7 @@ const SRA_$RR = (cpu, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // SRL R
@@ -383,7 +383,7 @@ const SRL_R = (cpu, reg8) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // SRL (RR)
@@ -406,7 +406,7 @@ const SRL_$RR = (cpu, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // --------------------------------------------------------------------------------
@@ -426,7 +426,7 @@ const SWAP_R = (cpu, reg8) => {
   cpu.setFlag('Z', newValue === 0);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // SWAP (RR)
@@ -443,7 +443,7 @@ const SWAP_$RR = (cpu, reg16) => {
   cpu.setFlag('Z', newValue === 0);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // BIT N,R
@@ -459,7 +459,7 @@ const BIT_N_R = (cpu, n, reg8) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // BIT N,(RR)
@@ -476,7 +476,7 @@ const BIT_N_$RR = (cpu, n, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // RES N,R
@@ -487,7 +487,7 @@ const RES_N_R = (cpu, n, reg8) => {
   cpu.writeReg8(newValue);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // RES N,(RR)
@@ -499,7 +499,7 @@ const RES_N_$RR = (cpu, n, reg16) => {
   cpu.writeAddress8(newValue);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // SET N,R
@@ -510,7 +510,7 @@ const SET_N_R = (cpu, n, reg8) => {
   cpu.writeReg8(newValue);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // SET N,(RR)
@@ -522,7 +522,7 @@ const SET_N_$RR = (cpu, n, reg16) => {
   cpu.writeAddress8(newValue);
 
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 const rotationShiftBitOperations = {

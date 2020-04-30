@@ -1,3 +1,5 @@
+import { format } from '../../utils/utils';
+
 const CHANNEL1_SWEEP_REGISTER_ADDR = 0xff10;
 const CHANNEL1_SOUND_LENGTH_WAVE_PATTERN_DUTY_ADDR = 0xff11;
 const CHANNEL1_VOLUME_ENVELOPE_ADDR = 0xff12;
@@ -95,7 +97,10 @@ const read = (address) => {
     case SOUND_ON_OFF_ADDR:
       return registers.SOUND_ON_OFF;
     default:
-      throw new Error(`Trying to read from invalid apu address ${address}`);
+      // console.error(
+      //   `Trying to read from invalid apu address ${format('hex', address, 16)}`
+      // );
+      return '--';
   }
 };
 
@@ -165,13 +170,16 @@ const write = (address, value) => {
       registers.SOUND_ON_OFF = value;
       break;
     default:
-      throw new Error(`Trying to write to invalid apu address ${address}`);
+      throw new Error(
+        `Trying to write to invalid apu address ${format('hex', address, 16)}`
+      );
   }
 };
 
 const apu = {
   read,
   write,
+  reset,
 };
 
 export default apu;

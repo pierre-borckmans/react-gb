@@ -1,5 +1,5 @@
 import mmu from '../mmu/mmu';
-import { readBit } from '../../utils/utils';
+import { format, readBit } from '../../utils/utils';
 
 const LCD_CTRL_ADDR = 0xff40;
 const LCDC_STATUS_ADDR = 0xff41;
@@ -139,74 +139,79 @@ const getWindowY = () => mmu.read(WINY_ADDR);
 const read = (address) => {
   switch (address) {
     case LCD_CTRL_ADDR:
-      return registers.LCD_CTRL_ADDR;
+      return registers.LCD_CTRL;
     case LCDC_STATUS_ADDR:
-      return registers.LCDC_STATUS_ADDR;
+      return registers.LCDC_STATUS;
     case SCROLLY_ADDR:
-      return registers.SCROLLY_ADDR;
+      return registers.SCROLLY;
     case SCROLLX_ADDR:
-      return registers.SCROLLX_ADDR;
+      return registers.SCROLLX;
     case LCDC_YCOORD_ADDR:
-      return registers.LCDC_YCOORD_ADDR;
+      return registers.LCDC_YCOORD;
     case LCDC_YCOORD_COMPARE_ADDR:
-      return registers.LCDC_YCOORD_COMPARE_ADDR;
+      return registers.LCDC_YCOORD_COMPARE;
     case DMA_TRANSFER_AND_START_ADDR:
-      return registers.DMA_TRANSFER_AND_START_ADDR;
+      return registers.DMA_TRANSFER_AND_START;
     case BG_PALETTE_ADDR:
-      return registers.BG_PALETTE_ADDR;
+      return registers.BG_PALETTE;
     case OBJ_PALETTE0_ADDR:
-      return registers.OBJ_PALETTE0_ADDR;
+      return registers.OBJ_PALETTE0;
     case OBJ_PALETTE1_ADDR:
-      return registers.OBJ_PALETTE1_ADDR;
+      return registers.OBJ_PALETTE1;
     case WINY_ADDR:
-      return registers.WINY_ADDR;
+      return registers.WINY;
     case WINX_ADDR:
-      return registers.WINX_ADDR;
+      return registers.WINX;
     default:
-      throw new Error(`Trying to read from invalid ppu address ${address}`);
+      // console.error(
+      //   `Trying to read from invalid ppu address ${format('hex', address, 16)}`
+      // );
+      return '--';
   }
 };
 
 const write = (address, value) => {
   switch (address) {
     case LCD_CTRL_ADDR:
-      registers.LCD_CTRL_ADDR = value;
+      registers.LCD_CTRL = value;
       break;
     case LCDC_STATUS_ADDR:
-      registers.LCDC_STATUS_ADDR = value;
+      registers.LCDC_STATUS = value;
       break;
     case SCROLLY_ADDR:
-      registers.SCROLLY_ADDR = value;
+      registers.SCROLLY = value;
       break;
     case SCROLLX_ADDR:
-      registers.SCROLLX_ADDR = value;
+      registers.SCROLLX = value;
       break;
     case LCDC_YCOORD_ADDR:
-      registers.LCDC_YCOORD_ADDR = value;
+      registers.LCDC_YCOORD = value;
       break;
     case LCDC_YCOORD_COMPARE_ADDR:
-      registers.LCDC_YCOORD_COMPARE_ADDR = value;
+      registers.LCDC_YCOORD_COMPARE = value;
       break;
     case DMA_TRANSFER_AND_START_ADDR:
-      registers.DMA_TRANSFER_AND_START_ADDR = value;
+      registers.DMA_TRANSFER_AND_START = value;
       break;
     case BG_PALETTE_ADDR:
-      registers.BG_PALETTE_ADDR = value;
+      registers.BG_PALETTE = value;
       break;
     case OBJ_PALETTE0_ADDR:
-      registers.OBJ_PALETTE0_ADDR = value;
+      registers.OBJ_PALETTE0 = value;
       break;
     case OBJ_PALETTE1_ADDR:
-      registers.OBJ_PALETTE1_ADDR = value;
+      registers.OBJ_PALETTE1 = value;
       break;
     case WINY_ADDR:
-      registers.WINY_ADDR = value;
+      registers.WINY = value;
       break;
     case WINX_ADDR:
-      registers.WINX_ADDR = value;
+      registers.WINX = value;
       break;
     default:
-      throw new Error(`Trying to write to invalid ppu address ${address}`);
+      throw new Error(
+        `Trying to write to invalid ppu address ${format('hex', address, 16)}`
+      );
   }
 };
 

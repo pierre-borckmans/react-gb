@@ -10,7 +10,7 @@ const INC16_RR = (cpu, reg16) => {
   cpu.writeReg16(reg16, newValue);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // INC SP
@@ -21,14 +21,14 @@ const INC16_SP = (cpu) => {
   cpu.setSP(newValue);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // DEC RR
 // - - - -
 const DEC16_RR = (cpu, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -41,14 +41,14 @@ const DEC16_SP = (cpu) => {
   cpu.setSP(newValue);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // ADD RR,RR
 // - 0 H C
 const ADD16_RR_RR = (cpu, reg1, reg2) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -57,7 +57,7 @@ const ADD16_RR_RR = (cpu, reg1, reg2) => {
 // - 0 H C
 const ADD16_RR_SP = (cpu, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -66,7 +66,7 @@ const ADD16_RR_SP = (cpu, reg16) => {
 // 0 0 H C
 const ADD16_SP_r8 = (cpu) => {
   cpu.incPC(2);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -88,14 +88,14 @@ const INC8_R = (cpu, reg8) => {
   const C = cpu.getFlag('C');
   cpu.setFlags(Z, N, H, C);
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // INC (RR)
 // Z 0 H -
 const INC8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -113,14 +113,14 @@ const DEC8_R = (cpu, reg8) => {
   const C = cpu.getFlag('C');
   cpu.setFlags(Z, N, H, C);
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // DEC (RR)
 // Z 1 H -
 const DEC8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -129,7 +129,7 @@ const DEC8_$RR = (cpu, reg16) => {
 // Z O H C
 const ADD8_R_R = (cpu, reg1, reg2) => {
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -138,7 +138,7 @@ const ADD8_R_R = (cpu, reg1, reg2) => {
 // Z O H C
 const ADD8_R_$RR = (cpu, reg8, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -147,7 +147,7 @@ const ADD8_R_$RR = (cpu, reg8, reg16) => {
 // Z O H C
 const ADD8_R_d8 = (cpu, reg8) => {
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -156,7 +156,7 @@ const ADD8_R_d8 = (cpu, reg8) => {
 // Z O H C
 const ADC8_R_R = (cpu, reg1, reg2) => {
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -165,7 +165,7 @@ const ADC8_R_R = (cpu, reg1, reg2) => {
 // Z O H C
 const ADC8_R_$RR = (cpu, reg8, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -174,7 +174,7 @@ const ADC8_R_$RR = (cpu, reg8, reg16) => {
 // Z O H C
 const ADC8_R_d8 = (cpu, reg8) => {
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -195,7 +195,7 @@ const SUB8_R = (cpu, reg8) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 
   // TODO: CHECK
 };
@@ -204,7 +204,7 @@ const SUB8_R = (cpu, reg8) => {
 // Z 1 H C
 const SUB8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -213,7 +213,7 @@ const SUB8_$RR = (cpu, reg16) => {
 // Z 1 H C
 const SUB8_d8 = (cpu) => {
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -222,7 +222,7 @@ const SUB8_d8 = (cpu) => {
 // Z 1 H C
 const SBC8_R_R = (cpu, reg1, reg2) => {
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -231,7 +231,7 @@ const SBC8_R_R = (cpu, reg1, reg2) => {
 // Z 1 H C
 const SBC8_R_$RR = (cpu, reg8, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -240,7 +240,7 @@ const SBC8_R_$RR = (cpu, reg8, reg16) => {
 // Z 1 H C
 const SBC8_R_d8 = (cpu, reg8) => {
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -249,7 +249,7 @@ const SBC8_R_d8 = (cpu, reg8) => {
 // Z 0 1 0
 const AND8_R = (cpu, reg8) => {
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -258,7 +258,7 @@ const AND8_R = (cpu, reg8) => {
 // Z 0 1 0
 const AND8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -267,7 +267,7 @@ const AND8_$RR = (cpu, reg16) => {
 // Z 0 1 0
 const AND8_d8 = (cpu) => {
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -281,14 +281,14 @@ const XOR8_A_R = (cpu, reg8) => {
   cpu.setFlag('Z', value === 0);
 
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // XOR (RR)
 // Z 0 0 0
 const XOR8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -297,7 +297,7 @@ const XOR8_$RR = (cpu, reg16) => {
 // Z 0 0 0
 const XOR8_d8 = (cpu) => {
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -306,7 +306,7 @@ const XOR8_d8 = (cpu) => {
 // Z 0 0 0
 const OR8_R = (cpu, reg8) => {
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -315,7 +315,7 @@ const OR8_R = (cpu, reg8) => {
 // Z 0 0 0
 const OR8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -324,7 +324,7 @@ const OR8_$RR = (cpu, reg16) => {
 // Z 0 0 0
 const OR8_d8 = (cpu) => {
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -333,7 +333,7 @@ const OR8_d8 = (cpu) => {
 // Z 0 0 0
 const CP8_R = (cpu, reg8) => {
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -342,7 +342,7 @@ const CP8_R = (cpu, reg8) => {
 // Z 1 H C
 const CP8_$RR = (cpu, reg16) => {
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -359,7 +359,7 @@ const CP8_d8 = (cpu) => {
   cpu.setFlags(Z, 1, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 
   // TODO: check
 };
@@ -368,7 +368,7 @@ const CP8_d8 = (cpu) => {
 // Z - 0 C
 const DAA8 = (cpu) => {
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -377,7 +377,7 @@ const DAA8 = (cpu) => {
 // - 1 1 -
 const CPL8 = (cpu) => {
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO: IMPLEMENT
   return -1;
 };
@@ -392,7 +392,7 @@ const SCF8 = (cpu) => {
   cpu.setFlag(Z, N, H, C);
 
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO check
 };
 
@@ -406,7 +406,7 @@ const CCF8 = (cpu) => {
   cpu.setFlag(Z, N, H, C);
 
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
   // TODO check
 };
 

@@ -4,7 +4,7 @@ const JR_r8 = (cpu) => {
   const r8 = cpu.readSignedImmediate8();
   cpu.incPC(2);
   cpu.incPC(r8);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
 };
 
 // JR NF,r8
@@ -16,10 +16,10 @@ const JR_NF_r8 = (cpu, F) => {
     cpu.incPC(2);
 
     cpu.incPC(r8);
-    cpu.incCycles(12);
+    cpu.incClockCycles(12);
   } else {
     cpu.incPC(2);
-    cpu.incCycles(8);
+    cpu.incClockCycles(8);
   }
 };
 
@@ -31,10 +31,10 @@ const JR_F_r8 = (cpu, F) => {
     const r8 = cpu.readSignedImmediate8();
     cpu.incPC(2);
     cpu.incPC(r8);
-    cpu.incCycles(12);
+    cpu.incClockCycles(12);
   } else {
     cpu.incPC(2);
-    cpu.incCycles(8);
+    cpu.incClockCycles(8);
   }
 };
 
@@ -43,7 +43,7 @@ const JR_F_r8 = (cpu, F) => {
 const JP_a16 = (cpu) => {
   const a16 = cpu.readImmediate16();
   cpu.setPC(a16);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // JP NF,a16
@@ -53,10 +53,10 @@ const JP_NF_a16 = (cpu, F) => {
   if (!flag) {
     const a16 = cpu.readImmediate16();
     cpu.setPC(a16);
-    cpu.incCycles(16);
+    cpu.incClockCycles(16);
   } else {
     cpu.incPC(3);
-    cpu.incCycles(12);
+    cpu.incClockCycles(12);
   }
 };
 
@@ -67,10 +67,10 @@ const JP_F_a16 = (cpu, F) => {
   if (flag) {
     const a16 = cpu.readImmediate16();
     cpu.setPC(a16);
-    cpu.incCycles(16);
+    cpu.incClockCycles(16);
   } else {
     cpu.incPC(3);
-    cpu.incCycles(12);
+    cpu.incClockCycles(12);
   }
 };
 
@@ -80,7 +80,7 @@ const JP_$RR = (cpu, reg16) => {
   const address = cpu.readReg16(reg16);
 
   cpu.setPC(address);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // RST XXH
@@ -89,7 +89,7 @@ const RST_XXH = (cpu, XX) => {
   cpu.stackPush(cpu.getPC());
 
   cpu.setPC(XX);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // RET
@@ -97,7 +97,7 @@ const RST_XXH = (cpu, XX) => {
 const RET = (cpu) => {
   const popValue = cpu.stackPop(cpu);
   cpu.setPC(popValue);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // RETI
@@ -106,7 +106,7 @@ const RETI = (cpu) => {
   const popValue = cpu.stackPop(cpu);
   cpu.setPC(popValue);
   cpu.setIME();
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // RET F
@@ -116,10 +116,10 @@ const RET_F = (cpu, F) => {
   if (!flag) {
     const popValue = cpu.stackPop(cpu);
     cpu.setPC(popValue);
-    cpu.incCycles(20);
+    cpu.incClockCycles(20);
   } else {
     cpu.incPC(1);
-    cpu.incCycles(8);
+    cpu.incClockCycles(8);
   }
 };
 
@@ -130,10 +130,10 @@ const RET_NF = (cpu, F) => {
   if (flag) {
     const popValue = cpu.stackPop(cpu);
     cpu.setPC(popValue);
-    cpu.incCycles(20);
+    cpu.incClockCycles(20);
   } else {
     cpu.incPC(1);
-    cpu.incCycles(8);
+    cpu.incClockCycles(8);
   }
 };
 
@@ -146,7 +146,7 @@ const CALL_a16 = (cpu) => {
   cpu.stackPush(cpu.getPC());
   cpu.setPC(a16);
 
-  cpu.incCycles(24);
+  cpu.incClockCycles(24);
 };
 
 // CALL F,a16
@@ -160,10 +160,10 @@ const CALL_F_a16 = (cpu, F) => {
 
     cpu.stackPush(cpu.getPC());
     cpu.setPC(a16);
-    cpu.incCycles(24);
+    cpu.incClockCycles(24);
   } else {
     cpu.incPC(3);
-    cpu.incCycles(12);
+    cpu.incClockCycles(12);
   }
 };
 
@@ -178,10 +178,10 @@ const CALL_NF_a16 = (cpu, F) => {
 
     cpu.stackPush(cpu.getPC());
     cpu.setPC(a16);
-    cpu.incCycles(24);
+    cpu.incClockCycles(24);
   } else {
     cpu.incPC(3);
-    cpu.incCycles(12);
+    cpu.incClockCycles(12);
   }
 };
 

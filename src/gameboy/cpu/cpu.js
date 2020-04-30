@@ -17,8 +17,9 @@ const registers = {
   SP: 0x0000,
 };
 
-const clock = {
-  c: 0,
+const cycles = {
+  clock: 0,
+  machine: 0,
 };
 
 let ime = false;
@@ -38,7 +39,8 @@ const cpu = {
     registers.PC = 0x0000;
     registers.SP = 0x0000;
 
-    clock.c = 0;
+    cycles.clock = 0;
+    cycles.machine = 0;
 
     mmu.reset();
   },
@@ -120,8 +122,16 @@ const cpu = {
   incSP: (inc) => (registers.SP += inc),
   decSP: (dec) => (registers.SP -= dec),
 
-  getCycles: () => clock.c,
-  incCycles: (inc) => (clock.c += inc),
+  getClockCycles: () => cycles.clock,
+  getMachineCycles: () => cycles.machine,
+  incClockCycles: (inc) => {
+    cycles.clock += inc;
+    cycles.machine = Math.floor(cycles.clock / 4);
+  },
+  incMachineCycles: (inc) => {
+    cycles.machine += inc;
+    cycles.clocl += inc * 4;
+  },
 
   setIME: (active) => (ime = active),
   getIME: () => ime,
@@ -132,7 +142,6 @@ const cpu = {
   setHaltBug: (active) => (haltBug = active),
   getHaltBug: () => haltBug,
 
-  isBootComplete: () => mmu.isBootComplete(),
   /// --------
 
   readImmediate8() {
@@ -183,10 +192,10 @@ const cpu = {
     const opcode = fetchOpcode();
     const executeOpcodeFn = decodeOpcode(opcode);
 
-    const previousCycles = this.getCycles();
+    const previousMachineCycles = this.getMachineCycles();
     const result = executeOpcodeFn(this);
 
-    timer.step(this.getCycles() - previousCycles);
+    timer.step(this.getMachineCycles() - previousMachineCycles);
 
     if (result === -1) {
       alert(`Opcode ${format('hex', opcode)} not implemented`);

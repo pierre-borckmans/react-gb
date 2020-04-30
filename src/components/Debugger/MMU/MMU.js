@@ -85,8 +85,8 @@ const MMU = (props) => {
 
   const changeValue = (address) => {
     const value = prompt('New value:');
-    if (value && parseInt(value) !== NaN) {
-      mmu.write(address, value);
+    if (value && !isNaN(parseInt(value))) {
+      mmu.write(address, parseInt(value));
       props.onDebuggerChange();
     }
   };
@@ -212,8 +212,7 @@ const MMU = (props) => {
           <button onClick={() => goTo('WORK_RAM')}>WORK RAM</button>
           <button onClick={() => goTo('ECHO_RAM')}>ECHO RAM</button>
           <button onClick={() => goTo('OAM')}>OAM</button>
-          <button onClick={() => goTo('IO_MAPPING')}>I/O</button>
-          <button onClick={() => goTo('HIGH_RAM')}>HIGH RAM</button>
+          <button onClick={() => goTo('IO_MAPPING')}>I/O - HIGH-RAM</button>
         </div>
         <div className="highlighted_address">
           {highlightedAddress != null

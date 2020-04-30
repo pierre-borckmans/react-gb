@@ -3,8 +3,9 @@ import apu from '../../apu/apu';
 import joypad from '../../joypad/joypad';
 import timer from '../../timer/timer';
 
+import { format } from '../../../utils/utils';
+
 const SIZE = 0x80;
-const data = new Uint8Array(SIZE).fill(0);
 
 const JOYPAD_ADDR = 0xff00;
 const START_TIMER_ADDR = 0xff04;
@@ -15,7 +16,8 @@ const START_PPU_ADDR = 0xff40;
 const END_PPU_ADDR = 0xff4b;
 
 const read = (address) => {
-  if (address === JOYPAD_ADDR) {
+  if (false) {
+  } else if (address === JOYPAD_ADDR) {
     return joypad.read();
   } else if (address >= START_TIMER_ADDR && address <= END_TIMER_ADDR) {
     return timer.read(address);
@@ -24,7 +26,7 @@ const read = (address) => {
   } else if (address >= START_PPU_ADDR && address <= END_PPU_ADDR) {
     return ppu.read(address);
   } else {
-    return data[address];
+    return '--';
   }
 };
 
@@ -38,15 +40,13 @@ const write = (address, value) => {
   } else if (address >= START_PPU_ADDR && address <= END_PPU_ADDR) {
     return ppu.write(address, value);
   } else {
-    data[address] = value;
+    throw new Error(
+      `Trying to write to invalid I/O address ${format('hex', address, 16)}`
+    );
   }
 };
 
-const reset = () => {
-  for (let i = 0; i < SIZE; i++) {
-    data[i] = 0x00;
-  }
-};
+const reset = () => {};
 
 const io = {
   read,

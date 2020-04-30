@@ -6,13 +6,15 @@ import apu from '../apu/apu';
 import timer from '../timer/timer';
 import joypad from '../joypad/joypad';
 
+const MACHINE_CYCLES_PER_FRAME = 17556;
+
 let running = false;
 let totalSteps = 0;
 let stepsPerSecond = 0;
-let cyclesPerSecond = 0;
+let machineCyclesPerSecond = 0;
 
 const getStepsPerSecond = () => stepsPerSecond;
-const getCyclesPerSecond = () => cyclesPerSecond;
+const getMachineCyclesPerSecond = () => machineCyclesPerSecond;
 const getTotalSteps = () => totalSteps;
 
 let currentBreakpoint = null;
@@ -24,12 +26,12 @@ const run = (mod, callback) => {
   let frames = 0;
   let steps = 0;
 
-  const startCycles = cpu.getCycles();
+  const startMachineCycles = cpu.getMachineCycles();
   const startPC = cpu.getPC();
 
   totalSteps = 0;
   stepsPerSecond = 0;
-  cyclesPerSecond = 0;
+  machineCyclesPerSecond = 0;
 
   currentBreakpoint = null;
 
@@ -37,8 +39,9 @@ const run = (mod, callback) => {
   const frame = (timestamp) => {
     if (!startTime) startTime = timestamp;
     frames++;
-    const targetClock = cpu.getCycles() + 17556;
-    while (cpu.getCycles() < targetClock && running) {
+    const targetMachineCycles =
+      cpu.getMachineCycles() + MACHINE_CYCLES_PER_FRAME;
+    while (cpu.getMachineCycles() < targetMachineCycles && running) {
       const result = step();
       if (result === -1) {
         running = false;
@@ -55,10 +58,10 @@ const run = (mod, callback) => {
       steps++;
     }
     const elapsedTime = timestamp - startTime;
-    const cycles = cpu.getCycles() - startCycles;
+    const machineCycles = cpu.getMachineCycles() - startMachineCycles;
     if (elapsedTime > 0) {
       stepsPerSecond = (steps / elapsedTime) * 1000;
-      cyclesPerSecond = (cycles / elapsedTime) * 1000;
+      machineCyclesPerSecond = (machineCycles / elapsedTime) * 1000;
     }
 
     if (frames % mod === 0 || !running) {
@@ -93,7 +96,7 @@ const reset = () => {
   running = false;
   totalSteps = 0;
   stepsPerSecond = 0;
-  cyclesPerSecond = 0;
+  machineCyclesPerSecond = 0;
   currentBreakpoint = null;
 };
 
@@ -103,7 +106,7 @@ const debugger_ = {
   step,
   isRunning,
   getStepsPerSecond,
-  getCyclesPerSecond,
+  getMachineCyclesPerSecond,
   getTotalSteps,
   reset,
   getCurrentBreakpoint,

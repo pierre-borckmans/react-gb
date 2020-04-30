@@ -40,7 +40,7 @@ const Debugger = (props) => {
   const handleCPUChange = () => {
     setCPU({ ...cpu });
     setStepsPerSecond(debugger_.getStepsPerSecond());
-    setCyclesPerSecond(debugger_.getCyclesPerSecond());
+    setCyclesPerSecond(debugger_.getMachineCyclesPerSecond());
   };
 
   const handleDebuggerChange = () => setDebugger({ ...debugger_ });
@@ -112,7 +112,7 @@ const Debugger = (props) => {
           <button onClick={reset}>Reset</button>
           <button onClick={removeAllBreakBoints}>Remove all breakpoints</button>
           <div className="spacer" />
-          <span className="steps_per_second">{`${cpu.getCycles()} cycles`}</span>
+          <span className="steps_per_second">{`${cpu.getMachineCycles()} cycles`}</span>
           <div className="spacer" />
           <span className="steps_per_second">{`${debugger_.getTotalSteps()} ops`}</span>
           <div className="spacer" />

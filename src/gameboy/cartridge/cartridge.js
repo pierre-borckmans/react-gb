@@ -1,4 +1,4 @@
-import cpu from '../cpu/cpu';
+import mmu from '../mmu/mmu';
 
 import rom from '../../assets/roms/test.gb';
 
@@ -39,7 +39,7 @@ const loadROM = async () => {
 };
 
 const read = (address) => {
-  if (address <= 0xff && !cpu.isBootComplete()) {
+  if (address <= 0xff && !mmu.isBootComplete()) {
     return bootROM[address];
   } else {
     return loadedROM[address];

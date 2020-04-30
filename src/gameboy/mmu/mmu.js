@@ -20,6 +20,7 @@ const OAM = 'OAM';
 const IO = 'I/O';
 const HIGH_RAM = 'HRAM';
 const INTERRUPT_SWITCH = 'ITSW';
+const BOOTROM_LOADED = 'BOOT';
 const INVALID = '----';
 
 const START_ROM0 = 0x0000;
@@ -37,12 +38,16 @@ const END_ECHO_RAM = 0xfdff;
 const START_OAM = 0xfe00;
 const END_OAM = 0xfe9f;
 const START_IO_MAPPING = 0xff00;
-const END_IO_MAPPING = 0xff7f;
+const END_IO_MAPPING = 0xff4b;
 const START_HIGH_RAM = 0xff80;
 const END_HIGH_RAM = 0xfffe;
 
 const BOOTROM_LOADED_ADDR = 0xff50;
 const INTERRUPT_SWITCH_ADDR = 0xffff;
+
+let bootComplete = false;
+const isBootComplete = () => bootComplete;
+const setBootComplete = (complete) => (bootComplete = complete);
 
 const read = (address) => {
   switch (getMemoryType(address)) {
@@ -59,11 +64,13 @@ const read = (address) => {
     case ECHO_RAM:
       return workRam.read(address - START_ECHO_RAM);
     case OAM:
-      return oam.read(address);
+      return oam.read(address - START_OAM);
     case IO:
-      return io.read(address - START_IO_MAPPING);
+      return io.read(address);
     case HIGH_RAM:
       return highRam.read(address - START_HIGH_RAM);
+    case BOOTROM_LOADED:
+      return isBootComplete() ? 1 : 0;
     case INTERRUPT_SWITCH:
       // TODO
       return 0;
@@ -93,11 +100,13 @@ const write = (address, value) => {
     case ECHO_RAM:
       return workRam.write(address - START_ECHO_RAM, value);
     case OAM:
-      return oam.write(address, value);
+      return oam.write(address - START_OAM, value);
     case IO:
-      return io.write(address - START_IO_MAPPING, value);
+      return io.write(address, value);
     case HIGH_RAM:
       return highRam.write(address - START_HIGH_RAM, value);
+    case BOOTROM_LOADED:
+      return setBootComplete(value === 1);
     case INTERRUPT_SWITCH:
       // TODO
       return 0;
@@ -136,6 +145,8 @@ const getMemoryType = (address) => {
   } else if (address >= START_HIGH_RAM && address <= END_HIGH_RAM) {
     // HIGH RAM
     return HIGH_RAM;
+  } else if (address === BOOTROM_LOADED_ADDR) {
+    return BOOTROM_LOADED;
   } else if (address === INTERRUPT_SWITCH_ADDR) {
     return INTERRUPT_SWITCH;
   } else {
@@ -160,8 +171,6 @@ const reset = () => {
   highRam.reset();
 };
 
-const isBootComplete = () => read(BOOTROM_LOADED_ADDR) !== 0x00;
-
 const mmu = {
   MEMORY_SIZE,
   START_ROM0,
@@ -173,12 +182,15 @@ const mmu = {
   START_OAM,
   START_IO_MAPPING,
   START_HIGH_RAM,
+
   read,
   readBit,
   write,
   writeBit,
+
   getMemoryPage,
   getMemoryType,
+
   reset,
   isBootComplete,
 };

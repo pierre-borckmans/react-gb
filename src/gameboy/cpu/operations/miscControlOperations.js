@@ -4,7 +4,7 @@ import prefixCBOpcodesMap from '../opcodes/prefixCBOpcodesMap';
 // - - - -
 const NOP = (cpu) => {
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // STOP 0
@@ -40,7 +40,7 @@ const PREFIX_CB = (cpu) => {
 const DI = (cpu) => {
   cpu.setIME(false);
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // EI
@@ -48,7 +48,7 @@ const DI = (cpu) => {
 const EI = (cpu) => {
   cpu.setIME(true);
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 const miscControlOperations = {

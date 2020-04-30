@@ -45,7 +45,6 @@ const TilesGrid = (props) => {
     }
   }
 
-  console.log(pixels);
   return (
     <PixelGrid
       pixels={pixels}

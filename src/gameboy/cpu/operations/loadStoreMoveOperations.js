@@ -9,7 +9,7 @@ const LD16_RR_d16 = (cpu, reg16) => {
   cpu.writeReg16(reg16, d16);
 
   cpu.incPC(3);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
 };
 
 // LD SP,d16
@@ -19,7 +19,7 @@ const LD16_SP_d16 = (cpu) => {
   cpu.setSP(d16);
 
   cpu.incPC(3);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
 };
 
 // LD SP,RR
@@ -29,7 +29,7 @@ const LD16_SP_RR = (cpu, reg16) => {
   cpu.setSP(rr);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LD RR,SP+r8
@@ -48,7 +48,7 @@ const LD16_RR_SPpr8 = (cpu, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
 };
 
 // LD (a16), SP
@@ -59,7 +59,7 @@ const LD16_$a16_SP = (cpu) => {
   cpu.writeAddress16(a16, SP);
 
   cpu.incPC(3);
-  cpu.incCycles(20);
+  cpu.incClockCycles(20);
 };
 
 // PUSH RR
@@ -69,7 +69,7 @@ const PUSH16_RR = (cpu, reg16) => {
   cpu.stackPush(reg);
 
   cpu.incPC(1);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // POP RR
@@ -79,7 +79,7 @@ const POP16_RR = (cpu, reg16) => {
   cpu.writeReg16(reg16, value);
 
   cpu.incPC(1);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
 };
 
 // --------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ const LD8_R_d8 = (cpu, reg8) => {
   cpu.writeReg8(reg8, d8);
 
   cpu.incPC(2);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LD R,R
@@ -102,7 +102,7 @@ const LD8_R_R = (cpu, reg1, reg2) => {
   cpu.writeReg8(reg1, cpu.readReg8(reg2));
 
   cpu.incPC(1);
-  cpu.incCycles(4);
+  cpu.incClockCycles(4);
 };
 
 // LD R,(RR)
@@ -113,7 +113,7 @@ const LD8_R_$RR = (cpu, reg8, reg16) => {
   cpu.writeReg8(reg8, value);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LD (RR),r
@@ -124,7 +124,7 @@ const LD8_$RR_R = (cpu, reg16, reg8) => {
   cpu.writeAddress8(address, value);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LD (RR),d8
@@ -135,7 +135,7 @@ const LD8_$RR_d8 = (cpu, reg16) => {
   cpu.writeAddress8(address, d8);
 
   cpu.incPC(2);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
 };
 
 // LD R,(a16)
@@ -146,7 +146,7 @@ const LD8_R_$a16 = (cpu, reg8) => {
   cpu.writeReg8(reg8, value);
 
   cpu.incPC(3);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 // LD (RR+),R
@@ -158,7 +158,7 @@ const LD8_$RRp_R = (cpu, reg16, reg8) => {
   cpu.writeReg16(reg16, cpu.readReg16(reg16) + 1);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LD (RR-),R
@@ -170,7 +170,7 @@ const LD8_$RRm_R = (cpu, reg16, reg8) => {
   cpu.writeReg16(reg16, cpu.readReg16(reg16) - 1);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LD R,(RR+)
@@ -182,7 +182,7 @@ const LD8_R_$RRp = (cpu, reg8, reg16) => {
   cpu.writeReg16(reg16, cpu.readReg16(reg16) + 1);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LD R,(RR-)
@@ -194,7 +194,7 @@ const LD8_R_$RRm = (cpu, reg8, reg16) => {
   cpu.writeReg16(reg16, cpu.readReg16(reg16) - 1);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LDH (a8),R
@@ -205,7 +205,7 @@ const LD8H_$a8_R = (cpu, reg8) => {
   cpu.writeAddress8(address, value);
 
   cpu.incPC(2);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
 };
 
 // LDH R,(a8)
@@ -216,7 +216,7 @@ const LD8H_R_$a8 = (cpu, reg8) => {
   cpu.writeReg8(reg8, value);
 
   cpu.incPC(2);
-  cpu.incCycles(12);
+  cpu.incClockCycles(12);
 };
 
 // LD (R),R
@@ -227,7 +227,7 @@ const LD8_$R_R = (cpu, reg1, reg2) => {
   cpu.writeAddress8(address, value);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LD R,(R)
@@ -238,7 +238,7 @@ const LD8_R_$R = (cpu, reg1, reg2) => {
   cpu.writeReg8(reg1, value);
 
   cpu.incPC(1);
-  cpu.incCycles(8);
+  cpu.incClockCycles(8);
 };
 
 // LD (a16),R
@@ -250,7 +250,7 @@ const LD8_$a16_R = (cpu, reg8) => {
   cpu.writeAddress8(address, value);
 
   cpu.incPC(3);
-  cpu.incCycles(16);
+  cpu.incClockCycles(16);
 };
 
 const loadStoreMoveOperations = {
