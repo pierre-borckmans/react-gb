@@ -5,6 +5,7 @@ import workRam from './workRam/workRam';
 import oam from './oam/oam';
 import io from './io/io';
 import highRam from './highRam/highRam';
+import interrupts from '../interrupts/interrupts';
 
 import { range } from 'lodash';
 
@@ -19,7 +20,6 @@ const ECHO_RAM = 'ECHO';
 const OAM = 'OAM';
 const IO = 'I/O';
 const HIGH_RAM = 'HRAM';
-const INTERRUPT_SWITCH = 'ITSW';
 const BOOTROM_LOADED = 'BOOT';
 const INVALID = '----';
 
@@ -41,17 +41,29 @@ const START_IO_MAPPING = 0xff00;
 const END_IO_MAPPING = 0xff4b;
 const START_HIGH_RAM = 0xff80;
 const END_HIGH_RAM = 0xfffe;
+const INTERRUPT_ENABLE_ADDR = 0xffff;
 
 const BOOTROM_LOADED_ADDR = 0xff50;
-const INTERRUPT_SWITCH_ADDR = 0xffff;
 
 let registers = {};
 
+const reset = () => {
+  registers = {
+    bootComplete: false,
+  };
+
+  cartridge.reset();
+  videoRam.reset();
+  externalRam.reset();
+  workRam.reset();
+  oam.reset();
+  interrupts.reset();
+  highRam.reset();
+};
+reset();
+
 const isBootComplete = () => registers.bootComplete;
 const setBootComplete = (complete) => (registers.bootComplete = complete);
-
-const getInterruptEnable = () => registers.interruptEnable;
-const getInterruptFlags = () => registers.interruptFlags;
 
 const read = (address) => {
   switch (getMemoryType(address)) {
@@ -75,9 +87,6 @@ const read = (address) => {
       return highRam.read(address - START_HIGH_RAM);
     case BOOTROM_LOADED:
       return isBootComplete() ? 1 : 0;
-    case INTERRUPT_SWITCH:
-      // TODO
-      return 0;
     default:
       // console.error(`Trying to read from invalid memory address: ${address}`);
       return '--';
@@ -111,9 +120,6 @@ const write = (address, value) => {
       return highRam.write(address - START_HIGH_RAM, value);
     case BOOTROM_LOADED:
       return setBootComplete(value === 1);
-    case INTERRUPT_SWITCH:
-      // TODO
-      return 0;
     default:
       // console.error(`Trying to write to invalid memory address: ${address}`);
       return '?';
@@ -151,8 +157,8 @@ const getMemoryType = (address) => {
     return HIGH_RAM;
   } else if (address === BOOTROM_LOADED_ADDR) {
     return BOOTROM_LOADED;
-  } else if (address === INTERRUPT_SWITCH_ADDR) {
-    return INTERRUPT_SWITCH;
+  } else if (address === INTERRUPT_ENABLE_ADDR) {
+    return IO;
   } else {
     return INVALID;
   }
@@ -164,23 +170,6 @@ const getMemoryPage = (page) => {
     : range(0, 256);
   return memoryRange.map((i) => mmu.read(i));
 };
-
-const reset = () => {
-  registers = {
-    bootComplete: false,
-    interruptEnable: 0x00,
-    interruptFlags: 0x00,
-  };
-
-  cartridge.reset();
-  videoRam.reset();
-  externalRam.reset();
-  workRam.reset();
-  oam.reset();
-  io.reset();
-  highRam.reset();
-};
-reset();
 
 const mmu = {
   MEMORY_SIZE,
@@ -205,9 +194,6 @@ const mmu = {
   reset,
 
   isBootComplete,
-
-  getInterruptEnable,
-  getInterruptFlags,
 };
 
 export default mmu;

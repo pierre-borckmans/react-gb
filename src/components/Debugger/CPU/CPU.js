@@ -87,6 +87,11 @@ const CPU = (props) => {
         <div className="register_16bit">PC={format(base, cpu.getPC(), 16)}</div>
         <div className="register_16bit">SP={format(base, cpu.getSP(), 16)}</div>
 
+        <div className="subsection">Interrupts</div>
+        <div className="register_16bit">
+          IME={cpu.getInterruptMasterEnable() ? 1 : 0}
+        </div>
+
         <div className="subsection">Current opcode</div>
         <div className="operation_label">
           {opcodeLabel}

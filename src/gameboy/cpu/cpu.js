@@ -4,46 +4,32 @@ import timer from '../timer/timer';
 
 import { format } from '../../utils/utils';
 
-const registers = {
-  A: 0x00,
-  F: 0x00,
-  B: 0x00,
-  C: 0x00,
-  D: 0x00,
-  E: 0x00,
-  H: 0x00,
-  L: 0x00,
-  PC: 0x0000,
-  SP: 0x0000,
+let registers = {};
 
-  interruptMasterEnable: 0x00,
-};
-
-const cycles = {
-  clock: 0,
-  machine: 0,
-};
+let cycles = {};
 
 let halt = false;
 let haltBug = false;
 
 const reset = () => {
-  registers.A = 0x00;
-  registers.F = 0x00;
-  registers.B = 0x00;
-  registers.C = 0x00;
-  registers.D = 0x00;
-  registers.E = 0x00;
-  registers.H = 0x00;
-  registers.L = 0x00;
-  registers.PC = 0x0000;
-  registers.SP = 0x0000;
+  registers = {
+    A: 0x00,
+    F: 0x00,
+    B: 0x00,
+    C: 0x00,
+    D: 0x00,
+    E: 0x00,
+    H: 0x00,
+    L: 0x00,
+    PC: 0x0000,
+    SP: 0x0000,
 
-  cycles.clock = 0;
-  cycles.machine = 0;
+    interruptMasterEnable: 1,
+  };
 
-  mmu.reset();
+  cycles = { clock: 0, machine: 0 };
 };
+reset();
 
 const getFlag = (flag) => {
   switch (flag.toUpperCase()) {
@@ -195,8 +181,11 @@ const step = () => {
   const previousMachineCycles = getMachineCycles();
   const result = executeOpcodeFn(cpu);
 
-  timer.step(getMachineCycles() - previousMachineCycles);
+  const elapsedMachineCycles = getMachineCycles() - previousMachineCycles;
 
+  timer.step(elapsedMachineCycles);
+
+  // TODO: remove when all opcodes implemented
   if (result === -1) {
     alert(`Opcode ${format('hex', opcode)} not implemented`);
   }

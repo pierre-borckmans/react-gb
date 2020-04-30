@@ -1,6 +1,7 @@
 import breakpoints from './breakpoints';
 
 import cpu from '../cpu/cpu';
+import mmu from '../mmu/mmu';
 import ppu from '../ppu/ppu';
 import apu from '../apu/apu';
 import timer from '../timer/timer';
@@ -88,6 +89,7 @@ const isRunning = () => running;
 
 const reset = () => {
   cpu.reset();
+  mmu.reset();
   timer.reset();
   apu.reset();
   ppu.reset();

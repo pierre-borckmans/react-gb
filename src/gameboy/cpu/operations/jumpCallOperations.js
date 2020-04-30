@@ -86,6 +86,7 @@ const JP_$RR = (cpu, reg16) => {
 // RST XXH
 // - - - -
 const RST_XXH = (cpu, XX) => {
+  cpu.setInterruptMasterEnable(0);
   cpu.stackPush(cpu.getPC());
 
   cpu.setPC(XX);
@@ -103,9 +104,9 @@ const RET = (cpu) => {
 // RETI
 // - - - -
 const RETI = (cpu) => {
+  cpu.setInterruptMasterEnable(1);
   const popValue = cpu.stackPop(cpu);
   cpu.setPC(popValue);
-  cpu.setIME();
   cpu.incClockCycles(16);
 };
 

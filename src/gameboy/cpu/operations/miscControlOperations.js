@@ -38,7 +38,7 @@ const PREFIX_CB = (cpu) => {
 // DI
 // - - - -
 const DI = (cpu) => {
-  cpu.setIME(false);
+  cpu.setInterruptMasterEnable(0);
   cpu.incPC(1);
   cpu.incClockCycles(4);
 };
@@ -46,7 +46,7 @@ const DI = (cpu) => {
 // EI
 // - - - -
 const EI = (cpu) => {
-  cpu.setIME(true);
+  cpu.setInterruptMasterEnable(1);
   cpu.incPC(1);
   cpu.incClockCycles(4);
 };
