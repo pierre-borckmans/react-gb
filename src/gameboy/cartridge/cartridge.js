@@ -1,14 +1,57 @@
 import mmu from '../mmu/mmu';
 
-import rom from '../../assets/roms/test.gb';
+import rom from '../../assets/roms/rom1.gb';
 
 import { range } from 'lodash';
 
 const SIZE = 0x8000;
+
+const NINTENDO_LOGO_START_ADDR = 0x104;
+const NINTENDO_LOGO_END_ADDR = 0x133;
 const TITLE_START_ADDR = 0x134;
-const TITLE_END_ADDR = 0x143;
-const MANUFACTURER_START_ADDR = 0x144;
-const MANUFACTURER_END_ADDR = 0x143;
+const TITLE_END_ADDR = 0x142;
+const GB_OR_CGB_ADDR = 0x143; // CGB if 0x80
+const GB_OR_SGB_ADDR = 0x146; // SGB if 0x80
+
+const CARTRIDGE_TYPE_ADDR = 0x147;
+// 00 ROM ONLY                              11 ROM + MB3
+// 01 ROM + MBC1                            12 ROM + MBC3 + RAM
+// 02 ROM + MBC1 + RAM                      13 ROM + MBC3 + RAM + BATTERY
+// 03 ROM + MBC1 + RAM + BATTERY            19 ROM + MBC5
+// 05 ROM + MBC2                            1A ROM + MBC5 + RAM
+// 06 ROM + MBC2 + BATTERY                  1B ROM + MBC5 + RAM + BATTERY
+// 08 ROM + RAM                             1C ROM + MBC5 + RUMBLE
+// 09 ROM + RAM + BATTERY                   1D ROM + MBC5 + RUMBLE + SRAM
+// 0B ROM + MMM01                           1E ROM + MBC5 + RUMBLE + SRAM + BATTERY
+// 0C ROM + MMM01 + SRAM                    1F POCKET CAMERA
+// 0D ROM + MMM01 + SRAM + BATTERY          FD BANDAI TAMA5
+// 0F ROM + MBC3 + TIMER + BATTERY          FE HUDSON HUC3
+// 10 ROM + MBC3 + TIMER + RAM + BATTERY    FF HUDSON HUC1
+
+const ROM_SIZE_ADDR = 0x148;
+// 00   32 KByte -   2 banks
+// 01   64 KByte -   4 banks
+// 02  128 KByte -   8 banks
+// 03  256 KByte -  16 banks
+// 04  512 KByte -  32 banks
+// 05 1024 KByte -  64 banks
+// 06 2048 KByte - 128 banks
+// 52 1152 KByte -  72 banks
+// 53 1280 KByte -  80 banks
+// 54 1536 KByte -  96 banks
+
+const RAM_SIZE_ADDR = 0x149;
+// 00 None
+// 01    2 KByte -  1 bank
+// 02    8 Kbyte -  1 bank
+// 03   32 KByte -  4 banks
+// 04  128 KByte - 16 banks
+
+const DESTINATION_CODE_ADDR = 0x14a;
+// 00 Japan
+// != 0 NON Japan
+
+const COMPLEMENT_CHECK_ADDR = 0x14d;
 
 let loadedROM = new Uint8Array(SIZE).fill(0);
 
@@ -59,18 +102,129 @@ const getTitle = () =>
     .map((addr) => String.fromCharCode(loadedROM[addr]))
     .join('');
 
-const getManufacturer = () =>
-  range(MANUFACTURER_START_ADDR, MANUFACTURER_END_ADDR)
-    .map((addr) => String.fromCharCode(loadedROM[addr]))
-    .join('');
+const getRegion = () =>
+  loadedROM[DESTINATION_CODE_ADDR] ? 'Non-Japan' : 'Japan';
+
+const getCGB = () => loadedROM[GB_OR_CGB_ADDR] === 0x80;
+
+const getSGB = () => loadedROM[GB_OR_SGB_ADDR] === 0x80;
+
+const getROMSizeAndBanks = () => {
+  switch (loadedROM[ROM_SIZE_ADDR]) {
+    case 0x00:
+      return [32, 2];
+    case 0x01:
+      return [64, 4];
+    case 0x02:
+      return [128, 8];
+    case 0x03:
+      return [256, 16];
+    case 0x04:
+      return [512, 32];
+    case 0x05:
+      return [1024, 64];
+    case 0x06:
+      return [2048, 12];
+    case 0x52:
+      return [1152, 72];
+    case 0x53:
+      return [1280, 80];
+    case 0x54:
+      return [1536, 96];
+    default:
+      return [0, 0];
+  }
+};
+
+const getRAMSizeAndBanks = () => {
+  switch (loadedROM[RAM_SIZE_ADDR]) {
+    case 0x00:
+      return [0, 0];
+    case 0x01:
+      return [2, 1];
+    case 0x02:
+      return [8, 1];
+    case 0x03:
+      return [32, 4];
+    case 0x04:
+      return [128, 1];
+    default:
+      return [0, 0];
+  }
+};
+
+const getType = () => {
+  switch (loadedROM[CARTRIDGE_TYPE_ADDR]) {
+    case 0x00:
+      return 'ROM ONLY';
+    case 0x01:
+      return 'ROM + MBC1';
+    case 0x02:
+      return 'ROM + MBC1 + RAM';
+    case 0x03:
+      return 'ROM + MBC1 + RAM + BATTERY';
+    case 0x05:
+      return 'ROM + MBC2';
+    case 0x06:
+      return 'ROM + MBC2 + BATTERY';
+    case 0x08:
+      return 'ROM + RAM';
+    case 0x09:
+      return 'ROM + RAM + BATTERY';
+    case 0x0b:
+      return 'ROM + MMM01';
+    case 0x0c:
+      return 'ROM + MMM01 + SRAM';
+    case 0x0d:
+      return 'ROM + MMM01 + SRAM + BATTERY';
+    case 0x0f:
+      return 'ROM + MBC3 + TIMER + BATTERY';
+    case 0x10:
+      return 'ROM + MBC3 + TIMER + RAM + BATTERY';
+    case 0x11:
+      return 'ROM + MB3';
+    case 0x12:
+      return 'ROM + MBC3 + RAM';
+    case 0x13:
+      return 'ROM + MBC3 + RAM + BATTERY';
+    case 0x19:
+      return 'ROM + MBC5';
+    case 0x1a:
+      return 'ROM + MBC5 + RAM';
+    case 0x1b:
+      return 'ROM + MBC5 + RAM + BATTERY';
+    case 0x1c:
+      return 'ROM + MBC5 + RUMBLE';
+    case 0x1d:
+      return 'ROM + MBC5 + RUMBLE + SRAM';
+    case 0x1e:
+      return 'ROM + MBC5 + RUMBLE + SRAM + BATTERY';
+    case 0x1f:
+      return 'POCKET CAMERA';
+    case 0xfd:
+      return 'BANDAI TAMA5';
+    case 0xfe:
+      return 'HUDSON HUC3';
+    case 0xff:
+      return 'HUDSON HUC1';
+    default:
+      return 'UNKNOWN?';
+  }
+};
 
 const cartridge = {
   loadROM,
   read,
   write,
   reset,
+
   getTitle,
-  getManufacturer,
+  getType,
+  getRegion,
+  getCGB,
+  getSGB,
+  getROMSizeAndBanks,
+  getRAMSizeAndBanks,
 };
 
 export default cartridge;

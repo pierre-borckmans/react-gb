@@ -5,8 +5,6 @@ import timer from '../../timer/timer';
 
 import { format } from '../../../utils/utils';
 
-const SIZE = 0x80;
-
 const JOYPAD_ADDR = 0xff00;
 const START_TIMER_ADDR = 0xff04;
 const END_TIMER_ADDR = 0xff07;
