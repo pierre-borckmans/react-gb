@@ -45,9 +45,13 @@ const END_HIGH_RAM = 0xfffe;
 const BOOTROM_LOADED_ADDR = 0xff50;
 const INTERRUPT_SWITCH_ADDR = 0xffff;
 
-let bootComplete = false;
-const isBootComplete = () => bootComplete;
-const setBootComplete = (complete) => (bootComplete = complete);
+let registers = {};
+
+const isBootComplete = () => registers.bootComplete;
+const setBootComplete = (complete) => (registers.bootComplete = complete);
+
+const getInterruptEnable = () => registers.interruptEnable;
+const getInterruptFlags = () => registers.interruptFlags;
 
 const read = (address) => {
   switch (getMemoryType(address)) {
@@ -162,6 +166,12 @@ const getMemoryPage = (page) => {
 };
 
 const reset = () => {
+  registers = {
+    bootComplete: false,
+    interruptEnable: 0x00,
+    interruptFlags: 0x00,
+  };
+
   cartridge.reset();
   videoRam.reset();
   externalRam.reset();
@@ -170,6 +180,7 @@ const reset = () => {
   io.reset();
   highRam.reset();
 };
+reset();
 
 const mmu = {
   MEMORY_SIZE,
@@ -192,7 +203,11 @@ const mmu = {
   getMemoryType,
 
   reset,
+
   isBootComplete,
+
+  getInterruptEnable,
+  getInterruptFlags,
 };
 
 export default mmu;
