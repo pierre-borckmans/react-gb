@@ -139,14 +139,14 @@
 }
 
 .byte_with_label {
-  width: 97%;
-  height: 96%;
+  width: 93%;
+  height: 95%;
   background-color: darkcyan;
   color: white;
 }
 
 .byte_in_label {
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .label {

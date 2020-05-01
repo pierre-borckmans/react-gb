@@ -2,7 +2,9 @@ import opcodesMap from './opcodes/opcodesMap';
 import mmu from '../mmu/mmu';
 import timer from '../timer/timer';
 
-import { format } from '../../utils/utils';
+import { format, readBit, setBit } from '../../utils/utils';
+import interrupts from '../interrupts/interrupts';
+import jumpCallOperations from './operations/jumpCallOperations';
 
 let registers = {};
 
@@ -189,7 +191,41 @@ const step = () => {
   if (result === -1) {
     alert(`Opcode ${format('hex', opcode)} not implemented`);
   }
+
+  if (
+    getInterruptMasterEnable() &&
+    interrupts.getInterruptEnable() &&
+    interrupts.getInterruptFlags()
+  ) {
+    serviceInterrupts();
+  }
   return result;
+};
+
+const serviceInterrupts = () => {
+  const interruptEnable = interrupts.getInterruptEnable();
+  const interruptFlags = interrupts.getInterruptFlags();
+  if (readBit(interruptEnable, 0) && readBit(interruptFlags, 0)) {
+    // Vertical Blank
+    interrupts.disableVBlankInterrupt();
+    jumpCallOperations.RST_XXH(cpu, 0x40);
+  } else if (readBit(interruptEnable, 1) && readBit(interruptFlags, 1)) {
+    // LCDC Status
+    interrupts.disableLCDStatInterrupt();
+    jumpCallOperations.RST_XXH(cpu, 0x48);
+  } else if (readBit(interruptEnable, 2) && readBit(interruptFlags, 2)) {
+    // Timer Overflow
+    interrupts.disableTimerInterrupt();
+    jumpCallOperations.RST_XXH(cpu, 0x50);
+  } else if (readBit(interruptEnable, 3) && readBit(interruptFlags, 3)) {
+    // Serial Transfer Completion
+    interrupts.disableSerialInterrupt();
+    jumpCallOperations.RST_XXH(cpu, 0x58);
+  } else if (readBit(interruptEnable, 4) && readBit(interruptFlags, 4)) {
+    // High-to-Low of P10-P13 (Joypad)
+    interrupts.disableJoypadInterrupt();
+    jumpCallOperations.RST_XXH(cpu, 0x60);
+  }
 };
 
 const debugAllOpcodes = () => {

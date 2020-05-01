@@ -26,4 +26,7 @@ const format = (base, value, length) => {
 const readBit = (value, bitIdx) =>
   (value & (1 << bitIdx)) === 1 << bitIdx ? 1 : 0;
 
-export { toHex, toBin, format, readBit };
+const setBit = (value, bitIdx, bit) =>
+  bit ? value | (1 << bitIdx) : value & ~(1 << bitIdx);
+
+export { toHex, toBin, format, readBit, setBit };

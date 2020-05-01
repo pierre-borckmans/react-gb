@@ -3,7 +3,7 @@ import config from './config';
 import apu from './apu/apu';
 import cartridge from './cartridge/cartridge';
 import cpu from './cpu/cpu';
-import interrupt from './interrupt/interrupt';
+import interrupts from './interrupts/interrupts';
 import joypad from './joypad/joypad';
 import mmu from './mmu/mmu';
 import ppu from './ppu/ppu';
@@ -17,7 +17,7 @@ const getConfig = () => config;
 const getApu = () => apu;
 const getCartridge = () => cartridge;
 const getCpu = () => cpu;
-const getInterruptController = () => interrupt;
+const getInterrupts = () => interrupts;
 const getJoypad = () => joypad;
 const getMmu = () => mmu;
 const getPpu = () => ppu;
@@ -32,7 +32,7 @@ const gameboy = {
   getApu,
   getCartridge,
   getCpu,
-  getInterruptController,
+  getInterrupts,
   getJoypad,
   getMmu,
   getPpu,

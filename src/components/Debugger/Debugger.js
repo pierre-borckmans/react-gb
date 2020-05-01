@@ -30,7 +30,7 @@ const Debugger = (props) => {
   const apu = gameboy.getApu();
   const cartridge = gameboy.getCartridge();
   const [cpu, setCPU] = useState(gameboy.getCpu());
-  const interrupt = gameboy.getInterruptController();
+  const interrupts = gameboy.getInterrupts();
   const joypad = gameboy.getJoypad();
   const mmu = gameboy.getMmu();
   const ppu = gameboy.getPpu();
@@ -162,7 +162,7 @@ const Debugger = (props) => {
           </div>
           <APU apu={apu} />
           <Joypad joypad={joypad} />
-          <Interrupt interrupt={interrupt} />
+          <Interrupt interrupts={interrupts} />
           <Serial serial={serial} />
           <Timer timer={timer} />
           <Gamepad />

@@ -1,4 +1,5 @@
 import { format } from '../../utils/utils';
+import interrupts from '../interrupts/interrupts';
 
 const DIVIDER_ADDR = 0xff04; // Counts up at a fixed 16384Hz; reset to 0 whenever written to
 const TIMER_COUNTER_ADDR = 0xff05; // Counts up at the specified rate; triggers INT 0x50 when going 255->0
@@ -53,7 +54,6 @@ const step = (stepMachineCycles) => {
         timaThreshold = 256;
         break; // 4096Hz
       case 0b01:
-        // TODO fix
         timaThreshold = 4;
         break; // 262144Hz
       case 0b10:
@@ -73,7 +73,7 @@ const step = (stepMachineCycles) => {
       if (registers.TIMA > 0xff) {
         registers.TIMA = registers.TMA;
 
-        // TODO: trigger interrupt
+        interrupts.setTimerInterruptFlag();
       }
     }
   }
