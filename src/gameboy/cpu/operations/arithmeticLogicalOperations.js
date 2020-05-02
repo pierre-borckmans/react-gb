@@ -27,10 +27,12 @@ const INC16_SP = (cpu) => {
 // DEC RR
 // - - - -
 const DEC16_RR = (cpu, reg16) => {
+  const value = cpu.readReg16(reg16);
+  const newValue = (value - 1) & 0xffff;
+  cpu.writeReg16(reg16, newValue);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // DEC SP
@@ -47,28 +49,53 @@ const DEC16_SP = (cpu) => {
 // ADD RR,RR
 // - 0 H C
 const ADD16_RR_RR = (cpu, reg1, reg2) => {
+  const sum = cpu.readReg16(reg1) + cpu.readReg16(reg2);
+
+  const Z = cpu.getFlag('Z');
+  const N = 0;
+  const H = cpu.readReg16(reg1) & (0xfff > sum) & 0xfff ? 1 : 0;
+  const C = sum > 0xffff ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.writeReg16(reg1, sum & 0xffff);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // ADD RR,SP
 // - 0 H C
 const ADD16_RR_SP = (cpu, reg16) => {
+  const sum = cpu.readReg16(reg16) + cpu.getSP();
+
+  const Z = cpu.getFlag('Z');
+  const N = 0;
+  const H = cpu.readReg16(reg16) & (0xfff > sum) & 0xfff ? 1 : 0;
+  const C = sum > 0xffff ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.writeReg16(reg16, sum & 0xffff);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // ADD SP,r8
 // 0 0 H C
 const ADD16_SP_r8 = (cpu) => {
+  const r8 = cpu.getPC() + cpu.readSignedImmediate8();
+  const sum = cpu.getSP() + r8;
+
+  const Z = cpu.getFlag('Z');
+  const N = 0;
+  const H = cpu.getSP() & (0xfff > sum) & 0xfff ? 1 : 0;
+  const C = sum > 0xffff ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.setSP(sum & 0xffff);
+
   cpu.incPC(2);
   cpu.incClockCycles(16);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // --------------------------------------------------------------------------------
@@ -87,6 +114,7 @@ const INC8_R = (cpu, reg8) => {
   const H = (((value & 0xf) + 1) & 0xf) === 0x10 ? 1 : 0;
   const C = cpu.getFlag('C');
   cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(4);
 };
@@ -94,10 +122,19 @@ const INC8_R = (cpu, reg8) => {
 // INC (RR)
 // Z 0 H -
 const INC8_$RR = (cpu, reg16) => {
+  const address = cpu.readReg16(reg16);
+  const value = cpu.readAddress8(address);
+  const newValue = (value + 1) & 0xff;
+  cpu.writeAddress8(address, newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = (value & 0xf) < 1 ? 1 : 0;
+  const C = cpu.getFlag('C');
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(12);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // DEC R
@@ -108,7 +145,7 @@ const DEC8_R = (cpu, reg8) => {
   cpu.writeReg8(reg8, newValue);
 
   const Z = newValue === 0 ? 1 : 0;
-  const N = 0;
+  const N = 1;
   const H = (value & 0xf) < 1 ? 1 : 0;
   const C = cpu.getFlag('C');
   cpu.setFlags(Z, N, H, C);
@@ -119,64 +156,140 @@ const DEC8_R = (cpu, reg8) => {
 // DEC (RR)
 // Z 1 H -
 const DEC8_$RR = (cpu, reg16) => {
+  const address = cpu.readReg16(reg16);
+  const value = cpu.readAddress8(address);
+  const newValue = (value - 1) & 0xff;
+  cpu.writeAddress8(address, newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 1;
+  const H = (value & 0xf) < 1 ? 1 : 0;
+  const C = cpu.getFlag('C');
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(12);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // ADD R,R
 // Z O H C
 const ADD8_R_R = (cpu, reg1, reg2) => {
+  const sum = cpu.readReg8(reg1) + cpu.readReg8(reg2);
+
+  const Z = sum & (0xff === 0) ? 1 : 0;
+  const N = 0;
+  const H = (sum & 0xf) < (cpu.readReg8(reg1) & 0xf) ? 1 : 0;
+  const C = sum > 0xff ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.writeReg8(reg1, sum & 0xff);
+
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // ADD R,(RR)
 // Z O H C
 const ADD8_R_$RR = (cpu, reg8, reg16) => {
+  const sum = cpu.readReg8(reg8) + cpu.readAddress8(cpu.readReg8(reg16));
+
+  const Z = sum & (0xff === 0) ? 1 : 0;
+  const N = 0;
+  const H = (sum & 0xf) < (cpu.readReg8(reg8) & 0xf) ? 1 : 0;
+  const C = sum > 0xff ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.writeReg8(reg8, sum & 0xff);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // ADD R,d8
 // Z O H C
 const ADD8_R_d8 = (cpu, reg8) => {
+  const sum = cpu.readReg8(reg8) + cpu.readImmediate8();
+
+  const Z = sum & (0xff === 0) ? 1 : 0;
+  const N = 0;
+  const H = (sum & 0xf) < (cpu.readReg8(reg8) & 0xf) ? 1 : 0;
+  const C = sum > 0xff ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.writeReg8(reg8, sum & 0xff);
+
   cpu.incPC(2);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // ADC R,R
 // Z O H C
 const ADC8_R_R = (cpu, reg1, reg2) => {
+  const sum = cpu.readReg8(reg1) + cpu.readReg8(reg2) + cpu.getFlag('C');
+
+  const Z = sum & (0xff === 0) ? 1 : 0;
+  const N = 0;
+  const H =
+    (cpu.readReg8(reg1) & 0xf) + (cpu.readReg8(reg2) & 0xf) + cpu.getFlag('C') >
+    0xf
+      ? 1
+      : 0;
+  const C = sum > 0xff ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.writeReg8(reg1, sum & 0xff);
+
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // ADC R,(RR)
 // Z O H C
 const ADC8_R_$RR = (cpu, reg8, reg16) => {
+  const sum =
+    cpu.readReg8(reg8) +
+    cpu.readAddress8(cpu.readReg16(reg16)) +
+    cpu.getFlag('C');
+
+  const Z = sum & (0xff === 0) ? 1 : 0;
+  const N = 0;
+  const H =
+    (cpu.readReg8(reg8) & 0xf) +
+      (cpu.readAddress8(cpu.readReg16(reg16)) & 0xf) +
+      cpu.getFlag('C') >
+    0xf
+      ? 1
+      : 0;
+  const C = sum > 0xff ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.writeReg8(reg8, sum & 0xff);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // ADC R,d8
 // Z O H C
 const ADC8_R_d8 = (cpu, reg8) => {
+  const sum = cpu.readReg8(reg8) + cpu.readImmediate8() + cpu.getFlag('C');
+
+  const Z = sum & (0xff === 0) ? 1 : 0;
+  const N = 0;
+  const H =
+    (cpu.readReg8(reg8) & 0xf) +
+      (cpu.readImmediate8() & 0xf) +
+      cpu.getFlag('C') >
+    0xf
+      ? 1
+      : 0;
+  const C = sum > 0xff ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.writeReg8(reg8, sum & 0xff);
+
   cpu.incPC(2);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SUB R
@@ -184,101 +297,179 @@ const ADC8_R_d8 = (cpu, reg8) => {
 const SUB8_R = (cpu, reg8) => {
   const regAValue = cpu.readReg8('A');
   const reg8Value = cpu.readReg8(reg8);
-  const newValue = (regAValue - reg8Value) & 0xff;
-  cpu.writeReg8('A', newValue);
+  const newValue = regAValue - reg8Value;
+  cpu.writeReg8('A', newValue & 0xff);
 
-  const Z = newValue === 0;
+  const Z = newValue === 0 ? 1 : 0;
   const N = 1;
-  const H = 0; // TODO fix this
-  const C = cpu.getFlag('C');
-
+  const H = ((regAValue & 0xf) < newValue) & 0xf ? 1 : 0;
+  const C = newValue < 0 ? 1 : 0;
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(1);
   cpu.incClockCycles(4);
-
-  // TODO: CHECK
 };
 
 // SUB (RR)
 // Z 1 H C
 const SUB8_$RR = (cpu, reg16) => {
+  const regAValue = cpu.readReg8('A');
+  const address = cpu.readReg16(reg16);
+  const $RR = cpu.readAddress8(address);
+
+  const newValue = regAValue - $RR;
+  cpu.writeReg8('A', newValue & 0xff);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 1;
+  const H = ((regAValue & 0xf) < newValue) & 0xf ? 1 : 0;
+  const C = newValue < 0 ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SUB d8
 // Z 1 H C
 const SUB8_d8 = (cpu) => {
+  const regAValue = cpu.readReg8('A');
+  const d8 = cpu.readImmediate8();
+  const newValue = regAValue - d8;
+  cpu.writeReg8('A', newValue & 0xff);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 1;
+  const H = ((regAValue & 0xf) < newValue) & 0xf ? 1 : 0;
+  const C = newValue < 0 ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SBC R,R
 // Z 1 H C
 const SBC8_R_R = (cpu, reg1, reg2) => {
+  const reg1Value = cpu.readReg8(reg1);
+  const reg2Value = cpu.readReg8(reg2);
+  const newValue = reg1Value - reg2Value - cpu.getFlag('C');
+  cpu.writeReg8(reg1, newValue & 0xff);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 1;
+  const H = ((reg1Value & 0xf) < newValue) & 0xf ? 1 : 0;
+  const C = newValue < 0 ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SBC R,(RR)
 // Z 1 H C
 const SBC8_R_$RR = (cpu, reg8, reg16) => {
+  const reg8Value = cpu.readReg8(reg8);
+  const address = cpu.readReg16(reg16);
+  const $RR = cpu.readAddress8(address);
+
+  const newValue = reg8Value - $RR - cpu.getFlag('C');
+  cpu.writeReg8(reg8, newValue & 0xff);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 1;
+  const H = ((reg8Value & 0xf) < newValue) & 0xf ? 1 : 0;
+  const C = newValue < 0 ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SBC R,d8
 // Z 1 H C
 const SBC8_R_d8 = (cpu, reg8) => {
+  const reg8Value = cpu.readReg8(reg8);
+  const d8 = cpu.readImmediate8();
+  const newValue = reg8Value - d8 - cpu.getFlag('C');
+  cpu.writeReg8(reg8, newValue & 0xff);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 1;
+  const H = ((reg8Value & 0xf) < newValue) & 0xf ? 1 : 0;
+  const C = newValue < 0 ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // AND R
 // Z 0 1 0
 const AND8_R = (cpu, reg8) => {
+  const regAValue = cpu.readReg8('A');
+  const reg8Value = cpu.readReg8(reg8);
+  const newValue = regAValue & reg8Value;
+  cpu.writeReg8('A', newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 1;
+  const C = 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // AND (RR)
 // Z 0 1 0
 const AND8_$RR = (cpu, reg16) => {
+  const regAValue = cpu.readReg8('A');
+  const address = cpu.readReg16(reg16);
+  const $RR = cpu.readAddress8(address);
+  const newValue = regAValue & $RR;
+  cpu.writeReg8('A', newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 1;
+  const C = 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // AND d8
 // Z 0 1 0
 const AND8_d8 = (cpu) => {
+  const regAValue = cpu.readReg8('A');
+  const r8 = cpu.readImmediate8();
+  const newValue = regAValue & r8;
+  cpu.writeReg8('A', newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 1;
+  const C = 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // XOR A,R
 // Z 0 0 0
 const XOR8_A_R = (cpu, reg8) => {
-  const value = cpu.readReg8(reg8) ^ cpu.readReg8(reg8);
-  cpu.writeReg8(value);
+  const newValue = cpu.readReg8('A') ^ cpu.readReg8(reg8);
+  cpu.writeReg8('A', newValue);
 
-  cpu.setFlag('Z', value === 0);
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = 0;
+  cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(1);
   cpu.incClockCycles(4);
@@ -287,99 +478,174 @@ const XOR8_A_R = (cpu, reg8) => {
 // XOR (RR)
 // Z 0 0 0
 const XOR8_$RR = (cpu, reg16) => {
+  const newValue = cpu.readReg8('A') ^ cpu.readAddress8(cpu.readReg16(reg16));
+  cpu.writeReg8('A', newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // XOR d8
 // Z 0 0 0
 const XOR8_d8 = (cpu) => {
+  const newValue = cpu.readReg8('A') ^ cpu.readImmediate8();
+  cpu.writeReg8('A', newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // OR R
 // Z 0 0 0
 const OR8_R = (cpu, reg8) => {
+  const newValue = cpu.readReg8('A') | cpu.readReg8(reg8);
+  cpu.writeReg8('A', newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // OR (RR)
 // Z 0 0 0
 const OR8_$RR = (cpu, reg16) => {
+  const newValue = cpu.readReg8('A') | cpu.readAddress8(cpu.readReg16(reg16));
+  cpu.writeReg8('A', newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // OR d8
 // Z 0 0 0
 const OR8_d8 = (cpu) => {
+  const newValue = cpu.readReg8('A') | cpu.readImmediate8();
+  cpu.writeReg8('A', newValue);
+
+  const Z = newValue === 0 ? 1 : 0;
+  const N = 0;
+  const H = 0;
+  const C = 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(2);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // CP R
-// Z 0 0 0
+// Z 1 H C
 const CP8_R = (cpu, reg8) => {
+  const regAValue = cpu.readReg8('A');
+  const reg8Value = cpu.readReg8(reg8);
+  const sum = regAValue - reg8Value;
+
+  const Z = sum === 0 ? 1 : 0;
+  const N = 1;
+  const H = (sum & 0xf) > (regAValue & 0xf) ? 1 : 0;
+  const C = sum < 0 ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // CP (RR)
 // Z 1 H C
 const CP8_$RR = (cpu, reg16) => {
+  const regAValue = cpu.readReg8('A');
+  const address = cpu.readReg16(reg16);
+  const $RR = cpu.readAddress8(address);
+  const sum = regAValue - $RR;
+
+  const Z = sum === 0 ? 1 : 0;
+  const N = 1;
+  const H = (sum & 0xf) > (regAValue & 0xf) ? 1 : 0;
+  const C = sum < 0 ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(8);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // CP d8
 // Z 1 H C
 const CP8_d8 = (cpu) => {
-  const d8 = cpu.readImmediate8();
-  const A = cpu.readReg8('A');
+  const regAValue = cpu.readReg8('A');
+  const r8 = cpu.readImmediate8();
+  const sum = regAValue - r8;
 
-  const Z = A === d8 ? 1 : 0;
-  const H = (A & 0x0f) < (d8 & 0x0f) ? 1 : 0;
-  const C = A < d8 ? 1 : 0;
-  cpu.setFlags(Z, 1, H, C);
+  const Z = sum === 0 ? 1 : 0;
+  const N = 1;
+  const H = (sum & 0xf) > (regAValue & 0xf) ? 1 : 0;
+  const C = sum < 0 ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
   cpu.incClockCycles(8);
-
-  // TODO: check
 };
 
 // DAA
 // Z - 0 C
 const DAA8 = (cpu) => {
+  if (cpu.getFlag('N')) {
+    if (cpu.getFlag('C') || cpu.readReg8('A') > 0x99) {
+      cpu.writeReg8('A', (cpu.readReg8('A') + 0x60) & 0xff);
+      cpu.setFlag('C', 1);
+    } else if (cpu.getFlag('H') || (cpu.readReg8('A') & 0xf) > 0x9) {
+      cpu.writeReg8('A', (cpu.readReg8('A') + 0x06) & 0xff);
+      cpu.setFlag('H', 0);
+    }
+  } else if (cpu.getFlag('C') && cpu.getFlag('H')) {
+    cpu.writeReg8('A', (cpu.readReg8('A') + 0x9a) & 0xff);
+    cpu.setFlag('H', 0);
+  } else if (cpu.getFlag('C')) {
+    cpu.writeReg8('A', (cpu.readReg8('A') + 0xa0) & 0xff);
+  } else if (cpu.getFlag('H')) {
+    cpu.writeReg8('A', (cpu.readReg8('A') + 0xfa) & 0xff);
+    cpu.setFlag('H', 0);
+  }
+  cpu.setFlag('Z', cpu.readReg8('A') === 0);
+
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // CPL
 // - 1 1 -
 const CPL8 = (cpu) => {
+  cpu.writeReg8('A', cpu.readReg8('A') ^ 0xff);
+
+  const Z = cpu.getFlag('Z');
+  const N = 1;
+  const H = 1;
+  const C = cpu.getFlag('C');
+  cpu.setFlags(Z, N, H, C);
+
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO: IMPLEMENT
-  return -1;
 };
 
 // SCF
@@ -393,7 +659,6 @@ const SCF8 = (cpu) => {
 
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO check
 };
 
 // CCF
@@ -402,12 +667,11 @@ const CCF8 = (cpu) => {
   const Z = cpu.getFlag('Z');
   const N = 0;
   const H = 0;
-  const C = cpu.getFlag('Z') ^ 1;
+  const C = cpu.getFlag('C') ^ 1;
   cpu.setFlag(Z, N, H, C);
 
   cpu.incPC(1);
   cpu.incClockCycles(4);
-  // TODO check
 };
 
 const arithmeticLogicalOperations = {

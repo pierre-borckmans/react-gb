@@ -11,6 +11,11 @@ const Breakpoints = (props) => {
 
   const currentBreakpoint = debugger_.getCurrentBreakpoint();
 
+  const removeAllBreakBoints = () => {
+    debugger_.removeAllBreakpoints();
+    props.onDebuggerChange();
+  };
+
   const getBreakpoint = (bp) => (
     <div
       key={bp.id}
@@ -48,10 +53,11 @@ const Breakpoints = (props) => {
     <Fragment>
       <div className="breakpoints">
         <div className="section">Breakpoints</div>
-        {breakpoints.map(getBreakpoint)}
         <div>
           <button>Add breakpoint</button>
+          <button onClick={removeAllBreakBoints}>Remove all breakpoints</button>
         </div>
+        {breakpoints.map(getBreakpoint)}
       </div>
     </Fragment>
   );

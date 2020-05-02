@@ -22,6 +22,7 @@ const Debugger = (props) => {
   const gameboy = props.gameboy;
 
   const [debugger_, setDebugger] = useState(dbg);
+  const [isRunning, setIsRunning] = useState(false);
   const [stepsPerSecond, setStepsPerSecond] = useState(0);
   const [cyclesPerSecond, setCyclesPerSecond] = useState(0);
 
@@ -45,16 +46,13 @@ const Debugger = (props) => {
 
   const handleDebuggerChange = () => setDebugger({ ...debugger_ });
 
-  const removeAllBreakBoints = () => {
-    debugger_.removeAllBreakpoints();
-    setDebugger({ ...debugger_ });
-  };
-
   const run = () => {
+    setIsRunning(true);
     debugger_.run(25, handleCPUChange);
   };
 
   const pause = () => {
+    setIsRunning(false);
     debugger_.pause(handleCPUChange);
   };
 
@@ -75,6 +73,8 @@ const Debugger = (props) => {
       } else {
         pause();
       }
+      event.stopPropagation();
+      event.preventDefault();
       return;
     }
 
@@ -105,12 +105,14 @@ const Debugger = (props) => {
         <div className="debugger_controls">
           <button onClick={loadROM}>Load rom</button>
           <div className="spacer" />
-          <button onClick={run}>Run</button>
-          <button onClick={pause}>Pause</button>
-          <button onClick={step}>Step</button>
+          <button onClick={isRunning ? pause : run} style={{ width: 50 }}>
+            {isRunning ? 'Pause' : 'Run'}
+          </button>
+          <button onClick={step} disabled={isRunning}>
+            Step
+          </button>
           <div className="spacer" />
           <button onClick={reset}>Reset</button>
-          <button onClick={removeAllBreakBoints}>Remove all breakpoints</button>
           <div className="spacer" />
           <span className="steps_per_second">{`${cpu.getMachineCycles()} cycles`}</span>
           <div className="spacer" />

@@ -141,6 +141,11 @@ const MMU = (props) => {
     if (event.code === 'KeyJ') {
       jumpToAddressPage();
     }
+    if (event.code === 'Tab') {
+      setShowLabels(!showLabels);
+      event.preventDefault();
+      event.stopPropagation();
+    }
   };
 
   useEffect(() => {
