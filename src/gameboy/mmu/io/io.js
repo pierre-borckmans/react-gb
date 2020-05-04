@@ -3,10 +3,13 @@ import apu from '../../apu/apu';
 import joypad from '../../joypad/joypad';
 import timer from '../../timer/timer';
 import interrupts from '../../interrupts/interrupts';
+import serial from '../../serial/serial';
 
 import { format } from '../../../utils/utils';
 
 const JOYPAD_ADDR = 0xff00;
+const START_SERIAL_ADDR = 0xff01;
+const END_SERIAL_ADDR = 0xff02;
 const START_TIMER_ADDR = 0xff04;
 const END_TIMER_ADDR = 0xff07;
 const INTERRUPT_FLAGS_ADDR = 0xff0f;
@@ -20,6 +23,8 @@ const read = (address) => {
   if (false) {
   } else if (address === JOYPAD_ADDR) {
     return joypad.read();
+  } else if (address >= START_SERIAL_ADDR && address <= END_SERIAL_ADDR) {
+    return serial.read(address);
   } else if (address >= START_TIMER_ADDR && address <= END_TIMER_ADDR) {
     return timer.read(address);
   } else if (address === INTERRUPT_FLAGS_ADDR) {
@@ -38,6 +43,8 @@ const read = (address) => {
 const write = (address, value) => {
   if (address === JOYPAD_ADDR) {
     return joypad.write(value);
+  } else if (address >= START_SERIAL_ADDR && address <= END_SERIAL_ADDR) {
+    return serial.write(address, value);
   } else if (address >= START_TIMER_ADDR && address <= END_TIMER_ADDR) {
     timer.write(address, value);
   } else if (address === INTERRUPT_FLAGS_ADDR) {

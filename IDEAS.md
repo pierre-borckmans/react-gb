@@ -1,4 +1,5 @@
 - [APU] visual debug of waveforms...
-- [MMU] details about opcodes: description, cycles, immediate, ...
+- [MMU] details about opcodes: description, cycles, immediate, ... + visual feedback
 - [MMU] details about I/O registers: name, description, group (audio, timer...)
 - [GAMEBOY] highlevel graphical view with links to subsystems (CPU, MMU, ...): graphics and links to code + explanations
+- [BREAKPOINTS] opcode, address, flag, interrupt, cpu register value, I/O value (byte or bit), # frames
