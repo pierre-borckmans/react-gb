@@ -38,6 +38,10 @@ const Debugger = (props) => {
   const serial = gameboy.getSerial();
   const timer = gameboy.getTimer();
 
+  useEffect(() => {
+    gameboy.getKeyboard().onKeyEvent(handleDebuggerChange);
+  }, []);
+
   const handleCPUChange = () => {
     setCPU({ ...cpu });
     setStepsPerSecond(debugger_.getStepsPerSecond());

@@ -138,9 +138,6 @@ const MMU = (props) => {
     if (event.code === 'End') {
       setSelectedPage(0xff);
     }
-    if (event.code === 'KeyJ') {
-      jumpToAddressPage();
-    }
     if (event.code === 'Tab') {
       setShowLabels(!showLabels);
       event.preventDefault();

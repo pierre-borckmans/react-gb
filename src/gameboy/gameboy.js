@@ -1,5 +1,7 @@
 import config from './config';
+import debugger_ from './debugger/debugger';
 
+// gameboy subsystems
 import apu from './apu/apu';
 import cartridge from './cartridge/cartridge';
 import cpu from './cpu/cpu';
@@ -10,10 +12,17 @@ import ppu from './ppu/ppu';
 import serial from './serial/serial';
 import timer from './timer/timer';
 
-import debugger_ from './debugger/debugger';
+// gameboy devices
+import screen from '../devices/screen/screen';
+import keyboard from '../devices/input/keyboard';
+import gamepad from '../devices/input/gamepad';
+import serialConsole from '../devices/serial/console';
+import speakers from '../devices/speakers/speakers';
 
 const getConfig = () => config;
+const getDebugger = () => debugger_;
 
+// gameboy subsystems
 const getApu = () => apu;
 const getCartridge = () => cartridge;
 const getCpu = () => cpu;
@@ -24,10 +33,16 @@ const getPpu = () => ppu;
 const getSerial = () => serial;
 const getTimer = () => timer;
 
-const getDebugger = () => debugger_;
+// gameboy devices
+const getScreen = () => screen;
+const getKeyboard = () => keyboard;
+const getGamepad = () => gamepad;
+const getSerialConsole = () => serialConsole;
+const getSpeakers = () => speakers;
 
 const gameboy = {
   getConfig,
+  getDebugger,
 
   getApu,
   getCartridge,
@@ -39,7 +54,13 @@ const gameboy = {
   getSerial,
   getTimer,
 
-  getDebugger,
+  getScreen,
+  getKeyboard,
+  getGamepad,
+  getSerialConsole,
+  getSpeakers,
 };
+
+keyboard.init();
 
 export default gameboy;
