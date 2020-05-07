@@ -281,7 +281,7 @@ const opcodesMap = [
 
     // OFFSET 0xF0 ----------------------------------------------------------
     /* 0xF0 LDH A,(a8)  */ cpu => inst.LD8H_R_$a8(cpu, 'A'),
-    /* 0xF1 POP AF      */ cpu => inst.POP16_RR(cpu, 'AF'),
+    /* 0xF1 POP AF      */ cpu => inst.POP16_AF(cpu, 'AF'),
     /* 0xF2 LD A,(C)    */ cpu => inst.LD8_R_$R(cpu, 'A', 'C'),
     /* 0xF3 DI          */ cpu => inst.DI(cpu),
     /* 0xF4 NOT_IMPL    */ cpu => inst.NOT_IMPLEMENTED(cpu, '0xF4'),

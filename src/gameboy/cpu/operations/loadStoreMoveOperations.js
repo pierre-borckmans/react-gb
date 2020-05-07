@@ -82,6 +82,14 @@ const POP16_RR = (cpu, reg16) => {
   cpu.incClockCycles(12);
 };
 
+// POP AF
+// Z N H C
+const POP16_AF = (cpu, reg16) => {
+  POP16_RR(cpu, 'AF');
+  const F = cpu.readReg8('F');
+  cpu.writeReg8('F', F & 0xf0);
+};
+
 // --------------------------------------------------------------------------------
 // 8 bits operations --------------------------------------------------------------
 // --------------------------------------------------------------------------------
@@ -261,6 +269,7 @@ const loadStoreMoveOperations = {
   LD16_RR_SPpr8,
 
   POP16_RR,
+  POP16_AF,
   PUSH16_RR,
 
   LD8_$RR_R,
