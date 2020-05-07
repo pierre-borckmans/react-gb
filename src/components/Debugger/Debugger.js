@@ -71,8 +71,8 @@ const Debugger = (props) => {
   };
 
   const keyListener = (event) => {
-    document.activeElement.blur();
     if (event.code === 'Space') {
+      document.activeElement.blur();
       if (!debugger_.isRunning()) {
         run();
       } else {
@@ -84,10 +84,12 @@ const Debugger = (props) => {
     }
 
     if (event.code === 'Enter') {
+      document.activeElement.blur();
       step();
     }
 
     if (event.code === 'Backspace') {
+      document.activeElement.blur();
       reset();
     }
   };

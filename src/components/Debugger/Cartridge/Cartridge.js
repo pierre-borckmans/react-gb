@@ -1,9 +1,14 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 
 import './Cartridge.css';
 
 const Cartridge = (props) => {
   const { cartridge } = props;
+
+  const [selectedRom, setSelectedRom] = useState(null);
+
+  const testRoms = cartridge.getTestRoms();
+
   return (
     <Fragment>
       <div className="cartridge">
@@ -17,6 +22,29 @@ const Cartridge = (props) => {
         <div>ROM banks: {cartridge.getROMSizeAndBanks()[1]} banks</div>
         <div>RAM size: {cartridge.getRAMSizeAndBanks()[0]} KBytes</div>
         <div>RAM banks: {cartridge.getRAMSizeAndBanks()[1]} banks</div>
+
+        <div className="subsection">
+          <select
+            defaultValue={null}
+            onChange={(e) => setSelectedRom(e.target.value)}
+          >
+            <option disabled selected value>
+              {' '}
+              -- select a rom --{' '}
+            </option>
+            {testRoms.map((rom) => (
+              <option value={rom} key={rom}>
+                {rom}
+              </option>
+            ))}
+          </select>
+          <button
+            disabled={!selectedRom}
+            onClick={() => cartridge.loadROM(selectedRom)}
+          >
+            Load...
+          </button>
+        </div>
       </div>
     </Fragment>
   );

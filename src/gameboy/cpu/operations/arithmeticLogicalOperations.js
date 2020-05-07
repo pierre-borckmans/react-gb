@@ -16,7 +16,7 @@ const INC16_RR = (cpu, reg16) => {
 // INC SP
 // - - - -
 const INC16_SP = (cpu) => {
-  const value = cpu.sp;
+  const value = cpu.getSP();
   const newValue = (value + 1) & 0xffff;
   cpu.setSP(newValue);
 
@@ -38,7 +38,7 @@ const DEC16_RR = (cpu, reg16) => {
 // DEC SP
 // - - - -
 const DEC16_SP = (cpu) => {
-  const value = cpu.sp;
+  const value = cpu.getSP();
   const newValue = (value - 1) & 0xffff;
   cpu.setSP(newValue);
 
@@ -53,7 +53,7 @@ const ADD16_RR_RR = (cpu, reg1, reg2) => {
 
   const Z = cpu.getFlag('Z');
   const N = 0;
-  const H = cpu.readReg16(reg1) & (0xfff > sum) & 0xfff ? 1 : 0;
+  const H = (cpu.readReg16(reg1) & 0xfff) > (sum & 0xfff) ? 1 : 0;
   const C = sum > 0xffff ? 1 : 0;
   cpu.setFlags(Z, N, H, C);
 
@@ -70,7 +70,7 @@ const ADD16_RR_SP = (cpu, reg16) => {
 
   const Z = cpu.getFlag('Z');
   const N = 0;
-  const H = cpu.readReg16(reg16) & (0xfff > sum) & 0xfff ? 1 : 0;
+  const H = (cpu.readReg16(reg16) & 0xfff) > (sum & 0xfff) ? 1 : 0;
   const C = sum > 0xffff ? 1 : 0;
   cpu.setFlags(Z, N, H, C);
 
@@ -83,12 +83,12 @@ const ADD16_RR_SP = (cpu, reg16) => {
 // ADD SP,r8
 // 0 0 H C
 const ADD16_SP_r8 = (cpu) => {
-  const r8 = cpu.getPC() + cpu.readSignedImmediate8();
+  const r8 = cpu.getPC() + 2 + cpu.readSignedImmediate8();
   const sum = cpu.getSP() + r8;
 
-  const Z = cpu.getFlag('Z');
+  const Z = 0;
   const N = 0;
-  const H = cpu.getSP() & (0xfff > sum) & 0xfff ? 1 : 0;
+  const H = (cpu.getSP() & 0xfff) > (sum & 0xfff) ? 1 : 0;
   const C = sum > 0xffff ? 1 : 0;
   cpu.setFlags(Z, N, H, C);
 

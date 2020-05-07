@@ -2,7 +2,7 @@ import opcodesMap from './opcodes/opcodesMap';
 import mmu from '../mmu/mmu';
 import timer from '../timer/timer';
 
-import { format, readBit, setBit } from '../../utils/utils';
+import { format, readBit } from '../../utils/utils';
 import interrupts from '../interrupts/interrupts';
 import jumpCallOperations from './operations/jumpCallOperations';
 
@@ -23,7 +23,7 @@ const reset = () => {
     E: 0x00,
     H: 0x00,
     L: 0x00,
-    PC: 0x0000,
+    PC: 0x0100,
     SP: 0x0000,
 
     interruptMasterEnable: 1,
@@ -155,16 +155,17 @@ const readAddress16 = (add16) => {
 };
 
 const writeAddress8 = (add8, value) => {
-    mmu.write(add8, value & 0xff);
-  },
-  writeAddress16 = (add16, value) => {
-    mmu.write(add16 + 1, (value & 0xff00) >> 8);
-    mmu.write(add16, value & 0x00ff);
-  };
+  mmu.write(add8, value & 0xff);
+};
+
+const writeAddress16 = (add16, value) => {
+  mmu.write(add16 + 1, (value & 0xff00) >> 8);
+  mmu.write(add16, value & 0x00ff);
+};
 
 const stackPush = (value) => {
-  writeAddress16(getSP() - 2, value);
   decSP(2);
+  writeAddress16(getSP(), value);
 };
 
 const stackPop = () => {

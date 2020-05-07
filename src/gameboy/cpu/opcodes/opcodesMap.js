@@ -608,6 +608,7 @@ const getOpcodeLabels = (base, cpu) => {
   const HL = format(base, cpu.readReg16('HL'), 16);
   const PCp2 = format(base, cpu.getPC() + 2, 16);
   const SP = format(base, cpu.getSP(), 16);
+  const POP = format(base, cpu.readAddress16(cpu.getSP()), 16);
 
   const signedImm = cpu.readSignedImmediate8();
 
@@ -844,7 +845,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xC0 ----------------------------------------------------------
     `RET ${NZflag}`,
-    `POP BC <- ${BC}`,
+    `POP BC <- ${POP}`,
     `JP ${NZflag},${a16}`,
     `JP ${a16}`,
     `CALL ${NZflag},${a16}`,
@@ -862,7 +863,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xD0 ----------------------------------------------------------
     `RET ${NCflag}`,
-    `POP DE <- ${DE}`,
+    `POP DE <- ${POP}`,
     `JP ${NCflag},${a16}`,
     `NOT_IMPL`,
     `CALL ${NCflag},${a16}`,
@@ -880,7 +881,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xE0 ----------------------------------------------------------
     `LDH (${a8}),${A}`,
-    `POP HL <- ${HL}`,
+    `POP HL <- ${POP}`,
     `LD (0xFF00+${C}),${A}`,
     `NOT_IMPL`,
     `NOT_IMPL`,
@@ -898,7 +899,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xF0 ----------------------------------------------------------
     `LDH A,(${a8})`,
-    `POP AF <- ${AF}`,
+    `POP AF <- ${POP}`,
     `LD A,(${C}+0xFF00)`,
     `DI`,
     `NOT_IMPL`,
@@ -1144,7 +1145,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xC0 ----------------------------------------------------------
     `RET ${NZflag}`,
-    `POP BC <- ${BC}`,
+    `POP BC <- ${POP}`,
     `JP ${NZflag},${a16}`,
     `JP ${a16}`,
     `CALL ${NZflag},${a16}`,
@@ -1162,7 +1163,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xD0 ----------------------------------------------------------
     `RET ${NCflag}`,
-    `POP DE <- ${DE}`,
+    `POP DE <- ${POP}`,
     `JP ${NCflag},${a16}`,
     `NOT_IMPL`,
     `CALL ${NCflag},${a16}`,
@@ -1180,7 +1181,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xE0 ----------------------------------------------------------
     `LDH (${a8Value}),${A}`,
-    `POP HL <- ${HL}`,
+    `POP HL <- ${POP}`,
     `LD (${Cpff}),${A}`,
     `NOT_IMPL`,
     `NOT_IMPL`,
@@ -1198,7 +1199,7 @@ const getOpcodeLabels = (base, cpu) => {
 
     // OFFSET 0xF0 ----------------------------------------------------------
     `LDH A,(${a8Value})`,
-    `POP AF <- ${AF}`,
+    `POP AF <- ${POP}`,
     `LD A,(${Cpff})`,
     `DI`,
     `NOT_IMPL`,

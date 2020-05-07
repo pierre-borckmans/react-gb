@@ -9,6 +9,7 @@ const addBreakpoint = (breakpoint) => {
   const id = breakpoints.length
     ? Math.max(...breakpoints.map((bp) => bp.id)) + 1
     : 1;
+  console.log(breakpoint);
   breakpoints = [
     ...breakpoints,
     {
@@ -18,6 +19,7 @@ const addBreakpoint = (breakpoint) => {
       opcode: null,
       registers: [],
       flags: [],
+      interrupts: [],
       ...breakpoint,
     },
   ].sort((b1, b2) => (b1.address > b2.address ? 1 : -1));
@@ -50,18 +52,30 @@ const findMatchingBreakpoint = () => {
       bp.registers.length &&
       every(bp.registers, (register) => {
         if (register.name.length === 1) {
-          return cpu.readReg8(bp.register.name) === bp.register.value;
+          return cpu.readReg8(register.name) === register.value;
         }
         if (register.name === 'SP') {
-          return cpu.getSP() === bp.register.value;
+          return cpu.getSP() === register.value;
         } else {
-          return cpu.readReg16(bp.register.name) === bp.register.value;
+          return cpu.readReg16(register.name) === register.value;
         }
       });
     const allFlagsMatch =
       bp.flags.length &&
       every(bp.flags, (flag) => cpu.getFlag(flag.name) === flag.value);
-    return addressMatch || opcodeMatch || allRegistersMatch || allFlagsMatch;
+    const allInterruptsMatch =
+      bp.interrupts.length &&
+      every(
+        bp.interrupts,
+        (interrupt) => false // TODO cpu.checkInterrupt(interrupt)
+      );
+    return (
+      addressMatch ||
+      opcodeMatch ||
+      allRegistersMatch ||
+      allFlagsMatch ||
+      allInterruptsMatch
+    );
   });
   return breakpoint;
 };

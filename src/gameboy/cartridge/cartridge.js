@@ -2,7 +2,36 @@ import mmu from '../mmu/mmu';
 
 import rom from '../../assets/roms/rom1.gb';
 
+import testRomCpu1 from '../../assets/roms/tests/cpu_instrs/01-special.gb';
+import testRomCpu2 from '../../assets/roms/tests/cpu_instrs/02-interrupts.gb';
+import testRomCpu3 from '../../assets/roms/tests/cpu_instrs/03-op sp,hl.gb';
+import testRomCpu4 from '../../assets/roms/tests/cpu_instrs/04-op r,imm.gb';
+import testRomCpu5 from '../../assets/roms/tests/cpu_instrs/05-op rp.gb';
+import testRomCpu6 from '../../assets/roms/tests/cpu_instrs/06-ld r,r.gb';
+import testRomCpu7 from '../../assets/roms/tests/cpu_instrs/07-jr,jp,call,ret,rst.gb';
+import testRomCpu8 from '../../assets/roms/tests/cpu_instrs/08-misc instrs.gb';
+import testRomCpu9 from '../../assets/roms/tests/cpu_instrs/09-op r,r.gb';
+import testRomCpu10 from '../../assets/roms/tests/cpu_instrs/10-bit ops.gb';
+import testRomCpu11 from '../../assets/roms/tests/cpu_instrs/11-op a,(hl).gb';
+
+import testRomCpuAll from '../../assets/roms/tests/cpu_instrs.gb';
+
 import { range } from 'lodash';
+
+const testRoms = {
+  'test cpu: special': testRomCpu1,
+  'test cpu: interrupts': testRomCpu2,
+  'test cpu: op sp,hl': testRomCpu3,
+  'test cpu: op r,imm': testRomCpu4,
+  'test cpu: op rp': testRomCpu5,
+  'test cpu: ld r,r': testRomCpu6,
+  'test cpu: jr,jp,call,ret,rst': testRomCpu7,
+  'test cpu: misc': testRomCpu8,
+  'test cpu: op r,r': testRomCpu9,
+  'test cpu: bit ops': testRomCpu10,
+  'test cpu: op a,(hl)': testRomCpu11,
+  'test cpu: all': testRomCpuAll,
+};
 
 const SIZE = 0x8000;
 
@@ -75,8 +104,8 @@ const bootROM = [
   0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50,
 ];
 
-const loadROM = async () => {
-  await fetch(rom)
+const loadROM = async (romName) => {
+  await fetch(romName ? testRoms[romName] : rom)
     .then((raw) => raw.arrayBuffer())
     .then((buffer) => (loadedROM = [...new Uint8Array(buffer)]));
 };
@@ -90,7 +119,9 @@ const read = (address) => {
 };
 
 const write = (address, value) => {
-  throw new Error('Trying to write to the ROM');
+  // throw new Error('Trying to write to the ROM');
+  // TODO: this should not be allowed, right?
+  loadedROM[address] = value;
 };
 
 const reset = () => {
@@ -212,6 +243,10 @@ const getType = () => {
   }
 };
 
+const getTestRoms = () => {
+  return Object.keys(testRoms);
+};
+
 const cartridge = {
   loadROM,
   read,
@@ -225,6 +260,8 @@ const cartridge = {
   getSGB,
   getROMSizeAndBanks,
   getRAMSizeAndBanks,
+
+  getTestRoms,
 };
 
 export default cartridge;

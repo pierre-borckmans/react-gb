@@ -65,8 +65,8 @@ const LD16_$a16_SP = (cpu) => {
 // PUSH RR
 // - - - -
 const PUSH16_RR = (cpu, reg16) => {
-  const reg = cpu.readReg16(reg16);
-  cpu.stackPush(reg);
+  const reg16Value = cpu.readReg16(reg16);
+  cpu.stackPush(reg16Value);
 
   cpu.incPC(1);
   cpu.incClockCycles(16);
@@ -75,8 +75,8 @@ const PUSH16_RR = (cpu, reg16) => {
 // POP RR
 // - - - -
 const POP16_RR = (cpu, reg16) => {
-  const value = cpu.stackPop();
-  cpu.writeReg16(reg16, value);
+  const stackValue = cpu.stackPop();
+  cpu.writeReg16(reg16, stackValue);
 
   cpu.incPC(1);
   cpu.incClockCycles(12);

@@ -103,6 +103,7 @@ const MMU = (props) => {
   const mmu = props.mmu;
   const debugger_ = props.debugger_;
   const PC = cpu.getPC();
+  const SP = cpu.getSP();
   const selectedAddress = PC;
   const [showLabels, setShowLabels] = useState(false);
   const [selectedPage, setSelectedPage] = useState(0);
@@ -125,7 +126,7 @@ const MMU = (props) => {
   };
 
   const keyListener = (event) => {
-    document.activeElement.blur();
+    // document.activeElement.blur();
     if (event.code === 'ArrowRight') {
       nextPage();
     }
@@ -156,6 +157,9 @@ const MMU = (props) => {
     switch (target) {
       case 'PC':
         setSelectedPage(Math.floor(PC / 256));
+        break;
+      case 'SP':
+        setSelectedPage(Math.floor(SP / 256));
         break;
       default:
         setSelectedPage(Math.floor(mmu[`START_${target}`] / 256));
@@ -280,6 +284,14 @@ const MMU = (props) => {
                             <div className="byte_in_label">{toHex(byte)}</div>
                             <div className="label">{label.label}</div>
                           </div>
+                        ) : showLabels && byteAddress === cpu.getSP() ? (
+                          <div
+                            className="byte_with_label"
+                            style={{ backgroundColor: 'green' }}
+                          >
+                            <div className="byte_in_label">{toHex(byte)}</div>
+                            <div className="label">SP</div>
+                          </div>
                         ) : (
                           toHex(byte)
                         )}
@@ -314,6 +326,7 @@ const MMU = (props) => {
         </div>
         <div className="shortcuts">
           <button onClick={() => goTo('PC')}>PC</button>
+          <button onClick={() => goTo('SP')}>SP</button>
           <button onClick={jumpToAddressPage}>Go to...</button>
           <button onClick={() => goTo('ROM0')}>ROM 0</button>
           <button onClick={() => goTo('ROM1')}>ROM 1</button>

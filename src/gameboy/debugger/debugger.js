@@ -6,6 +6,7 @@ import ppu from '../ppu/ppu';
 import apu from '../apu/apu';
 import timer from '../timer/timer';
 import joypad from '../joypad/joypad';
+import serial from '../serial/serial';
 
 const MACHINE_CYCLES_PER_FRAME = 17556;
 
@@ -94,6 +95,7 @@ const reset = () => {
   apu.reset();
   ppu.reset();
   joypad.reset();
+  serial.reset();
 
   running = false;
   totalSteps = 0;
