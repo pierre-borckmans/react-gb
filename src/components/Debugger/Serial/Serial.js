@@ -9,7 +9,10 @@ const Serial = (props) => {
       <div className="serial">
         <div className="section">Serial</div>
         <div className="data">
-          {serial.getSentBytes().map(String.fromCharCode).join('')}
+          {serial
+            .getSentBytes()
+            .map((b) => String.fromCharCode(b))
+            .join('')}
         </div>
       </div>
     </Fragment>

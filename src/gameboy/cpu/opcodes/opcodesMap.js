@@ -1,3 +1,6 @@
+// TODO: pass cpu tests 2, 7
+// TODO: FIX EI
+
 import inst from '../operations/cpuInstructions';
 import { format } from '../../../utils/utils';
 

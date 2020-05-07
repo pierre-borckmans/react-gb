@@ -77,20 +77,32 @@ const setFlag = (flag, value) => {
 };
 
 const readReg8 = (reg8) => {
+  if (reg8.length !== 1) {
+    throw new Error(`Invalid 8bit Register ${reg8}`);
+  }
   return registers[reg8];
 };
 
 const writeReg8 = (reg8, value) => {
+  if (reg8.length !== 1) {
+    throw new Error(`Invalid 8bit Register ${reg8}`);
+  }
   registers[reg8] = value & 0xff;
 };
 
 const readReg16 = (reg16) => {
+  if (reg16.length !== 2) {
+    throw new Error(`Invalid 16bit Register ${reg16}`);
+  }
   const reg1 = reg16[0];
   const reg2 = reg16[1];
   return (registers[reg1] << 8) | registers[reg2];
 };
 
 const writeReg16 = (reg16, value) => {
+  if (reg16.length !== 2) {
+    throw new Error(`Invalid 16bit Register ${reg16}`);
+  }
   const reg1 = reg16[0];
   const reg2 = reg16[1];
 

@@ -114,7 +114,7 @@ const RETI = (cpu) => {
 // - - - -
 const RET_F = (cpu, F) => {
   const flag = cpu.getFlag(F);
-  if (!flag) {
+  if (flag) {
     const popValue = cpu.stackPop(cpu);
     cpu.setPC(popValue);
     cpu.incClockCycles(20);
@@ -128,7 +128,7 @@ const RET_F = (cpu, F) => {
 // - - - -
 const RET_NF = (cpu, F) => {
   const flag = cpu.getFlag(F);
-  if (flag) {
+  if (!flag) {
     const popValue = cpu.stackPop(cpu);
     cpu.setPC(popValue);
     cpu.incClockCycles(20);

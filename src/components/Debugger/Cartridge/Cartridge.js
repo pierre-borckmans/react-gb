@@ -25,12 +25,11 @@ const Cartridge = (props) => {
 
         <div className="subsection">
           <select
-            defaultValue={null}
+            defaultValue="placeholder"
             onChange={(e) => setSelectedRom(e.target.value)}
           >
-            <option disabled selected value>
-              {' '}
-              -- select a rom --{' '}
+            <option disabled value="placeholder">
+              -- select a rom --
             </option>
             {testRoms.map((rom) => (
               <option value={rom} key={rom}>

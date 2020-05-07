@@ -39,10 +39,12 @@ const read = (address) => {
 
 const write = (address, value) => {
   if (address === SERIAL_TRANSFER_DATA_ADDR) {
-    sentBytes.push(value);
     registers.transferData = value;
   } else if (address === SERIAL_IO_CONTROL_ADDR) {
     registers.transferControl = value;
+    if (value === 0x81) {
+      sentBytes.push(registers.transferData);
+    }
   } else {
     throw new Error(
       `Trying to write invalid serial address ${format('hex', address, 16)}`

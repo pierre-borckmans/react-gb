@@ -9,7 +9,6 @@ const addBreakpoint = (breakpoint) => {
   const id = breakpoints.length
     ? Math.max(...breakpoints.map((bp) => bp.id)) + 1
     : 1;
-  console.log(breakpoint);
   breakpoints = [
     ...breakpoints,
     {

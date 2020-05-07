@@ -13,24 +13,25 @@ import testRomCpu8 from '../../assets/roms/tests/cpu_instrs/08-misc instrs.gb';
 import testRomCpu9 from '../../assets/roms/tests/cpu_instrs/09-op r,r.gb';
 import testRomCpu10 from '../../assets/roms/tests/cpu_instrs/10-bit ops.gb';
 import testRomCpu11 from '../../assets/roms/tests/cpu_instrs/11-op a,(hl).gb';
-
 import testRomCpuAll from '../../assets/roms/tests/cpu_instrs.gb';
+import testRomInstrTiming from '../../assets/roms/tests/instr_timing.gb';
 
 import { range } from 'lodash';
 
 const testRoms = {
-  'test cpu: special': testRomCpu1,
-  'test cpu: interrupts': testRomCpu2,
-  'test cpu: op sp,hl': testRomCpu3,
-  'test cpu: op r,imm': testRomCpu4,
-  'test cpu: op rp': testRomCpu5,
-  'test cpu: ld r,r': testRomCpu6,
-  'test cpu: jr,jp,call,ret,rst': testRomCpu7,
-  'test cpu: misc': testRomCpu8,
-  'test cpu: op r,r': testRomCpu9,
-  'test cpu: bit ops': testRomCpu10,
-  'test cpu: op a,(hl)': testRomCpu11,
+  'test cpu: 1 special': testRomCpu1,
+  'test cpu: 2 interrupts': testRomCpu2,
+  'test cpu: 3 op sp,hl': testRomCpu3,
+  'test cpu: 4 op r,imm': testRomCpu4,
+  'test cpu: 5 op rp': testRomCpu5,
+  'test cpu: 6 ld r,r': testRomCpu6,
+  'test cpu: 7 jr,jp,call,ret,rst': testRomCpu7,
+  'test cpu: 8 misc': testRomCpu8,
+  'test cpu: 9 op r,r': testRomCpu9,
+  'test cpu: 10 bit ops': testRomCpu10,
+  'test cpu: 11 op a,(hl)': testRomCpu11,
   'test cpu: all': testRomCpuAll,
+  'test timing: instr': testRomInstrTiming,
 };
 
 const SIZE = 0x8000;
@@ -111,11 +112,12 @@ const loadROM = async (romName) => {
 };
 
 const read = (address) => {
-  if (address <= 0xff && !mmu.isBootComplete()) {
-    return bootROM[address];
-  } else {
-    return loadedROM[address];
-  }
+  // TODO: enable this again after cpu tests
+  // if (address <= 0xff && !mmu.isBootComplete()) {
+  //   return bootROM[address];
+  // } else {
+  return loadedROM[address];
+  // }
 };
 
 const write = (address, value) => {
