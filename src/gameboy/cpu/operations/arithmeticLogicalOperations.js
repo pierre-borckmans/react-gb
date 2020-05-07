@@ -176,7 +176,7 @@ const DEC8_$RR = (cpu, reg16) => {
 const ADD8_R_R = (cpu, reg1, reg2) => {
   const sum = cpu.readReg8(reg1) + cpu.readReg8(reg2);
 
-  const Z = sum & (0xff === 0) ? 1 : 0;
+  const Z = (sum & 0xff) === 0 ? 1 : 0;
   const N = 0;
   const H = (sum & 0xf) < (cpu.readReg8(reg1) & 0xf) ? 1 : 0;
   const C = sum > 0xff ? 1 : 0;
@@ -193,7 +193,7 @@ const ADD8_R_R = (cpu, reg1, reg2) => {
 const ADD8_R_$RR = (cpu, reg8, reg16) => {
   const sum = cpu.readReg8(reg8) + cpu.readAddress8(cpu.readReg8(reg16));
 
-  const Z = sum & (0xff === 0) ? 1 : 0;
+  const Z = (sum & 0xff) === 0 ? 1 : 0;
   const N = 0;
   const H = (sum & 0xf) < (cpu.readReg8(reg8) & 0xf) ? 1 : 0;
   const C = sum > 0xff ? 1 : 0;
@@ -210,7 +210,7 @@ const ADD8_R_$RR = (cpu, reg8, reg16) => {
 const ADD8_R_d8 = (cpu, reg8) => {
   const sum = cpu.readReg8(reg8) + cpu.readImmediate8();
 
-  const Z = sum & (0xff === 0) ? 1 : 0;
+  const Z = (sum & 0xff) === 0 ? 1 : 0;
   const N = 0;
   const H = (sum & 0xf) < (cpu.readReg8(reg8) & 0xf) ? 1 : 0;
   const C = sum > 0xff ? 1 : 0;
@@ -227,7 +227,7 @@ const ADD8_R_d8 = (cpu, reg8) => {
 const ADC8_R_R = (cpu, reg1, reg2) => {
   const sum = cpu.readReg8(reg1) + cpu.readReg8(reg2) + cpu.getFlag('C');
 
-  const Z = sum & (0xff === 0) ? 1 : 0;
+  const Z = (sum & 0xff) === 0 ? 1 : 0;
   const N = 0;
   const H =
     (cpu.readReg8(reg1) & 0xf) + (cpu.readReg8(reg2) & 0xf) + cpu.getFlag('C') >
@@ -251,7 +251,7 @@ const ADC8_R_$RR = (cpu, reg8, reg16) => {
     cpu.readAddress8(cpu.readReg16(reg16)) +
     cpu.getFlag('C');
 
-  const Z = sum & (0xff === 0) ? 1 : 0;
+  const Z = (sum & 0xff) === 0 ? 1 : 0;
   const N = 0;
   const H =
     (cpu.readReg8(reg8) & 0xf) +
@@ -274,7 +274,7 @@ const ADC8_R_$RR = (cpu, reg8, reg16) => {
 const ADC8_R_d8 = (cpu, reg8) => {
   const sum = cpu.readReg8(reg8) + cpu.readImmediate8() + cpu.getFlag('C');
 
-  const Z = sum & (0xff === 0) ? 1 : 0;
+  const Z = (sum & 0xff) === 0 ? 1 : 0;
   const N = 0;
   const H =
     (cpu.readReg8(reg8) & 0xf) +
@@ -340,7 +340,7 @@ const SUB8_d8 = (cpu) => {
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 1;
-  const H = ((regAValue & 0xf) < newValue) & 0xf ? 1 : 0;
+  const H = (regAValue & 0xf) < (newValue & 0xf) ? 1 : 0;
   const C = newValue < 0 ? 1 : 0;
   cpu.setFlags(Z, N, H, C);
 
@@ -396,7 +396,7 @@ const SBC8_R_d8 = (cpu, reg8) => {
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 1;
-  const H = ((reg8Value & 0xf) < newValue) & 0xf ? 1 : 0;
+  const H = (reg8Value & 0xf) < (newValue & 0xf) ? 1 : 0;
   const C = newValue < 0 ? 1 : 0;
   cpu.setFlags(Z, N, H, C);
 
@@ -610,28 +610,59 @@ const CP8_d8 = (cpu) => {
 // DAA
 // Z - 0 C
 const DAA8 = (cpu) => {
+  const A = cpu.readReg8('A');
+  let newA = A;
   if (cpu.getFlag('N')) {
-    if (cpu.getFlag('C') || cpu.readReg8('A') > 0x99) {
-      cpu.writeReg8('A', (cpu.readReg8('A') + 0x60) & 0xff);
-      cpu.setFlag('C', 1);
-    } else if (cpu.getFlag('H') || (cpu.readReg8('A') & 0xf) > 0x9) {
-      cpu.writeReg8('A', (cpu.readReg8('A') + 0x06) & 0xff);
-      cpu.setFlag('H', 0);
+    if (cpu.getFlag('H')) {
+      newA = (A - 0x06) & 0xff;
     }
-  } else if (cpu.getFlag('C') && cpu.getFlag('H')) {
-    cpu.writeReg8('A', (cpu.readReg8('A') + 0x9a) & 0xff);
-    cpu.setFlag('H', 0);
-  } else if (cpu.getFlag('C')) {
-    cpu.writeReg8('A', (cpu.readReg8('A') + 0xa0) & 0xff);
-  } else if (cpu.getFlag('H')) {
-    cpu.writeReg8('A', (cpu.readReg8('A') + 0xfa) & 0xff);
-    cpu.setFlag('H', 0);
+    if (cpu.getFlag('C')) {
+      newA -= 0x60;
+    }
+  } else {
+    if (cpu.getFlag('H') || (A & 0x0f) > 9) {
+      newA += 0x06;
+    }
+    if (cpu.getFlag('C') || A > 0x9f) {
+      newA += 0x60;
+    }
   }
-  cpu.setFlag('Z', cpu.readReg8('A') === 0);
+
+  const Z = (newA & 0xff) === 0 ? 1 : 0;
+  const N = cpu.getFlag('N');
+  const H = 0;
+  const C = (newA & 0x100) == 0x100 ? 1 : 0;
+  cpu.setFlags(Z, N, H, C);
+
+  cpu.writeReg8('A', newA & 0xff);
 
   cpu.incPC(1);
   cpu.incClockCycles(4);
 };
+
+// const DAA8 = (cpu) => {
+//   if (cpu.getFlag('N')) {
+//     if (cpu.getFlag('C') || cpu.readReg8('A') > 0x99) {
+//       cpu.writeReg8('A', (cpu.readReg8('A') + 0x60) & 0xff);
+//       cpu.setFlag('C', 1);
+//     } else if (cpu.getFlag('H') || (cpu.readReg8('A') & 0xf) > 0x9) {
+//       cpu.writeReg8('A', (cpu.readReg8('A') + 0x06) & 0xff);
+//       cpu.setFlag('H', 0);
+//     }
+//   } else if (cpu.getFlag('C') && cpu.getFlag('H')) {
+//     cpu.writeReg8('A', (cpu.readReg8('A') + 0x9a) & 0xff);
+//     cpu.setFlag('H', 0);
+//   } else if (cpu.getFlag('C')) {
+//     cpu.writeReg8('A', (cpu.readReg8('A') + 0xa0) & 0xff);
+//   } else if (cpu.getFlag('H')) {
+//     cpu.writeReg8('A', (cpu.readReg8('A') + 0xfa) & 0xff);
+//     cpu.setFlag('H', 0);
+//   }
+//   cpu.setFlag('Z', cpu.readReg8('A') === 0);
+
+//   cpu.incPC(1);
+//   cpu.incClockCycles(4);
+// };
 
 // CPL
 // - 1 1 -
