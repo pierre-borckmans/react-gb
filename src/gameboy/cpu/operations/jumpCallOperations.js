@@ -12,11 +12,7 @@ const JR_r8 = (cpu) => {
 const JR_NF_r8 = (cpu, F) => {
   const flag = cpu.getFlag(F);
   if (!flag) {
-    const r8 = cpu.readSignedImmediate8();
-    cpu.incPC(2);
-
-    cpu.incPC(r8);
-    cpu.incClockCycles(12);
+    JR_r8(cpu);
   } else {
     cpu.incPC(2);
     cpu.incClockCycles(8);
@@ -28,10 +24,7 @@ const JR_NF_r8 = (cpu, F) => {
 const JR_F_r8 = (cpu, F) => {
   const flag = cpu.getFlag(F);
   if (flag) {
-    const r8 = cpu.readSignedImmediate8();
-    cpu.incPC(2);
-    cpu.incPC(r8);
-    cpu.incClockCycles(12);
+    JR_r8(cpu);
   } else {
     cpu.incPC(2);
     cpu.incClockCycles(8);
@@ -51,9 +44,7 @@ const JP_a16 = (cpu) => {
 const JP_NF_a16 = (cpu, F) => {
   const flag = cpu.getFlag(F);
   if (!flag) {
-    const a16 = cpu.readImmediate16();
-    cpu.setPC(a16);
-    cpu.incClockCycles(16);
+    JP_a16(cpu);
   } else {
     cpu.incPC(3);
     cpu.incClockCycles(12);
@@ -65,9 +56,7 @@ const JP_NF_a16 = (cpu, F) => {
 const JP_F_a16 = (cpu, F) => {
   const flag = cpu.getFlag(F);
   if (flag) {
-    const a16 = cpu.readImmediate16();
-    cpu.setPC(a16);
-    cpu.incClockCycles(16);
+    JP_a16(cpu);
   } else {
     cpu.incPC(3);
     cpu.incClockCycles(12);
@@ -77,6 +66,7 @@ const JP_F_a16 = (cpu, F) => {
 // JP (RR)
 // - - - -
 const JP_$RR = (cpu, reg16) => {
+  // TODO check
   const address = cpu.readReg16(reg16);
 
   cpu.setPC(address);
@@ -105,9 +95,7 @@ const RET = (cpu) => {
 // - - - -
 const RETI = (cpu) => {
   cpu.setInterruptMasterEnable(1);
-  const popValue = cpu.stackPop(cpu);
-  cpu.setPC(popValue);
-  cpu.incClockCycles(16);
+  RET(cpu);
 };
 
 // RET F
@@ -115,9 +103,9 @@ const RETI = (cpu) => {
 const RET_F = (cpu, F) => {
   const flag = cpu.getFlag(F);
   if (flag) {
-    const popValue = cpu.stackPop(cpu);
-    cpu.setPC(popValue);
-    cpu.incClockCycles(20);
+    RET(cpu);
+    // TODO check the extra 4 cycles
+    cpu.incClockCycles(4);
   } else {
     cpu.incPC(1);
     cpu.incClockCycles(8);
@@ -129,9 +117,9 @@ const RET_F = (cpu, F) => {
 const RET_NF = (cpu, F) => {
   const flag = cpu.getFlag(F);
   if (!flag) {
-    const popValue = cpu.stackPop(cpu);
-    cpu.setPC(popValue);
-    cpu.incClockCycles(20);
+    RET(cpu);
+    // TODO check the extra 4 cycles
+    cpu.incClockCycles(4);
   } else {
     cpu.incPC(1);
     cpu.incClockCycles(8);
@@ -156,12 +144,7 @@ const CALL_F_a16 = (cpu, F) => {
   const flag = cpu.getFlag(F);
 
   if (flag) {
-    const a16 = cpu.readImmediate16();
-    cpu.incPC(3);
-
-    cpu.stackPush(cpu.getPC());
-    cpu.setPC(a16);
-    cpu.incClockCycles(24);
+    CALL_a16(cpu);
   } else {
     cpu.incPC(3);
     cpu.incClockCycles(12);
@@ -174,12 +157,7 @@ const CALL_NF_a16 = (cpu, F) => {
   const flag = cpu.getFlag(F);
 
   if (!flag) {
-    const a16 = cpu.readImmediate16();
-    cpu.incPC(3);
-
-    cpu.stackPush(cpu.getPC());
-    cpu.setPC(a16);
-    cpu.incClockCycles(24);
+    CALL_a16(cpu);
   } else {
     cpu.incPC(3);
     cpu.incClockCycles(12);
