@@ -126,18 +126,25 @@ const MMU = (props) => {
   };
 
   const keyListener = (event) => {
-    // document.activeElement.blur();
     if (event.code === 'ArrowRight') {
       nextPage();
+      event.preventDefault();
+      event.stopPropagation();
     }
     if (event.code === 'ArrowLeft') {
       previousPage();
+      event.preventDefault();
+      event.stopPropagation();
     }
     if (event.code === 'Home') {
       setSelectedPage(0);
+      event.preventDefault();
+      event.stopPropagation();
     }
     if (event.code === 'End') {
       setSelectedPage(0xff);
+      event.preventDefault();
+      event.stopPropagation();
     }
     if (event.code === 'Tab') {
       setShowLabels(!showLabels);
@@ -147,11 +154,11 @@ const MMU = (props) => {
   };
 
   useEffect(() => {
-    document.addEventListener('keydown', keyListener, false);
+    document.addEventListener('keydown', keyListener);
     return () => {
       document.removeEventListener('keydown', keyListener);
     };
-  });
+  }, [selectedPage, showLabels]);
 
   const goTo = (target) => {
     switch (target) {

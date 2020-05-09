@@ -112,12 +112,11 @@ const loadROM = async (romName) => {
 };
 
 const read = (address) => {
-  // TODO: enable this again after cpu tests
-  // if (address <= 0xff && !mmu.isBootComplete()) {
-  //   return bootROM[address];
-  // } else {
-  return loadedROM[address];
-  // }
+  if (address <= 0xff && !mmu.isBootComplete()) {
+    return bootROM[address];
+  } else {
+    return loadedROM[address];
+  }
 };
 
 const write = (address, value) => {

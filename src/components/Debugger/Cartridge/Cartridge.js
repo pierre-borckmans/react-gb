@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import './Cartridge.css';
 
@@ -8,6 +8,24 @@ const Cartridge = (props) => {
   const [selectedRom, setSelectedRom] = useState(null);
 
   const testRoms = cartridge.getTestRoms();
+
+  const loadSelectedRom = async () => {
+    await cartridge.loadROM(selectedRom);
+    props.onDebuggerChange();
+  };
+
+  const keyListener = (event) => {
+    if (event.code === 'KeyR') {
+      loadSelectedRom();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', keyListener);
+    return () => {
+      document.removeEventListener('keydown', keyListener);
+    };
+  }, [selectedRom]);
 
   return (
     <Fragment>
@@ -37,10 +55,7 @@ const Cartridge = (props) => {
               </option>
             ))}
           </select>
-          <button
-            disabled={!selectedRom}
-            onClick={() => cartridge.loadROM(selectedRom)}
-          >
+          <button disabled={!selectedRom} onClick={loadSelectedRom}>
             Load...
           </button>
         </div>

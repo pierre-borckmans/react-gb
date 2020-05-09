@@ -70,7 +70,11 @@ const run = (mod, callback) => {
       callback && callback();
     }
 
-    if (running) requestAnimationFrame(frame);
+    if (running) {
+      requestAnimationFrame(frame);
+    } else {
+      console.log(cpu.getSteps().join('\n'));
+    }
   };
   requestAnimationFrame(frame);
 };

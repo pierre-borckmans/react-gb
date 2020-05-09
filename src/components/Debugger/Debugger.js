@@ -40,7 +40,7 @@ const Debugger = (props) => {
   const timer = gameboy.getTimer();
 
   useEffect(() => {
-    gameboy.getKeyboard().onKeyEvent(handleDebuggerChange);
+    // gameboy.getKeyboard().onKeyEvent(handleDebuggerChange);
   }, []);
 
   const handleCPUChange = () => {
@@ -104,7 +104,7 @@ const Debugger = (props) => {
     return () => {
       document.removeEventListener('keydown', keyListener);
     };
-  });
+  }, [isRunning]);
 
   return (
     <Fragment>
@@ -158,7 +158,10 @@ const Debugger = (props) => {
                 debugger_={debugger_}
                 onDebuggerChange={handleDebuggerChange}
               />
-              <Cartridge cartridge={cartridge} />
+              <Cartridge
+                cartridge={cartridge}
+                onDebuggerChange={handleDebuggerChange}
+              />
               <Background config={config} ppu={ppu} />
             </div>
           </div>

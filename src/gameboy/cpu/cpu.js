@@ -3,6 +3,7 @@ import mmu from '../mmu/mmu';
 import timer from '../timer/timer';
 
 import { format, readBit } from '../../utils/utils';
+import { getOpcodeLabels } from './opcodes/opcodesMap';
 import interrupts from '../interrupts/interrupts';
 import jumpCallOperations from './operations/jumpCallOperations';
 
@@ -13,7 +14,28 @@ let cycles = {};
 let halt = false;
 let haltBug = false;
 
+let steps = [];
+
+const skipBootRom = () => {
+  registers = {
+    A: 0x01,
+    F: 0xb0,
+    B: 0x00,
+    C: 0x13,
+    D: 0x00,
+    E: 0xd8,
+    H: 0x01,
+    L: 0x4d,
+    // TODO: set to 0x0000 again after cpu tests are ok
+    PC: 0x0100,
+    SP: 0xfffe,
+
+    interruptMasterEnable: 1,
+  };
+};
+
 const reset = () => {
+  steps = [];
   registers = {
     A: 0x00,
     F: 0x00,
@@ -23,13 +45,16 @@ const reset = () => {
     E: 0x00,
     H: 0x00,
     L: 0x00,
-    PC: 0x0100,
+    PC: 0x0000,
     SP: 0x0000,
 
     interruptMasterEnable: 1,
   };
 
   cycles = { clock: 0, machine: 0 };
+
+  //TODO remove
+  skipBootRom();
 };
 reset();
 
@@ -198,6 +223,13 @@ const step = () => {
 
   const elapsedMachineCycles = getMachineCycles() - previousMachineCycles;
 
+  // steps.push(
+  //   '[' +
+  //     format('hex', cpu.getPC(), 16) +
+  //     '] : ' +
+  //     getOpcodeLabels('hex', cpu).join('  -  ')
+  // );
+
   timer.step(elapsedMachineCycles);
 
   // TODO: remove when all opcodes implemented
@@ -289,6 +321,8 @@ const cpu = {
   stackPush,
   debugAllOpcodes,
   reset,
+
+  getSteps: () => steps,
 };
 
 export default cpu;
