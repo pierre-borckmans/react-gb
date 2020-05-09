@@ -594,8 +594,8 @@ const CP8_$RR = (cpu, reg16) => {
 // Z 1 H C
 const CP8_d8 = (cpu) => {
   const regAValue = cpu.readReg8('A');
-  const r8 = cpu.readImmediate8();
-  const sum = regAValue - r8;
+  const d8 = cpu.readImmediate8();
+  const sum = regAValue - d8;
 
   const Z = sum === 0 ? 1 : 0;
   const N = 1;

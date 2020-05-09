@@ -236,7 +236,7 @@ const opcodesMap = [
     /* 0xC4 CALL NZ,a16 */ cpu => inst.CALL_NF_a16(cpu, 'Z'),
     /* 0xC5 PUSH BC     */ cpu => inst.PUSH16_RR(cpu, 'BC'),
     /* 0xC6 ADD A,d8    */ cpu => inst.ADD8_R_d8(cpu, 'A'),
-    /* 0xC7 RST 00H     */ cpu => inst.RST_XXH(cpu, 0x00),
+    /* 0xC7 RST 00H     */ cpu => { cpu.incPC(1); inst.RST_XXH(cpu, 0x00) },
     /* 0xC8 RET Z       */ cpu => inst.RET_F(cpu, 'Z'),
     /* 0xC9 RET         */ cpu => inst.RET(cpu),
     /* 0xCA JP Z,a16    */ cpu => inst.JP_F_a16(cpu, 'Z'),
@@ -244,7 +244,7 @@ const opcodesMap = [
     /* 0xCC CALL Z,a16  */ cpu => inst.CALL_F_a16(cpu, 'Z'),
     /* 0xCD CALL a16    */ cpu => inst.CALL_a16(cpu),
     /* 0xCE ADC A,d8    */ cpu => inst.ADC8_R_d8(cpu, 'A'),
-    /* 0xCF RST 08H     */ cpu => inst.RST_XXH(cpu, 0x08),
+    /* 0xCF RST 08H     */ cpu => { cpu.incPC(1); inst.RST_XXH(cpu, 0x08) },
 
     // OFFSET 0xD0 ----------------------------------------------------------
     /* 0xD0 RET NC      */ cpu => inst.RET_NF(cpu, 'C'),
@@ -254,7 +254,7 @@ const opcodesMap = [
     /* 0xD4 CALL NC,a16 */ cpu => inst.CALL_NF_a16(cpu, 'C'),
     /* 0xD5 PUSH DE     */ cpu => inst.PUSH16_RR(cpu, 'DE'),
     /* 0xD6 SUB d8      */ cpu => inst.SUB8_d8(cpu),
-    /* 0xD7 RST 10H     */ cpu => inst.RST_XXH(cpu, 0x10),
+    /* 0xD7 RST 10H     */ cpu => { cpu.incPC(1); inst.RST_XXH(cpu, 0x10) },
     /* 0xD8 RET C       */ cpu => inst.RET_F(cpu, 'C'),
     /* 0xD9 RETI        */ cpu => inst.RETI(cpu),
     /* 0xDA JP C,a16    */ cpu => inst.JP_F_a16(cpu, 'C'),
@@ -262,7 +262,7 @@ const opcodesMap = [
     /* 0xDC CALL C,a16  */ cpu => inst.CALL_F_a16(cpu, 'C'),
     /* 0xDD NOT_IMPL    */ cpu => inst.NOT_IMPLEMENTED(cpu, '0xDD'),
     /* 0xDE SBC A,d8    */ cpu => inst.SBC8_R_d8(cpu, 'A'),
-    /* 0xDF RST 18H     */ cpu => inst.RST_XXH(cpu, 0x18),
+    /* 0xDF RST 18H     */ cpu => { cpu.incPC(1); inst.RST_XXH(cpu, 0x18) },
 
     // OFFSET 0xE0 ----------------------------------------------------------
     /* 0xE0 LDH (a8),A  */ cpu => inst.LD8H_$a8_R(cpu, 'A'),
@@ -272,7 +272,7 @@ const opcodesMap = [
     /* 0xE4 NOT_IMPL    */ cpu => inst.NOT_IMPLEMENTED(cpu, '0xE4'),
     /* 0xE5 PUSH HL     */ cpu => inst.PUSH16_RR(cpu, 'HL'),
     /* 0xE6 AND d8      */ cpu => inst.AND8_d8(cpu),
-    /* 0xE7 RST 20H     */ cpu => inst.RST_XXH(cpu, 0x20),
+    /* 0xE7 RST 20H     */ cpu => { cpu.incPC(1); inst.RST_XXH(cpu, 0x20) },
     /* 0xE8 ADD SP,r8   */ cpu => inst.ADD16_SP_r8(cpu),
     /* 0xE9 JP (HL)     */ cpu => inst.JP_$RR(cpu, 'HL'),
     /* 0xEA LD (a16),A  */ cpu => inst.LD8_$a16_R(cpu, 'A'),
@@ -280,7 +280,7 @@ const opcodesMap = [
     /* 0xEC NOT_IMPL    */ cpu => inst.NOT_IMPLEMENTED(cpu, '0xEC'),
     /* 0xED NOT_IMPL    */ cpu => inst.NOT_IMPLEMENTED(cpu, '0xED'),
     /* 0xEE XOR d8      */ cpu => inst.XOR8_d8(cpu),
-    /* 0xEF RST 28H     */ cpu => inst.RST_XXH(cpu, 0x28),
+    /* 0xEF RST 28H     */ cpu => { cpu.incPC(1); inst.RST_XXH(cpu, 0x28) },
 
     // OFFSET 0xF0 ----------------------------------------------------------
     /* 0xF0 LDH A,(a8)  */ cpu => inst.LD8H_R_$a8(cpu, 'A'),
@@ -290,7 +290,7 @@ const opcodesMap = [
     /* 0xF4 NOT_IMPL    */ cpu => inst.NOT_IMPLEMENTED(cpu, '0xF4'),
     /* 0xF5 PUSH AF     */ cpu => inst.PUSH16_RR(cpu, 'AF'),
     /* 0xF6 OR d8       */ cpu => inst.OR8_d8(cpu),
-    /* 0xF7 RST 30H     */ cpu => inst.RST_XXH(cpu, 0x30),
+    /* 0xF7 RST 30H     */ cpu => { cpu.incPC(1); inst.RST_XXH(cpu, 0x30) },
     /* 0xF8 LD HL,SP+r8 */ cpu => inst.LD16_RR_SPpr8(cpu, 'HL'),
     /* 0xF9 LD SP,HL    */ cpu => inst.LD16_SP_RR(cpu, 'HL'),
     /* 0xFA LD A,(a16)  */ cpu => inst.LD8_R_$a16(cpu, 'A'),
@@ -298,7 +298,7 @@ const opcodesMap = [
     /* 0xFC NOT_IMPL    */ cpu => inst.NOT_IMPLEMENTED(cpu, '0xFC'),
     /* 0xFD NOT_IMPL    */ cpu => inst.NOT_IMPLEMENTED(cpu, '0xFD'),
     /* 0xFE CP d8       */ cpu => inst.CP8_d8(cpu),
-    /* 0xFF RST 38H     */ cpu => inst.RST_XXH(cpu, 0x38),
+    /* 0xFF RST 38H     */ cpu => { cpu.incPC(1); inst.RST_XXH(cpu, 0x38) },
 ];
 
 const getOpcodeLabel = (address, cpu) => {
@@ -620,6 +620,10 @@ const getOpcodeLabels = (base, cpu) => {
     base,
     Math.abs(signedImm)
   )}`;
+  const SPpR8 = `${SP}${signedImm > 0 ? '+' : '-'}${format(
+    base,
+    Math.abs(signedImm)
+  )}`;
   const d16 = format(base, cpu.readImmediate16(), 16);
   const a8 = `0xFF00+${format(base, +cpu.readImmediate8(), 8)}`;
   const a16 = format(base, cpu.readImmediate16(), 16);
@@ -909,7 +913,7 @@ const getOpcodeLabels = (base, cpu) => {
     `PUSH ${AF}`,
     `OR ${d8}`,
     `RST 30H`,
-    `LD HL,${SP}+${r8}`,
+    `LD HL,${SPpR8}`,
     `LD SP,${HL}`,
     `LD A,(${a16})`,
     `EI`,
@@ -1209,7 +1213,7 @@ const getOpcodeLabels = (base, cpu) => {
     `PUSH ${AF}`,
     `OR ${d8}`,
     `RST 30H`,
-    `LD HL,${SP}+${r8}`,
+    `LD HL,${SPpR8}`,
     `LD SP,${HL}`,
     `LD A,(${a16})`,
     `EI`,

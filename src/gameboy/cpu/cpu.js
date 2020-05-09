@@ -212,38 +212,43 @@ const stackPop = () => {
 };
 
 const step = () => {
-  const fetchOpcode = () => readAddress8(registers.PC);
-  const decodeOpcode = (opcode) => opcodesMap[opcode];
+  let result;
+  let elapsedMachineCycles;
+  if (halt) {
+    incClockCycles(4);
+    elapsedMachineCycles = 4;
+  } else {
+    const fetchOpcode = () => readAddress8(registers.PC);
+    const decodeOpcode = (opcode) => opcodesMap[opcode];
 
-  const opcode = fetchOpcode();
-  const executeOpcodeFn = decodeOpcode(opcode);
+    const opcode = fetchOpcode();
+    const executeOpcodeFn = decodeOpcode(opcode);
 
-  const previousMachineCycles = getMachineCycles();
-  const result = executeOpcodeFn(cpu);
+    const previousMachineCycles = getMachineCycles();
+    result = executeOpcodeFn(cpu);
 
-  const elapsedMachineCycles = getMachineCycles() - previousMachineCycles;
+    elapsedMachineCycles = getMachineCycles() - previousMachineCycles;
 
-  // steps.push(
-  //   '[' +
-  //     format('hex', cpu.getPC(), 16) +
-  //     '] : ' +
-  //     getOpcodeLabels('hex', cpu).join('  -  ')
-  // );
+    // steps.push(
+    //   '[' +
+    //     format('hex', cpu.getPC(), 16) +
+    //     '] : ' +
+    //     getOpcodeLabels('hex', cpu).join('  -  ')
+    // );
+
+    // TODO: remove when all opcodes implemented
+    if (result === -1) {
+      alert(`Opcode ${format('hex', opcode)} not implemented`);
+    }
+  }
 
   timer.step(elapsedMachineCycles);
 
-  // TODO: remove when all opcodes implemented
-  if (result === -1) {
-    alert(`Opcode ${format('hex', opcode)} not implemented`);
+  if (interrupts.getInterruptEnable() && interrupts.getInterruptFlags()) {
+    serviceInterrupts();
+  } else {
   }
 
-  if (
-    getInterruptMasterEnable() &&
-    interrupts.getInterruptEnable() &&
-    interrupts.getInterruptFlags()
-  ) {
-    serviceInterrupts();
-  }
   return result;
 };
 
@@ -252,24 +257,39 @@ const serviceInterrupts = () => {
   const interruptFlags = interrupts.getInterruptFlags();
   if (readBit(interruptEnable, 0) && readBit(interruptFlags, 0)) {
     // Vertical Blank
-    interrupts.disableVBlankInterrupt();
-    jumpCallOperations.RST_XXH(cpu, 0x40);
+    if (getInterruptMasterEnable()) {
+      interrupts.disableVBlankInterrupt();
+      jumpCallOperations.RST_XXH(cpu, 0x40);
+    }
+    // halt = false;
   } else if (readBit(interruptEnable, 1) && readBit(interruptFlags, 1)) {
     // LCDC Status
-    interrupts.disableLCDStatInterrupt();
-    jumpCallOperations.RST_XXH(cpu, 0x48);
+    if (getInterruptMasterEnable()) {
+      interrupts.disableLCDStatInterrupt();
+      jumpCallOperations.RST_XXH(cpu, 0x48);
+    }
+    // halt = false;
   } else if (readBit(interruptEnable, 2) && readBit(interruptFlags, 2)) {
     // Timer Overflow
-    interrupts.disableTimerInterrupt();
-    jumpCallOperations.RST_XXH(cpu, 0x50);
+    if (getInterruptMasterEnable()) {
+      interrupts.resetTimerInterruptFlag();
+      jumpCallOperations.RST_XXH(cpu, 0x50);
+    }
+    halt = false;
   } else if (readBit(interruptEnable, 3) && readBit(interruptFlags, 3)) {
     // Serial Transfer Completion
-    interrupts.disableSerialInterrupt();
-    jumpCallOperations.RST_XXH(cpu, 0x58);
+    if (getInterruptMasterEnable()) {
+      interrupts.disableSerialInterrupt();
+      jumpCallOperations.RST_XXH(cpu, 0x58);
+    }
+    // halt = false;
   } else if (readBit(interruptEnable, 4) && readBit(interruptFlags, 4)) {
     // High-to-Low of P10-P13 (Joypad)
-    interrupts.disableJoypadInterrupt();
-    jumpCallOperations.RST_XXH(cpu, 0x60);
+    if (getInterruptMasterEnable()) {
+      interrupts.disableJoypadInterrupt();
+      jumpCallOperations.RST_XXH(cpu, 0x60);
+    }
+    // halt = false;
   }
 };
 

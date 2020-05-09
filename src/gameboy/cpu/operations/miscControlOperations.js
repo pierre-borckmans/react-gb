@@ -1,4 +1,5 @@
 import prefixCBOpcodesMap from '../opcodes/prefixCBOpcodesMap';
+import interrupts from '../../interrupts/interrupts';
 
 // NOP
 // - - - -
@@ -18,10 +19,13 @@ const STOP = (cpu) => {
 const HALT = (cpu) => {
   cpu.setHalt(true);
 
-  /* Check halt bug */
-  const interruptEnabledFlag = cpu.getInterruptEnabledFlag();
-  const interruptFlag = cpu.getInterruptFlag();
-  if (!cpu.getIME() && interruptFlag & interruptEnabledFlag & 0x1f) {
+  // /* Check halt bug */
+  const interruptEnabled = interrupts.getInterruptEnable();
+  const interruptFlags = interrupts.getInterruptFlags();
+  if (
+    !cpu.getInterruptMasterEnable() &&
+    interruptFlags & interruptEnabled & 0x1f
+  ) {
     cpu.setHaltBug(true);
   }
 
