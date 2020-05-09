@@ -4,6 +4,7 @@ import Breakpoints from './Breakpoints/Breakpoints';
 
 import APU from './APU/APU';
 import Cartridge from './Cartridge/Cartridge';
+import MBC from './MBC/MBC';
 import CPU from './CPU/CPU';
 import Interrupt from './Interrupt/Interrupt';
 import Joypad from './Joypad/Joypad';
@@ -31,6 +32,7 @@ const Debugger = (props) => {
 
   const apu = gameboy.getApu();
   const cartridge = gameboy.getCartridge();
+  const mbc = gameboy.getMBC();
   const [cpu, setCPU] = useState(gameboy.getCpu());
   const interrupts = gameboy.getInterrupts();
   const joypad = gameboy.getJoypad();
@@ -160,6 +162,11 @@ const Debugger = (props) => {
               />
               <Cartridge
                 cartridge={cartridge}
+                onDebuggerChange={handleDebuggerChange}
+              />
+              <MBC
+                cartridge={cartridge}
+                mbc={mbc}
                 onDebuggerChange={handleDebuggerChange}
               />
               <Background config={config} ppu={ppu} />

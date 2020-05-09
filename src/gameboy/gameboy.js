@@ -4,6 +4,7 @@ import debugger_ from './debugger/debugger';
 // gameboy subsystems
 import apu from './apu/apu';
 import cartridge from './cartridge/cartridge';
+import mbc from './cartridge/mbc/mbc';
 import cpu from './cpu/cpu';
 import interrupts from './interrupts/interrupts';
 import joypad from './joypad/joypad';
@@ -25,6 +26,7 @@ const getDebugger = () => debugger_;
 // gameboy subsystems
 const getApu = () => apu;
 const getCartridge = () => cartridge;
+const getMBC = () => mbc;
 const getCpu = () => cpu;
 const getInterrupts = () => interrupts;
 const getJoypad = () => joypad;
@@ -46,6 +48,7 @@ const gameboy = {
 
   getApu,
   getCartridge,
+  getMBC,
   getCpu,
   getInterrupts,
   getJoypad,

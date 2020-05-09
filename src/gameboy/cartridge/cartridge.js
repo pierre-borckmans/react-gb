@@ -1,4 +1,5 @@
 import mmu from '../mmu/mmu';
+import mbc from './mbc/mbc';
 
 import rom from '../../assets/roms/rom1.gb';
 
@@ -109,6 +110,9 @@ const loadROM = async (romName) => {
   await fetch(romName ? testRoms[romName] : rom)
     .then((raw) => raw.arrayBuffer())
     .then((buffer) => (loadedROM = [...new Uint8Array(buffer)]));
+
+  const romType = loadedROM[CARTRIDGE_TYPE_ADDR];
+  mbc.setType(romType);
 };
 
 const read = (address) => {

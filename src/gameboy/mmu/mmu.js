@@ -1,4 +1,5 @@
 import cartridge from '../cartridge/cartridge';
+import mbc from '../cartridge/mbc/mbc';
 import videoRam from './videoRam/videoRam';
 import externalRam from './externalRam/externalRam';
 import workRam from './workRam/workRam';
@@ -69,9 +70,9 @@ const setBootComplete = (complete) => (registers.bootComplete = complete);
 const read = (address) => {
   switch (getMemoryType(address)) {
     case ROM0:
-      return cartridge.read(address - START_ROM0);
+      return mbc.read(address - START_ROM0);
     case ROM1:
-      return cartridge.read(address - START_ROM0);
+      return mbc.read(address - START_ROM0);
     case VIDEO_RAM:
       return videoRam.read(address - START_VIDEO_RAM);
     case EXTERNAL_RAM:
@@ -102,9 +103,9 @@ const readBit = (address, bitIdx) => {
 const write = (address, value) => {
   switch (getMemoryType(address)) {
     case ROM0:
-      return cartridge.write(address - START_ROM0, value);
+      return mbc.write(address - START_ROM0, value);
     case ROM1:
-      return cartridge.write(address - START_ROM0, value);
+      return mbc.write(address - START_ROM0, value);
     case VIDEO_RAM:
       return videoRam.write(address - START_VIDEO_RAM, value);
     case EXTERNAL_RAM:
