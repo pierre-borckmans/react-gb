@@ -55,6 +55,7 @@ const reset = () => {
   };
 
   cartridge.reset();
+  mbc.reset();
   videoRam.reset();
   externalRam.reset();
   workRam.reset();
@@ -76,7 +77,7 @@ const read = (address) => {
     case VIDEO_RAM:
       return videoRam.read(address - START_VIDEO_RAM);
     case EXTERNAL_RAM:
-      return externalRam.read(address - START_EXTERNAL_RAM);
+      return mbc.read(address - START_EXTERNAL_RAM);
     case WORK_RAM:
       return workRam.read(address - START_WORK_RAM);
     case ECHO_RAM:
@@ -176,9 +177,12 @@ const getMemoryPage = (page) => {
 const mmu = {
   MEMORY_SIZE,
   START_ROM0,
+  END_ROM0,
   START_ROM1,
+  END_ROM1,
   START_VIDEO_RAM,
   START_EXTERNAL_RAM,
+  END_EXTERNAL_RAM,
   START_WORK_RAM,
   START_ECHO_RAM,
   START_OAM,

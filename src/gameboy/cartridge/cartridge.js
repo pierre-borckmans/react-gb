@@ -35,7 +35,7 @@ const testRoms = {
   'test timing: instr': testRomInstrTiming,
 };
 
-const SIZE = 0x8000;
+const SIZE = 0x80000;
 
 const NINTENDO_LOGO_START_ADDR = 0x104;
 const NINTENDO_LOGO_END_ADDR = 0x133;
