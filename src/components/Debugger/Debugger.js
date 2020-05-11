@@ -24,7 +24,7 @@ const Debugger = (props) => {
   const gameboy = props.gameboy;
 
   const [debugger_, setDebugger] = useState(dbg);
-  const [isRunning, setIsRunning] = useState(false);
+  const isRunning = debugger_.isRunning();
   const [stepsPerSecond, setStepsPerSecond] = useState(0);
   const [cyclesPerSecond, setCyclesPerSecond] = useState(0);
 
@@ -54,12 +54,10 @@ const Debugger = (props) => {
   const handleDebuggerChange = () => setDebugger({ ...debugger_ });
 
   const run = () => {
-    setIsRunning(true);
     debugger_.run(25, handleCPUChange);
   };
 
   const pause = () => {
-    setIsRunning(false);
     debugger_.pause(handleCPUChange);
   };
 

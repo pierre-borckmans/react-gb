@@ -50,8 +50,7 @@ let registers = {};
 
 const reset = () => {
   registers = {
-    // TODO: set to false again after cpu tests are ok
-    bootComplete: true,
+    bootComplete: false,
   };
 
   cartridge.reset();

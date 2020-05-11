@@ -7,3 +7,7 @@
   font-size: 14px;
   align-items: center;
 }
+
+.background-canvas {
+  border: solid black 1px;
+}

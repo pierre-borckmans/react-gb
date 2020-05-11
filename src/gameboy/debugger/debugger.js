@@ -76,6 +76,7 @@ const run = (mod, callback) => {
       console.log(cpu.getSteps().join('\n'));
     }
   };
+  callback && callback();
   requestAnimationFrame(frame);
 };
 

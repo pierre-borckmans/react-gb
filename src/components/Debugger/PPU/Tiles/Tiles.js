@@ -5,20 +5,17 @@ import './Tiles.css';
 
 const Tiles = (props) => {
   const { config, ppu } = props;
+  const paletteColors = config.paletteColors;
+
+  const backgroundPalette = ppu.getBackgroundPalette();
 
   const tileSet = ppu.getTileSet();
 
   const tileToPixels = (tile) => {
-    const colors = [
-      [255, 255, 255],
-      [170, 170, 170],
-      [85, 85, 85],
-      [0, 0, 0],
-    ];
     const pixels = [];
     tile.forEach((row) =>
       row.forEach((col) => {
-        pixels.push(...colors[col]);
+        pixels.push(...paletteColors[backgroundPalette[col]]);
       })
     );
     return pixels;

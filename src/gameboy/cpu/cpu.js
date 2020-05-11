@@ -54,7 +54,7 @@ const reset = () => {
   cycles = { clock: 0, machine: 0 };
 
   //TODO remove
-  skipBootRom();
+  // skipBootRom();
 };
 reset();
 

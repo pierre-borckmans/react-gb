@@ -13,6 +13,8 @@ const PPU = (props) => {
   const objectPalette0 = ppu.getObjectPalette0();
   const objectPalette1 = ppu.getObjectPalette1();
 
+  const rgbFromArray = (color) => `rgb(${color[0]},${color[1]},${color[2]})`;
+
   const getPalette = (palette) => (
     <div className="palette">
       {range(0, 4).map((i) => (
@@ -20,7 +22,7 @@ const PPU = (props) => {
           key={i}
           className="palette_color"
           style={{
-            backgroundColor: paletteColors[palette[i]],
+            backgroundColor: rgbFromArray(paletteColors[palette[i]]),
           }}
         />
       ))}

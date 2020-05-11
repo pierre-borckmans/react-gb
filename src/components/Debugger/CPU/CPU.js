@@ -6,23 +6,21 @@ import { getOpcodeLabels } from '../../../gameboy/cpu/opcodes/opcodesMap';
 
 import './CPU.css';
 
+const bases = ['hex', 'bin', 'dec'];
+
 const CPU = (props) => {
-  const [base, setBase] = useState('hex');
+  const [base, setBase] = useState(bases[0]);
 
   const handleClick = () => {
-    switch (base) {
-      case 'hex':
-        setBase('bin');
-        break;
-      case 'bin':
-        setBase('dec');
-        break;
-      case 'dec':
-        setBase('hex');
-        break;
-      default:
-        break;
+    setBase(bases[(bases.indexOf(base) + 1) % bases.length]);
+  };
+
+  const jumpToPC = () => {
+    const address = prompt('Enter new PC address');
+    if (!isNaN(parseInt(address))) {
+      cpu.setPC(parseInt(address));
     }
+    props.onDebuggerChange();
   };
 
   const cpu = props.cpu;
@@ -84,7 +82,15 @@ const CPU = (props) => {
         </div>
 
         <div className="subsection">Registers (16bit)</div>
-        <div className="register_16bit">PC={format(base, cpu.getPC(), 16)}</div>
+        <div
+          className="register_16bit"
+          onContextMenu={(e) => {
+            e.preventDefault();
+            jumpToPC();
+          }}
+        >
+          PC={format(base, cpu.getPC(), 16)}
+        </div>
         <div className="register_16bit">SP={format(base, cpu.getSP(), 16)}</div>
 
         <div className="subsection">Interrupts</div>
