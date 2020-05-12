@@ -32,6 +32,7 @@ const skipBootRom = () => {
 
     interruptMasterEnable: 1,
   };
+  mmu.setBootComplete(true);
 };
 
 const reset = () => {

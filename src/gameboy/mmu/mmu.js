@@ -199,6 +199,7 @@ const mmu = {
   reset,
 
   isBootComplete,
+  setBootComplete,
 };
 
 export default mmu;
