@@ -341,6 +341,7 @@ const cpu = {
   stackPush,
   debugAllOpcodes,
   reset,
+  skipBootRom,
 
   getSteps: () => steps,
 };
