@@ -138,12 +138,14 @@ const LD8_$RR_R = (cpu, reg16, reg8) => {
 // LD (RR),d8
 // - - - -
 const LD8_$RR_d8 = (cpu, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const d8 = cpu.readImmediate8();
   cpu.writeAddress8(address, d8);
+  cpu.incClockCycles(4);
+  cpu.incClockCycles(4);
 
   cpu.incPC(2);
-  cpu.incClockCycles(12);
 };
 
 // LD R,(a16)
@@ -208,12 +210,13 @@ const LD8_R_$RRm = (cpu, reg8, reg16) => {
 // LDH (a8),R
 // - - - -
 const LD8H_$a8_R = (cpu, reg8) => {
+  cpu.incClockCycles(4);
   const address = 0xff00 + cpu.readImmediate8();
   const value = cpu.readReg8(reg8);
   cpu.writeAddress8(address, value);
 
+  cpu.incClockCycles(8);
   cpu.incPC(2);
-  cpu.incClockCycles(12);
 };
 
 // LDH R,(a8)
@@ -252,13 +255,15 @@ const LD8_R_$R = (cpu, reg1, reg2) => {
 // LD (a16),R
 // - - - -
 const LD8_$a16_R = (cpu, reg8) => {
+  cpu.incClockCycles(4);
   const address = cpu.readImmediate16();
   const value = cpu.readReg8(reg8);
+  cpu.incClockCycles(4);
 
   cpu.writeAddress8(address, value);
 
+  cpu.incClockCycles(8);
   cpu.incPC(3);
-  cpu.incClockCycles(16);
 };
 
 const loadStoreMoveOperations = {

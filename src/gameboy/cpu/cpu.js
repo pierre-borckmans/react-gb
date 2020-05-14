@@ -150,9 +150,10 @@ const decSP = (dec) => (registers.SP -= dec);
 
 const getClockCycles = () => cycles.clock;
 const getMachineCycles = () => cycles.machine;
-const incClockCycles = (inc) => {
-  cycles.clock += inc;
+const incClockCycles = (incClockCycles) => {
+  cycles.clock += incClockCycles;
   cycles.machine = Math.floor(cycles.clock / 4);
+  timer.step(incClockCycles / 4);
 };
 const incMachineCycles = (inc) => {
   cycles.machine += inc;
@@ -242,8 +243,6 @@ const step = () => {
       alert(`Opcode ${format('hex', opcode)} not implemented`);
     }
   }
-
-  timer.step(elapsedMachineCycles);
 
   if (interrupts.getInterruptEnable() && interrupts.getInterruptFlags()) {
     serviceInterrupts();
