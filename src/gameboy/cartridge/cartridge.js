@@ -15,7 +15,11 @@ import testRomCpu9 from '../../assets/roms/tests/cpu_instrs/09-op r,r.gb';
 import testRomCpu10 from '../../assets/roms/tests/cpu_instrs/10-bit ops.gb';
 import testRomCpu11 from '../../assets/roms/tests/cpu_instrs/11-op a,(hl).gb';
 import testRomCpuAll from '../../assets/roms/tests/cpu_instrs.gb';
-import testRomInstrTiming from '../../assets/roms/tests/instr_timing.gb';
+import testRomInstrTimingAll from '../../assets/roms/tests/instr_timing.gb';
+import testRomMemTiming1 from '../../assets/roms/tests/mem_timing/01-read_timing.gb';
+import testRomMemTiming2 from '../../assets/roms/tests/mem_timing/02-write_timing.gb';
+import testRomMemTiming3 from '../../assets/roms/tests/mem_timing/03-modify_timing.gb';
+import testRomMemTimingAll from '../../assets/roms/tests/mem_timing.gb';
 
 import { range } from 'lodash';
 
@@ -32,7 +36,11 @@ const testRoms = {
   'test cpu: 10 bit ops': testRomCpu10,
   'test cpu: 11 op a,(hl)': testRomCpu11,
   'test cpu: all': testRomCpuAll,
-  'test timing: instr': testRomInstrTiming,
+  'test timing: instr': testRomInstrTimingAll,
+  'test timing: mem: 1 read': testRomMemTiming1,
+  'test timing: mem: 2 write': testRomMemTiming2,
+  'test timing: mem: 3 modify': testRomMemTiming3,
+  'test timing: mem': testRomMemTimingAll,
 };
 
 const SIZE = 0x80000;
