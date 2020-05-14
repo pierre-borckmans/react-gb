@@ -114,8 +114,10 @@ const RLC_R = (cpu, reg8) => {
 // RLC (RR)
 // Z 0 0 C
 const RLC_$RR = (cpu, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
 
   const msb = value & 0x80 ? 1 : 0;
 
@@ -123,6 +125,7 @@ const RLC_$RR = (cpu, reg16) => {
   newValue |= msb;
 
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 0;
@@ -131,8 +134,8 @@ const RLC_$RR = (cpu, reg16) => {
 
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 // RRC R
@@ -160,8 +163,11 @@ const RRC_R = (cpu, reg8) => {
 // RRC (RR)
 // Z 0 0 C
 const RRC_$RR = (cpu, reg16) => {
+  cpu.incClockCycles(4);
+
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
 
   const lsb = value & 0x01 ? 1 : 0;
 
@@ -169,6 +175,7 @@ const RRC_$RR = (cpu, reg16) => {
   newValue |= lsb << 7;
 
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 0;
@@ -177,8 +184,8 @@ const RRC_$RR = (cpu, reg16) => {
 
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 // RL R
@@ -207,8 +214,11 @@ const RL_R = (cpu, reg8) => {
 // RL (RR)
 // Z 0 0 C
 const RL_$RR = (cpu, reg16) => {
+  cpu.incClockCycles(4);
+
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
 
   const msb = value & 0x80 ? 1 : 0;
 
@@ -216,6 +226,7 @@ const RL_$RR = (cpu, reg16) => {
   newValue |= cpu.getFlag('C');
 
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 0;
@@ -224,8 +235,8 @@ const RL_$RR = (cpu, reg16) => {
 
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 // RR R
@@ -253,8 +264,10 @@ const RR_R = (cpu, reg8) => {
 // RR (RR)
 // Z 0 0 C
 const RR_$RR = (cpu, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
 
   const lsb = value & 0x01 ? 1 : 0;
 
@@ -262,6 +275,7 @@ const RR_$RR = (cpu, reg16) => {
   newValue |= cpu.getFlag('C') << 7;
 
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 0;
@@ -270,8 +284,8 @@ const RR_$RR = (cpu, reg16) => {
 
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 // --------------------------------------------------------------------------------
@@ -300,12 +314,15 @@ const SLA_R = (cpu, reg8) => {
 // SLA (RR)
 // Z 0 0 C
 const SLA_$RR = (cpu, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
   const msb = value & 0x80 ? 1 : 0;
 
   const newValue = (value << 1) & 0xff;
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 0;
@@ -313,8 +330,8 @@ const SLA_$RR = (cpu, reg16) => {
   const C = msb;
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 // SRA R
@@ -343,8 +360,10 @@ const SRA_R = (cpu, reg8) => {
 // SRA (RR)
 // Z 0 0 0
 const SRA_$RR = (cpu, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
   const lsb = value & 0x01;
   const msb = (value & 0x80) >> 7;
 
@@ -352,6 +371,7 @@ const SRA_$RR = (cpu, reg16) => {
   newValue |= msb << 7;
 
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 0;
@@ -360,8 +380,8 @@ const SRA_$RR = (cpu, reg16) => {
 
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 // SRL R
@@ -389,14 +409,17 @@ const SRL_R = (cpu, reg8) => {
 // SRL (RR)
 // Z 0 0 C
 const SRL_$RR = (cpu, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
   const lsb = value & 0x01;
 
   let newValue = (value >> 1) & 0xff;
   newValue |= 0 << 7;
 
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 0;
@@ -405,8 +428,8 @@ const SRL_$RR = (cpu, reg16) => {
 
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 // --------------------------------------------------------------------------------
@@ -432,18 +455,21 @@ const SWAP_R = (cpu, reg8) => {
 // SWAP (RR)
 // Z 0 0 0
 const SWAP_$RR = (cpu, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
   const lowNibble = value & 0x0f;
   const highNibble = value >> 4;
 
   const newValue = (lowNibble << 4) | highNibble;
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   cpu.setFlags(newValue === 0 ? 1 : 0, 0, 0, 0);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 // BIT N,R
@@ -494,13 +520,16 @@ const RES_N_R = (cpu, n, reg8) => {
 // RES N,(RR)
 // - - - -
 const RES_N_$RR = (cpu, n, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
   const newValue = value & ~(1 << n);
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 // SET N,R
@@ -517,13 +546,16 @@ const SET_N_R = (cpu, n, reg8) => {
 // SET N,(RR)
 // - - - -
 const SET_N_$RR = (cpu, n, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
   const newValue = value | (1 << n);
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
+  cpu.incClockCycles(4);
   cpu.incPC(2);
-  cpu.incClockCycles(16);
 };
 
 const rotationShiftBitOperations = {

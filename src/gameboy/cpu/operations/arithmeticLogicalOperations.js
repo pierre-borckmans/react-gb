@@ -124,8 +124,10 @@ const INC8_R = (cpu, reg8) => {
 const INC8_$RR = (cpu, reg16) => {
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
   const newValue = (value + 1) & 0xff;
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 0;
@@ -133,8 +135,8 @@ const INC8_$RR = (cpu, reg16) => {
   const C = cpu.getFlag('C');
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(4);
   cpu.incPC(1);
-  cpu.incClockCycles(12);
 };
 
 // DEC R
@@ -159,8 +161,10 @@ const DEC8_R = (cpu, reg8) => {
 const DEC8_$RR = (cpu, reg16) => {
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
+  cpu.incClockCycles(4);
   const newValue = (value - 1) & 0xff;
   cpu.writeAddress8(address, newValue);
+  cpu.incClockCycles(4);
 
   const Z = newValue === 0 ? 1 : 0;
   const N = 1;
@@ -168,8 +172,8 @@ const DEC8_$RR = (cpu, reg16) => {
   const C = cpu.getFlag('C');
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(4);
   cpu.incPC(1);
-  cpu.incClockCycles(12);
 };
 
 // ADD R,R
