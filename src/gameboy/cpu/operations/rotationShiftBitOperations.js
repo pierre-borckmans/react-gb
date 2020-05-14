@@ -465,6 +465,7 @@ const BIT_N_R = (cpu, n, reg8) => {
 // BIT N,(RR)
 // Z 0 1 -
 const BIT_N_$RR = (cpu, n, reg16) => {
+  cpu.incClockCycles(4);
   const address = cpu.readReg16(reg16);
   const value = cpu.readAddress8(address);
   const bit = (value & (1 << n)) === 1 << n;
@@ -475,8 +476,8 @@ const BIT_N_$RR = (cpu, n, reg16) => {
   const C = cpu.getFlag('C');
   cpu.setFlags(Z, N, H, C);
 
+  cpu.incClockCycles(8);
   cpu.incPC(2);
-  cpu.incClockCycles(12);
 };
 
 // RES N,R

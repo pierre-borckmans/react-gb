@@ -151,12 +151,14 @@ const LD8_$RR_d8 = (cpu, reg16) => {
 // LD R,(a16)
 // - - - -
 const LD8_R_$a16 = (cpu, reg8) => {
+  cpu.incClockCycles(4);
   const address = cpu.readImmediate16();
+  cpu.incClockCycles(4);
   const value = cpu.readAddress8(address);
   cpu.writeReg8(reg8, value);
 
+  cpu.incClockCycles(8);
   cpu.incPC(3);
-  cpu.incClockCycles(16);
 };
 
 // LD (RR+),R
@@ -222,12 +224,13 @@ const LD8H_$a8_R = (cpu, reg8) => {
 // LDH R,(a8)
 // - - - -
 const LD8H_R_$a8 = (cpu, reg8) => {
+  cpu.incClockCycles(4);
   const address = 0xff00 + cpu.readImmediate8();
   const value = cpu.readAddress8(address);
   cpu.writeReg8(reg8, value);
 
+  cpu.incClockCycles(8);
   cpu.incPC(2);
-  cpu.incClockCycles(12);
 };
 
 // LD (R),R
