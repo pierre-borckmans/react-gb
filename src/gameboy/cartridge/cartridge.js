@@ -20,6 +20,9 @@ import testRomMemTiming1 from '../../assets/roms/tests/mem_timing/01-read_timing
 import testRomMemTiming2 from '../../assets/roms/tests/mem_timing/02-write_timing.gb';
 import testRomMemTiming3 from '../../assets/roms/tests/mem_timing/03-modify_timing.gb';
 import testRomMemTimingAll from '../../assets/roms/tests/mem_timing.gb';
+import testRomMemTiming2All from '../../assets/roms/tests/mem_timing2.gb';
+import testRomInterruptTiming from '../../assets/roms/tests/interrupt_time.gb';
+import testRomHaltBug from '../../assets/roms/tests/halt_bug.gb';
 
 import { range } from 'lodash';
 
@@ -40,7 +43,10 @@ const testRoms = {
   'test timing: mem: 1 read': testRomMemTiming1,
   'test timing: mem: 2 write': testRomMemTiming2,
   'test timing: mem: 3 modify': testRomMemTiming3,
-  'test timing: mem': testRomMemTimingAll,
+  'test timing: mem: all': testRomMemTimingAll,
+  'test timing: mem2: all': testRomMemTiming2All,
+  'test timing: interrupt': testRomInterruptTiming,
+  'test bug: halt': testRomHaltBug,
 };
 
 const SIZE = 0x80000;
