@@ -105,7 +105,7 @@ const write = (value) => {
 
   // ignore the 4 lowest bits as they are read only
   if (value & 0xf) {
-    throw new Error('Trying to write to read-only joypad register bits 0-4');
+    console.error('Trying to write to read-only joypad register bits 0-4');
   }
 };
 

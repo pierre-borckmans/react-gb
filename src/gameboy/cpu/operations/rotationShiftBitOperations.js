@@ -476,7 +476,7 @@ const BIT_N_$RR = (cpu, n, reg16) => {
   cpu.setFlags(Z, N, H, C);
 
   cpu.incPC(2);
-  cpu.incClockCycles(16);
+  cpu.incClockCycles(12);
 };
 
 // RES N,R

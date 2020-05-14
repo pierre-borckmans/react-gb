@@ -36,9 +36,9 @@ const step = (stepMachineCycles) => {
   cycles.DIV += stepMachineCycles;
   cycles.TIMA += stepMachineCycles;
 
-  // CPU freq = 1024*1024 = 1.048.576 Hz
-  // DIV works at 16384Hz -> increment DIV every 64 cycles
-  if (cycles.DIV >= 64) {
+  // CPU freq = 1024*1024 = 1.048.576 Hz (machine cycles)
+  // DIV works at 16384Hz -> increment DIV every 64 machine cycles
+  while (cycles.DIV >= 64) {
     cycles.DIV -= 64;
     registers.DIV = (registers.DIV + 1) & 0xff;
   }
@@ -66,7 +66,7 @@ const step = (stepMachineCycles) => {
         throw new Error(`Invalid value for timer control ${registers.TAC}`);
     }
 
-    if (cycles.TIMA >= timaThreshold) {
+    while (cycles.TIMA >= timaThreshold) {
       cycles.TIMA -= timaThreshold;
       registers.TIMA++;
 
@@ -99,6 +99,9 @@ const write = (address, value) => {
   switch (address) {
     case DIVIDER_ADDR:
       registers.DIV = 0;
+      cycles = {
+        DIV: 0,
+      };
       break;
     case TIMER_COUNTER_ADDR:
       registers.TIMA = value;
@@ -108,6 +111,9 @@ const write = (address, value) => {
       break;
     case TIMER_CONTROL_ADDR:
       registers.TAC = value & 7;
+      if (registers.TAC & (1 << TIMER_CONTROL_START_BIT)) {
+        cycles.TIMA = 0;
+      }
       break;
     default:
       throw new Error(

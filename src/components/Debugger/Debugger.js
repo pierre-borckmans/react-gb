@@ -54,7 +54,11 @@ const Debugger = (props) => {
   const handleDebuggerChange = () => setDebugger({ ...debugger_ });
 
   const run = () => {
-    debugger_.run(25, handleCPUChange);
+    debugger_.run((frames) => {
+      if (frames % 25 === 0 || !debugger_.isRunning()) {
+        handleCPUChange();
+      }
+    });
   };
 
   const pause = () => {

@@ -22,7 +22,7 @@ const getTotalSteps = () => totalSteps;
 let currentBreakpoint = null;
 const getCurrentBreakpoint = () => currentBreakpoint;
 
-const run = (mod, callback) => {
+const run = (callback) => {
   if (running) return;
   running = true;
   let frames = 0;
@@ -66,9 +66,7 @@ const run = (mod, callback) => {
       machineCyclesPerSecond = (machineCycles / elapsedTime) * 1000;
     }
 
-    if (frames % mod === 0 || !running) {
-      callback && callback();
-    }
+    callback && callback(frames);
 
     if (running) {
       requestAnimationFrame(frame);
@@ -76,7 +74,7 @@ const run = (mod, callback) => {
       console.log(cpu.getSteps().join('\n'));
     }
   };
-  callback && callback();
+  callback && callback(frames);
   requestAnimationFrame(frame);
 };
 
