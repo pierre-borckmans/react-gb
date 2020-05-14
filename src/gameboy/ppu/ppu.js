@@ -1,4 +1,6 @@
 import mmu from '../mmu/mmu';
+import interrupts from '../interrupts/interrupts';
+
 import { format, readBit } from '../../utils/utils';
 
 const LCD_CTRL_ADDR = 0xff40;
@@ -25,24 +27,7 @@ const LCD_CTRL_WINDOW_TILEMAP_BIT = 6;
 const LCD_CTRL_LCD_ENABLE_BIT = 7;
 
 let registers = {};
-
-const reset = () => {
-  registers = {
-    LCD_CTRL: 0x00,
-    LCDC_STATUS: 0x00,
-    SCROLLY: 0x00,
-    SCROLLX: 0x00,
-    LCDC_YCOORD: 0x00,
-    LCDC_YCOORD_COMPARE: 0x00,
-    DMA_TRANSFER_AND_START: 0x00,
-    BG_PALETTE: 0x00,
-    OBJ_PALETTE0: 0x00,
-    OBJ_PALETTE1: 0x00,
-    WINY: 0x00,
-    WINX: 0x00,
-  };
-};
-reset();
+let data = {};
 
 const getLCDCBackgroundEnable = () =>
   readBit(registers.LCD_CTRL, LCD_CTRL_BACKGROUND_ENABLE_BIT);
@@ -69,10 +54,17 @@ const BUFFER_HEIGHT = 256;
 const CYCLES_OAM_SEARCH = 20;
 const CYCLES_PIXEL_TRANSFER = 43;
 const CYCLES_HBLANK = 51;
+const CYCLES_PER_LINE =
+  CYCLES_OAM_SEARCH + CYCLES_PIXEL_TRANSFER + CYCLES_HBLANK; // 114
 const LINES_VBLANK = 10;
-const CYCLES_COMPLETE_FRAME =
-  (SCREEN_HEIGHT + LINES_VBLANK) *
-  (CYCLES_OAM_SEARCH + CYCLES_PIXEL_TRANSFER + CYCLES_HBLANK); // 17556
+const CYCLES_COMPLETE_FRAME = (SCREEN_HEIGHT + LINES_VBLANK) * CYCLES_PER_LINE; // 17556
+
+const MODES = {
+  OAM_SEARCH: 2,
+  PIXEL_TRANSFER: 3,
+  HBLANK: 0,
+  VBLANK: 1,
+};
 
 // 17556 cycles/frames * 60 fps = 1053360 cycles / s
 // 1mbHz (1024*1024) / 17556 cycles/frames = 59.7275 fps
@@ -147,7 +139,8 @@ const read = (address) => {
     case SCROLLX_ADDR:
       return registers.SCROLLX;
     case LCDC_YCOORD_ADDR:
-      return registers.LCDC_YCOORD;
+      return data.currentLine;
+    // return registers.LCDC_YCOORD;
     case LCDC_YCOORD_COMPARE_ADDR:
       return registers.LCDC_YCOORD_COMPARE;
     case DMA_TRANSFER_AND_START_ADDR:
@@ -215,6 +208,82 @@ const write = (address, value) => {
   }
 };
 
+const reset = () => {
+  data = {
+    cycles: 0,
+    mode: MODES.HBLANK,
+    modeCycles: 0,
+    currentLine: 0,
+  };
+
+  registers = {
+    LCD_CTRL: 0x00,
+    LCDC_STATUS: 0x00,
+    SCROLLY: 0x00,
+    SCROLLX: 0x00,
+    LCDC_YCOORD: 0x00,
+    LCDC_YCOORD_COMPARE: 0x00,
+    DMA_TRANSFER_AND_START: 0x00,
+    BG_PALETTE: 0x00,
+    OBJ_PALETTE0: 0x00,
+    OBJ_PALETTE1: 0x00,
+    WINY: 0x00,
+    WINX: 0x00,
+  };
+};
+reset();
+
+const step = (stepMachineCycles) => {
+  data.cycles += stepMachineCycles;
+  data.modeCycles += stepMachineCycles;
+
+  switch (data.mode) {
+    case MODES.OAM_SEARCH:
+      if (data.modeCycles >= CYCLES_OAM_SEARCH) {
+        data.mode = MODES.PIXEL_TRANSFER;
+        data.modeCycles = 0;
+      }
+      break;
+
+    case MODES.PIXEL_TRANSFER:
+      if (data.modeCycles >= CYCLES_PIXEL_TRANSFER) {
+        data.mode = MODES.HBLANK;
+        data.modeCycles = 0;
+
+        // renderScanLine();
+      }
+      break;
+
+    case MODES.HBLANK:
+      if (data.modeCycles >= CYCLES_HBLANK) {
+        data.modeCycles = 0;
+        data.currentLine++;
+
+        if (data.currentLine < SCREEN_HEIGHT - 1) {
+          data.mode = MODES.OAM_SEARCH;
+        } else {
+          data.mode = MODES.VBLANK;
+          // renderCanvas();
+        }
+      }
+      break;
+
+    case MODES.VBLANK:
+      if (data.modeCycles >= CYCLES_PER_LINE) {
+        data.modeCycles = 0;
+        data.currentLine++;
+
+        if (data.currentLine > SCREEN_HEIGHT + LINES_VBLANK - 1) {
+          // Back to new frame
+          data.currentLine = 0;
+          data.mode = MODES.OAM_SEARCH;
+          interrupts.setVBlankInterruptFlag();
+        }
+      }
+      break;
+  }
+};
+
 const ppu = {
   getBackgroundPalette,
   getObjectPalette0,
@@ -237,6 +306,8 @@ const ppu = {
   read,
   write,
   reset,
+
+  step,
 };
 
 export default ppu;

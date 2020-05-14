@@ -6,6 +6,7 @@ import { format, readBit } from '../../utils/utils';
 import { getOpcodeLabels } from './opcodes/opcodesMap';
 import interrupts from '../interrupts/interrupts';
 import jumpCallOperations from './operations/jumpCallOperations';
+import ppu from '../ppu/ppu';
 
 let registers = {};
 
@@ -153,11 +154,13 @@ const getMachineCycles = () => cycles.machine;
 const incClockCycles = (incClockCycles) => {
   cycles.clock += incClockCycles;
   cycles.machine = Math.floor(cycles.clock / 4);
+
   timer.step(incClockCycles / 4);
+  ppu.step(incClockCycles / 4);
 };
 const incMachineCycles = (inc) => {
   cycles.machine += inc;
-  cycles.clocl += inc * 4;
+  cycles.clock += inc * 4;
 };
 
 const setInterruptMasterEnable = (active) =>
