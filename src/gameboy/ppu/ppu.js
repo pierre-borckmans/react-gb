@@ -16,6 +16,23 @@ const OBJ_PALETTE1_ADDR = 0xff49;
 const WINY_ADDR = 0xff4a;
 const WINX_ADDR = 0xff4b;
 
+// VRAM ranges
+//  8000-87FF	Tile set #1: tiles 0-127
+//  8800-8FFF	Tile set #1: tiles 128-255
+//             OR
+//             Tile set #0: tiles -1 to -128
+//  9000-97FF	Tile set #0: tiles 0-127
+//  9800-9BFF	Tile map #0
+//  9C00-9FFF	Tile map #1
+const START_TILESET1_ADDR = 0x8000;
+const END_TILESET1_ADDR = 0x8fff;
+const START_TILESET0_ADDR = 0x8800;
+const END_TILESET0_ADDR = 0x97ff;
+const START_TILEMAP0_ADDR = 0x9800;
+const END_TILEMAP0_ADDR = 0x9bff;
+const START_TILEMAP1_ADDR = 0x9c00;
+const END_TILEMAP1_ADDR = 0x9fff;
+
 // LCD CONTROL
 const LCD_CTRL_BACKGROUND_ENABLE_BIT = 0;
 const LCD_CTRL_OBJ_ENABLE_BIT = 1;
@@ -68,14 +85,6 @@ const MODES = {
 
 // 17556 cycles/frames * 60 fps = 1053360 cycles / s
 // 1mbHz (1024*1024) / 17556 cycles/frames = 59.7275 fps
-
-// 8000-87FF	Tile set #1: tiles 0-127
-// 8800-8FFF	Tile set #1: tiles 128-255
-//            OR
-//            Tile set #0: tiles -1 to -128
-// 9000-97FF	Tile set #0: tiles 0-127
-// 9800-9BFF	Tile map #0
-// 9C00-9FFF	Tile map #1
 
 const getPalette = (addr) => {
   const paletteByte = mmu.read(addr);
@@ -139,8 +148,7 @@ const read = (address) => {
     case SCROLLX_ADDR:
       return registers.SCROLLX;
     case LCDC_YCOORD_ADDR:
-      return data.currentLine;
-    // return registers.LCDC_YCOORD;
+      return registers.LCDC_YCOORD;
     case LCDC_YCOORD_COMPARE_ADDR:
       return registers.LCDC_YCOORD_COMPARE;
     case DMA_TRANSFER_AND_START_ADDR:
@@ -213,7 +221,9 @@ const reset = () => {
     cycles: 0,
     mode: MODES.HBLANK,
     modeCycles: 0,
-    currentLine: 0,
+    scanLines: new Array(SCREEN_HEIGHT).fill(
+      new Int8Array(SCREEN_HEIGHT).fill(0)
+    ),
   };
 
   registers = {
@@ -229,6 +239,8 @@ const reset = () => {
     OBJ_PALETTE1: 0x00,
     WINY: 0x00,
     WINX: 0x00,
+
+    BG_MAP: 0,
   };
 };
 reset();
@@ -257,9 +269,9 @@ const step = (stepMachineCycles) => {
     case MODES.HBLANK:
       if (data.modeCycles >= CYCLES_HBLANK) {
         data.modeCycles = 0;
-        data.currentLine++;
+        registers.LCDC_YCOORD++;
 
-        if (data.currentLine < SCREEN_HEIGHT - 1) {
+        if (registers.LCDC_YCOORD < SCREEN_HEIGHT - 1) {
           data.mode = MODES.OAM_SEARCH;
         } else {
           data.mode = MODES.VBLANK;
@@ -271,17 +283,71 @@ const step = (stepMachineCycles) => {
     case MODES.VBLANK:
       if (data.modeCycles >= CYCLES_PER_LINE) {
         data.modeCycles = 0;
-        data.currentLine++;
+        registers.LCDC_YCOORD++;
 
-        if (data.currentLine > SCREEN_HEIGHT + LINES_VBLANK - 1) {
+        if (registers.LCDC_YCOORD > SCREEN_HEIGHT + LINES_VBLANK - 1) {
           // Back to new frame
-          data.currentLine = 0;
+          registers.LCDC_YCOORD = 0;
           data.mode = MODES.OAM_SEARCH;
           interrupts.setVBlankInterruptFlag();
         }
       }
       break;
   }
+};
+
+const renderScanLine = () => {
+  const tileSet = getTileSet();
+
+  // Tilemap = 32*32
+  const tileMapStartAddr =
+    registers.BG_MAP === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
+
+  const tileMapRow = ((registers.LCDC_YCOORD + registers.SCROLLY) & 255) >> 5;
+  let tileMapCol = registers.SCROLLX >> 5;
+
+  let tileMapOffset = tileMapStartAddr + tileMapRow * 32 + tileMapCol;
+  let tileIdx = mmu.read(tileMapOffset);
+
+  const tileRow = (registers.LCDC_YCOORD + registers.SCROLLY) % 8;
+  const tileStartCol = registers.SCROLLY % 8;
+
+  const scanLine = new Uint8Array(SCREEN_WIDTH);
+
+  for (let i = 0; i < SCREEN_WIDTH; i++) {
+    scanLine[i] = tileSet[tileIdx][tileRow][(tileStartCol + i) % 8];
+    if ((tileStartCol + i + 1) % 8 === 0) {
+      tileMapCol = (tileMapCol + 1) % 32;
+      tileMapOffset = tileMapStartAddr + tileMapRow * 32 + tileMapCol;
+      tileIdx = mmu.read(tileMapOffset);
+    }
+  }
+
+  data.scanLines[registers.LCDC_YCOORD] = scanLine;
+};
+
+const getScanLines = () => data.scanLines;
+
+const getBackground = () => {
+  const tileSet = getTileSet();
+  const background = Array(256)
+    .fill()
+    .map(() => Array(256).fill(0));
+
+  // Tilemap = 32*32
+  const tileMapStartAddr =
+    registers.BG_MAP === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
+
+  for (let row = 0; row < 256; row++) {
+    for (let col = 0; col < 256; col++) {
+      const tileMapAddress = tileMapStartAddr + (col >> 3) + (row >> 3) * 32;
+      const tileIdx = mmu.read(tileMapAddress);
+      const tile = tileSet[tileIdx];
+      background[row][col] = tile[row % 8][col % 8];
+    }
+  }
+
+  return background;
 };
 
 const ppu = {
@@ -292,7 +358,10 @@ const ppu = {
   getScrollY,
   getWindowX,
   getWindowY,
+
   getTileSet,
+  getBackground,
+  getScanLines,
 
   getLCDCBackgroundEnable,
   getLCDCObjectEnable,

@@ -7,8 +7,11 @@ import './Background.css';
 
 const Background = (props) => {
   const { config, ppu } = props;
+  const paletteColors = config.paletteColors;
 
   const [scrollX, scrollY] = [ppu.getScrollX(), ppu.getScrollY()];
+  const backgroundPalette = ppu.getBackgroundPalette();
+  const background = ppu.getBackground();
 
   const pixels = [];
   const red = [255, 0, 0];
@@ -28,7 +31,7 @@ const Background = (props) => {
       ) {
         pixels.push(...red);
       } else {
-        pixels.push(...white);
+        pixels.push(...paletteColors[backgroundPalette[background[row][col]]]);
       }
     })
   );

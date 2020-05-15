@@ -14,7 +14,7 @@ const START_TIMER_ADDR = 0xff04;
 const END_TIMER_ADDR = 0xff07;
 const INTERRUPT_FLAGS_ADDR = 0xff0f;
 const START_APU_ADDR = 0xff10;
-const END_APU_ADDR = 0xff26;
+const END_APU_ADDR = 0xff3f;
 const START_PPU_ADDR = 0xff40;
 const END_PPU_ADDR = 0xff4b;
 const INTERRUPT_ENABLE_ADDR = 0xffff;
@@ -56,7 +56,7 @@ const write = (address, value) => {
   } else if (address === INTERRUPT_ENABLE_ADDR) {
     return interrupts.write(address, value);
   } else {
-    throw new Error(
+    console.error(
       `Trying to write to invalid I/O address ${format('hex', address, 16)}`
     );
   }
