@@ -261,38 +261,39 @@ const serviceInterrupts = () => {
   if (readBit(interruptEnable, 0) && readBit(interruptFlags, 0)) {
     // Vertical Blank
     if (getInterruptMasterEnable()) {
-      interrupts.disableVBlankInterrupt();
+      // interrupts.disableVBlankInterrupt();
+      interrupts.resetVBlankInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x40);
+      setHalt(false);
     }
-    // halt = false;
   } else if (readBit(interruptEnable, 1) && readBit(interruptFlags, 1)) {
     // LCDC Status
     if (getInterruptMasterEnable()) {
-      interrupts.disableLCDStatInterrupt();
+      interrupts.resetLCDStatInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x48);
+      setHalt(false);
     }
-    // halt = false;
   } else if (readBit(interruptEnable, 2) && readBit(interruptFlags, 2)) {
     // Timer Overflow
     if (getInterruptMasterEnable()) {
       interrupts.resetTimerInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x50);
+      setHalt(false);
     }
-    halt = false;
   } else if (readBit(interruptEnable, 3) && readBit(interruptFlags, 3)) {
     // Serial Transfer Completion
     if (getInterruptMasterEnable()) {
-      interrupts.disableSerialInterrupt();
+      interrupts.resetSerialInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x58);
+      setHalt(false);
     }
-    // halt = false;
   } else if (readBit(interruptEnable, 4) && readBit(interruptFlags, 4)) {
     // High-to-Low of P10-P13 (Joypad)
     if (getInterruptMasterEnable()) {
-      interrupts.disableJoypadInterrupt();
+      interrupts.resetJoypadInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x60);
+      setHalt(false);
     }
-    // halt = false;
   }
 };
 

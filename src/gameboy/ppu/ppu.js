@@ -137,10 +137,39 @@ const getScrollY = () => mmu.read(SCROLLY_ADDR);
 const getWindowX = () => mmu.read(WINX_ADDR);
 const getWindowY = () => mmu.read(WINY_ADDR);
 
+const readLCDCtrl = () => {
+  return (
+    ((registers.LCD_ENABLED ? 1 : 0) << LCD_CTRL_LCD_ENABLE_BIT) |
+    (registers.WINDOW_TILEMAP << LCD_CTRL_WINDOW_TILEMAP_BIT) |
+    ((registers.WINDOW_ENABLED ? 1 : 0) << LCD_CTRL_WINDOW_ENABLE_BIT) |
+    (registers.BACKGROUND_WINDOW_TILESET <<
+      LCD_CTRL_BG_AND_WINDOW_TILESET_BIT) |
+    (registers.BACKGROUND_TILEMAP << LCD_CTRL_BG_TILEMAP_BIT) |
+    (registers.SPRITES_SIZE << LCD_CTRL_OBJ_SIZE_BIT) |
+    ((registers.SPRITES_ENABLED ? 1 : 0) << LCD_CTRL_OBJ_ENABLE_BIT) |
+    ((registers.BACKGROUND_ENABLED ? 1 : 0) << LCD_CTRL_BACKGROUND_ENABLE_BIT)
+  );
+};
+
+const writeLCDCtrl = (value) => {
+  registers.LCD_ENABLED = value & (1 << LCD_CTRL_LCD_ENABLE_BIT) ? true : false;
+  registers.WINDOW_TILEMAP = value & (1 << LCD_CTRL_WINDOW_TILEMAP_BIT) ? 1 : 0;
+  registers.WINDOW_ENABLED =
+    value & (1 << LCD_CTRL_WINDOW_ENABLE_BIT) ? true : false;
+  registers.BACKGROUND_WINDOW_TILESET =
+    value & (1 << LCD_CTRL_BG_AND_WINDOW_TILESET_BIT) ? 1 : 0;
+  registers.BACKGROUND_TILEMAP = value & (1 << LCD_CTRL_BG_TILEMAP_BIT) ? 1 : 0;
+  registers.SPRITES_SIZE = value & (1 << LCD_CTRL_OBJ_SIZE_BIT) ? 1 : 0;
+  registers.SPRITES_ENABLED =
+    value & (1 << LCD_CTRL_OBJ_ENABLE_BIT) ? true : false;
+  registers.BACKGROUND_ENABLED =
+    value & (1 << LCD_CTRL_BACKGROUND_ENABLE_BIT) ? true : false;
+};
+
 const read = (address) => {
   switch (address) {
     case LCD_CTRL_ADDR:
-      return registers.LCD_CTRL;
+      return readLCDCtrl();
     case LCDC_STATUS_ADDR:
       return registers.LCDC_STATUS;
     case SCROLLY_ADDR:
@@ -174,7 +203,7 @@ const read = (address) => {
 const write = (address, value) => {
   switch (address) {
     case LCD_CTRL_ADDR:
-      registers.LCD_CTRL = value;
+      writeLCDCtrl(value);
       break;
     case LCDC_STATUS_ADDR:
       registers.LCDC_STATUS = value;
@@ -240,7 +269,15 @@ const reset = () => {
     WINY: 0x00,
     WINX: 0x00,
 
-    BG_MAP: 0,
+    // LCD_CTRL
+    LCD_ENABLED: false,
+    BACKGROUND_ENABLED: false,
+    WINDOW_ENABLED: false,
+    SPRITES_ENABLED: false,
+    BACKGROUND_TILEMAP: 0,
+    WINDOW_TILEMAP: 0,
+    BACKGROUND_WINDOW_TILESET: 0,
+    SPRITES_SIZE: 0,
   };
 };
 reset();
@@ -301,9 +338,11 @@ const renderScanLine = () => {
 
   // Tilemap = 32*32
   const tileMapStartAddr =
-    registers.BG_MAP === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
+    registers.BACKGROUND_TILEMAP === 0
+      ? START_TILEMAP0_ADDR
+      : START_TILEMAP1_ADDR;
 
-  const tileMapRow = ((registers.LCDC_YCOORD + registers.SCROLLY) & 255) >> 5;
+  const tileMapRow = ((registers.LCDC_YCOORD + registers.SCROLLY) & 0xff) >> 5;
   let tileMapCol = registers.SCROLLX >> 5;
 
   let tileMapOffset = tileMapStartAddr + tileMapRow * 32 + tileMapCol;
@@ -336,7 +375,9 @@ const getBackground = () => {
 
   // Tilemap = 32*32
   const tileMapStartAddr =
-    registers.BG_MAP === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
+    registers.BACKGROUND_TILEMAP === 0
+      ? START_TILEMAP0_ADDR
+      : START_TILEMAP1_ADDR;
 
   for (let row = 0; row < 256; row++) {
     for (let col = 0; col < 256; col++) {

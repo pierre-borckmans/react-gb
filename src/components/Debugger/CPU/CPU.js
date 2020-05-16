@@ -113,6 +113,7 @@ const CPU = (props) => {
           {opcodeLabelWithValues}
         </div>
         <button onClick={skipBootRom}>Skip boot ROM</button>
+        <div>HALTED: {cpu.getHalt() ? 'YES' : 'NO'}</div>
       </div>
     </Fragment>
   );

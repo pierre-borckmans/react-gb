@@ -71,7 +71,7 @@ const run = (callback) => {
     if (running) {
       requestAnimationFrame(frame);
     } else {
-      console.log(cpu.getSteps().join('\n'));
+      // console.log(cpu.getSteps().join('\n'));
     }
   };
   callback && callback(frames);
