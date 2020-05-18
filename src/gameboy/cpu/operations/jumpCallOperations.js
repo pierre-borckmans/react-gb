@@ -76,7 +76,7 @@ const JP_$RR = (cpu, reg16) => {
 // RST XXH
 // - - - -
 const RST_XXH = (cpu, XX) => {
-  cpu.setInterruptMasterEnable(0);
+  // cpu.setInterruptMasterEnable(0);
   cpu.stackPush(cpu.getPC());
 
   cpu.setPC(XX);

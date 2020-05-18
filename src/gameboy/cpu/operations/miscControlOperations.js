@@ -20,14 +20,14 @@ const HALT = (cpu) => {
   cpu.setHalt(true);
 
   // /* Check halt bug */
-  const interruptEnabled = interrupts.getInterruptEnable();
-  const interruptFlags = interrupts.getInterruptFlags();
-  if (
-    !cpu.getInterruptMasterEnable() &&
-    interruptFlags & interruptEnabled & 0x1f
-  ) {
-    cpu.setHaltBug(true);
-  }
+  // const interruptEnabled = interrupts.getInterruptEnable();
+  // const interruptFlags = interrupts.getInterruptFlags();
+  // if (
+  //   !cpu.getInterruptMasterEnable() &&
+  //   interruptFlags & interruptEnabled & 0x1f
+  // ) {
+  //   cpu.setHaltBug(true);
+  // }
 
   cpu.incPC(1);
 };

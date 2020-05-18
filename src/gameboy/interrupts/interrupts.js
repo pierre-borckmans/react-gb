@@ -74,25 +74,25 @@ const getSerialInterruptFlag = () =>
   readBit(registers.interruptFlags, SERIAL_BIT);
 const getJoypadInterruptFlag = () =>
   readBit(registers.interruptFlags, JOYPAD_BIT);
-const setVBlankInterruptFlag = (flag) =>
+const setVBlankInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, VBLANK_BIT, 1));
-const setLCDStatInterruptFlag = (flag) =>
+const setLCDStatInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, LCDSTAT_BIT, 1));
-const setTimerInterruptFlag = (flag) =>
+const setTimerInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, TIMER_BIT, 1));
-const setSerialInterruptFlag = (flag) =>
+const setSerialInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, SERIAL_BIT, 1));
-const setJoypadInterruptFlag = (flag) =>
+const setJoypadInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, JOYPAD_BIT, 1));
-const resetVBlankInterruptFlag = (flag) =>
+const resetVBlankInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, VBLANK_BIT, 0));
-const resetLCDStatInterruptFlag = (flag) =>
+const resetLCDStatInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, LCDSTAT_BIT, 0));
-const resetTimerInterruptFlag = (flag) =>
+const resetTimerInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, TIMER_BIT, 0));
-const resetSerialInterruptFlag = (flag) =>
+const resetSerialInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, SERIAL_BIT, 0));
-const resetJoypadInterruptFlag = (flag) =>
+const resetJoypadInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, JOYPAD_BIT, 0));
 
 const read = (address) => {
