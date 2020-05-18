@@ -70,11 +70,11 @@ const setBootComplete = (complete) => (registers.bootComplete = complete);
 const read = (address) => {
   switch (getMemoryType(address)) {
     case ROM0:
-      return mbc.read(address - START_ROM0);
+      return mbc.read(address);
     case ROM1:
       return mbc.read(address - START_ROM0);
     case VIDEO_RAM:
-      return videoRam.read(address - START_VIDEO_RAM);
+      return videoRam.read(address);
     case EXTERNAL_RAM:
       return mbc.read(address - START_EXTERNAL_RAM);
     case WORK_RAM:
@@ -103,11 +103,11 @@ const readBit = (address, bitIdx) => {
 const write = (address, value) => {
   switch (getMemoryType(address)) {
     case ROM0:
-      return mbc.write(address - START_ROM0, value);
+      return mbc.write(address, value);
     case ROM1:
       return mbc.write(address - START_ROM0, value);
     case VIDEO_RAM:
-      return videoRam.write(address - START_VIDEO_RAM, value);
+      return videoRam.write(address, value);
     case EXTERNAL_RAM:
       return externalRam.write(address - START_EXTERNAL_RAM, value);
     case WORK_RAM:

@@ -29,4 +29,7 @@ const readBit = (value, bitIdx) =>
 const setBit = (value, bitIdx, bit) =>
   bit ? value | (1 << bitIdx) : value & ~(1 << bitIdx);
 
-export { toHex, toBin, format, readBit, setBit };
+const getSignedByte = (unsigned) =>
+  unsigned > 127 ? -128 + (unsigned ^ (1 << 7)) : unsigned;
+
+export { toHex, toBin, format, readBit, setBit, getSignedByte };

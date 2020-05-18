@@ -1,7 +1,7 @@
 import mmu from '../mmu/mmu';
 import interrupts from '../interrupts/interrupts';
 
-import { format, readBit } from '../../utils/utils';
+import { format, readBit, getSignedByte } from '../../utils/utils';
 
 const LCD_CTRL_ADDR = 0xff40;
 const LCDC_STATUS_ADDR = 0xff41;
@@ -83,6 +83,14 @@ const MODES = {
   VBLANK: 1,
 };
 
+const tileSet = Array(384)
+  .fill()
+  .map(() =>
+    Array(8)
+      .fill()
+      .map(() => Array(8).fill(0))
+  );
+
 // 17556 cycles/frames * 60 fps = 1053360 cycles / s
 // 1mbHz (1024*1024) / 17556 cycles/frames = 59.7275 fps
 
@@ -97,6 +105,22 @@ const getPalette = (addr) => {
   return palette;
 };
 
+const updateTile = (tileIdx) => {
+  tileSet[tileIdx] = [];
+  for (let row = 0; row < 8; row++) {
+    tileSet[tileIdx][row] = [];
+    const offset = 0x8000 + tileIdx * 16 + row * 2;
+    const byte1 = mmu.read(offset);
+    const byte2 = mmu.read(offset + 1);
+    for (let col = 7; col >= 0; col--) {
+      const bit1 = (byte1 & (0x01 << col)) >> col;
+      const bit2 = (byte2 & (0x01 << col)) >> col;
+      const pixel = (bit2 << 1) + bit1;
+      tileSet[tileIdx][row][7 - col] = pixel;
+    }
+  }
+};
+
 const getTileSet = () => {
   // 384 tiles
   // 8x8 pixels
@@ -108,22 +132,9 @@ const getTileSet = () => {
   // one map can be used at a time
   // each map can only use max 256 different tiles
 
-  const tileSet = [];
-  for (let tile = 0; tile < 384; tile++) {
-    tileSet[tile] = [];
-    for (let row = 0; row < 8; row++) {
-      tileSet[tile][row] = [];
-      const offset = 0x8000 + tile * 16 + row * 2;
-      const byte1 = mmu.read(offset);
-      const byte2 = mmu.read(offset + 1);
-      for (let col = 7; col >= 0; col--) {
-        const bit1 = (byte1 & (0x01 << col)) >> col;
-        const bit2 = (byte2 & (0x01 << col)) >> col;
-        const pixel = (bit2 << 1) + bit1;
-        tileSet[tile][row][7 - col] = pixel;
-      }
-    }
-  }
+  // for (let tileIdx = 0; tileIdx < 384; tileIdx++) {
+  //   updateTile(tileIdx);
+  // }
   return tileSet;
 };
 
@@ -383,7 +394,12 @@ const getBackground = () => {
     for (let col = 0; col < 256; col++) {
       const tileMapAddress = tileMapStartAddr + (col >> 3) + (row >> 3) * 32;
       const tileIdx = mmu.read(tileMapAddress);
-      const tile = tileSet[tileIdx];
+      const signedTileIdx = getSignedByte(tileIdx);
+      const tileIdxCorrected =
+        registers.BACKGROUND_WINDOW_TILESET === 1
+          ? tileIdx
+          : 256 + signedTileIdx;
+      const tile = tileSet[tileIdxCorrected];
       background[row][col] = tile[row % 8][col % 8];
     }
   }
@@ -418,6 +434,10 @@ const ppu = {
   reset,
 
   step,
+
+  START_TILESET1_ADDR,
+  END_TILESET0_ADDR,
+  updateTile,
 };
 
 export default ppu;
