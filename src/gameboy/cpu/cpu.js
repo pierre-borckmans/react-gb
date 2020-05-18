@@ -1,12 +1,12 @@
 import opcodesMap from './opcodes/opcodesMap';
 import mmu from '../mmu/mmu';
+import ppu from '../ppu/ppu';
 import timer from '../timer/timer';
+import interrupts from '../interrupts/interrupts';
+
+import jumpCallOperations from './operations/jumpCallOperations';
 
 import { format, readBit } from '../../utils/utils';
-import { getOpcodeLabels } from './opcodes/opcodesMap';
-import interrupts from '../interrupts/interrupts';
-import jumpCallOperations from './operations/jumpCallOperations';
-import ppu from '../ppu/ppu';
 
 let registers = {};
 
@@ -14,8 +14,6 @@ let cycles = {};
 
 let halt = false;
 let haltBug = false;
-
-let steps = [];
 
 const skipBootRom = () => {
   registers = {
@@ -37,7 +35,6 @@ const skipBootRom = () => {
 };
 
 const reset = () => {
-  steps = [];
   registers = {
     A: 0x00,
     F: 0x00,
@@ -151,16 +148,13 @@ const decSP = (dec) => (registers.SP -= dec);
 
 const getClockCycles = () => cycles.clock;
 const getMachineCycles = () => cycles.machine;
+
 const incClockCycles = (incClockCycles) => {
   cycles.clock += incClockCycles;
   cycles.machine = Math.floor(cycles.clock / 4);
 
   timer.step(incClockCycles / 4);
   ppu.step(incClockCycles / 4);
-};
-const incMachineCycles = (inc) => {
-  cycles.machine += inc;
-  cycles.clock += inc * 4;
 };
 
 const setInterruptMasterEnable = (active) =>
@@ -218,10 +212,13 @@ const stackPop = () => {
 
 const step = () => {
   let result;
-  let elapsedMachineCycles;
+
+  if (interrupts.getInterruptEnable() && interrupts.getInterruptFlags()) {
+    serviceInterrupts();
+  }
+
   if (halt) {
     incClockCycles(4);
-    elapsedMachineCycles = 4;
   } else {
     const fetchOpcode = () => readAddress8(registers.PC);
     const decodeOpcode = (opcode) => opcodesMap[opcode];
@@ -229,27 +226,12 @@ const step = () => {
     const opcode = fetchOpcode();
     const executeOpcodeFn = decodeOpcode(opcode);
 
-    const previousMachineCycles = getMachineCycles();
     result = executeOpcodeFn(cpu);
-
-    elapsedMachineCycles = getMachineCycles() - previousMachineCycles;
-
-    // steps.push(
-    //   '[' +
-    //     format('hex', cpu.getPC(), 16) +
-    //     '] : ' +
-    //     getOpcodeLabels('hex', cpu).join('  -  ')
-    // );
 
     // TODO: remove when all opcodes implemented
     if (result === -1) {
       alert(`Opcode ${format('hex', opcode)} not implemented`);
     }
-  }
-
-  if (interrupts.getInterruptEnable() && interrupts.getInterruptFlags()) {
-    serviceInterrupts();
-  } else {
   }
 
   return result;
@@ -258,41 +240,36 @@ const step = () => {
 const serviceInterrupts = () => {
   const interruptEnable = interrupts.getInterruptEnable();
   const interruptFlags = interrupts.getInterruptFlags();
+  setHalt(false);
   if (readBit(interruptEnable, 0) && readBit(interruptFlags, 0)) {
     // Vertical Blank
     if (getInterruptMasterEnable()) {
-      // interrupts.disableVBlankInterrupt();
       interrupts.resetVBlankInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x40);
-      setHalt(false);
     }
   } else if (readBit(interruptEnable, 1) && readBit(interruptFlags, 1)) {
     // LCDC Status
     if (getInterruptMasterEnable()) {
       interrupts.resetLCDStatInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x48);
-      setHalt(false);
     }
   } else if (readBit(interruptEnable, 2) && readBit(interruptFlags, 2)) {
     // Timer Overflow
     if (getInterruptMasterEnable()) {
       interrupts.resetTimerInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x50);
-      setHalt(false);
     }
   } else if (readBit(interruptEnable, 3) && readBit(interruptFlags, 3)) {
     // Serial Transfer Completion
     if (getInterruptMasterEnable()) {
       interrupts.resetSerialInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x58);
-      setHalt(false);
     }
   } else if (readBit(interruptEnable, 4) && readBit(interruptFlags, 4)) {
     // High-to-Low of P10-P13 (Joypad)
     if (getInterruptMasterEnable()) {
       interrupts.resetJoypadInterruptFlag();
       jumpCallOperations.RST_XXH(cpu, 0x60);
-      setHalt(false);
     }
   }
 };
@@ -336,7 +313,7 @@ const cpu = {
   writeReg8,
   step,
   incClockCycles,
-  incMachineCycles,
+
   incPC,
   incSP,
   decPC,
@@ -346,8 +323,6 @@ const cpu = {
   debugAllOpcodes,
   reset,
   skipBootRom,
-
-  getSteps: () => steps,
 };
 
 export default cpu;

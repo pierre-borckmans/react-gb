@@ -23,10 +23,9 @@ const CPU = (props) => {
     props.onDebuggerChange();
   };
 
-  const skipBootRom = (e) => {
+  const skipBootRom = () => {
     cpu.skipBootRom();
     props.onDebuggerChange();
-    e.stopPropagation();
   };
 
   const cpu = props.cpu;
@@ -112,7 +111,14 @@ const CPU = (props) => {
           <br />
           {opcodeLabelWithValues}
         </div>
-        <button onClick={skipBootRom}>Skip boot ROM</button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            skipBootRom();
+          }}
+        >
+          Skip boot ROM
+        </button>
         <div>HALTED: {cpu.getHalt() ? 'YES' : 'NO'}</div>
       </div>
     </Fragment>
