@@ -74,6 +74,7 @@ const getSerialInterruptFlag = () =>
   readBit(registers.interruptFlags, SERIAL_BIT);
 const getJoypadInterruptFlag = () =>
   readBit(registers.interruptFlags, JOYPAD_BIT);
+
 const setVBlankInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, VBLANK_BIT, 1));
 const setLCDStatInterruptFlag = () =>
@@ -84,6 +85,7 @@ const setSerialInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, SERIAL_BIT, 1));
 const setJoypadInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, JOYPAD_BIT, 1));
+
 const resetVBlankInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, VBLANK_BIT, 0));
 const resetLCDStatInterruptFlag = () =>

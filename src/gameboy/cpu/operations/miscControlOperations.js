@@ -42,17 +42,17 @@ const PREFIX_CB = (cpu) => {
 // DI
 // - - - -
 const DI = (cpu) => {
-  cpu.setInterruptMasterEnable(0);
   cpu.incPC(1);
   cpu.incClockCycles(4);
+  cpu.setInterruptMasterEnable(0);
 };
 
 // EI
 // - - - -
 const EI = (cpu) => {
-  cpu.setInterruptMasterEnable(1);
   cpu.incPC(1);
   cpu.incClockCycles(4);
+  cpu.setInterruptMasterEnable(1);
 };
 
 const miscControlOperations = {
