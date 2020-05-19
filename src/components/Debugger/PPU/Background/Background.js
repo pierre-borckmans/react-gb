@@ -4,6 +4,7 @@ import PixelGrid from '../../../Shared/PixelGrid/PixelGrid';
 
 import { range } from 'lodash';
 import './Background.css';
+import Container from '../../../Shared/Container/Container';
 
 const Background = (props) => {
   const { config, ppu } = props;
@@ -37,12 +38,11 @@ const Background = (props) => {
   );
 
   return (
-    <div className="background">
-      <div className="section">Background</div>
+    <Container title="Background" width={290}>
       <div className="background-canvas-div">
         <PixelGrid width={256} height={256} pixels={pixels} />
       </div>
-    </div>
+    </Container>
   );
 };
 

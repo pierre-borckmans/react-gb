@@ -22,7 +22,7 @@ const getTotalSteps = () => totalSteps;
 let currentBreakpoint = null;
 const getCurrentBreakpoint = () => currentBreakpoint;
 
-const run = (callback) => {
+const run = async (callback) => {
   if (running) return;
   running = true;
   let frames = 0;
@@ -76,6 +76,25 @@ const run = (callback) => {
   };
   callback && callback(frames);
   requestAnimationFrame(frame);
+
+  // function sleep(ms) {
+  //   return new Promise((resolve) => setTimeout(resolve, ms));
+  // }
+
+  // while (running) {
+  //   const start = new Date().getTime();
+  //   frame(start);
+  //   const elapsed = new Date().getTime() - start;
+
+  //   if (elapsed < 16) {
+  //     // console.log('sleep', 16 - elapsed);
+  //     await sleep(0);
+  //     const elapsed2 = new Date().getTime() - start;
+  //     if (elapsed2 < 16) {
+  //       await sleep(1);
+  //     }
+  //   }
+  // }
 };
 
 const pause = (callback) => {

@@ -1,8 +1,9 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { range } from 'lodash';
 
 import './PPU.css';
+import Container from '../../Shared/Container/Container';
 
 const PPU = (props) => {
   const { config, ppu } = props;
@@ -29,35 +30,32 @@ const PPU = (props) => {
     </div>
   );
   return (
-    <Fragment>
-      <div className="ppu">
-        <div className="section">PPU</div>
-        <div className="subsection">Background palette</div>
-        {getPalette(backgroundPalette)}
-        <div className="subsection">Object palette 0</div>
-        {getPalette(objectPalette0)}
-        <div className="subsection">Object palette 1</div>
-        {getPalette(objectPalette1)}
-        <div className="subsection">Scroll</div>
-        <div>
-          X: {ppu.getScrollX()}, Y: {ppu.getScrollY()}
-        </div>
-        <div className="subsection">Window</div>
-        <div>
-          X: {ppu.getWindowX()}, Y: {ppu.getWindowY()}
-        </div>
-        <div className="subsection">LCDC</div>
-        <div>LCD: {ppu.getLCDCLCDEnable()}</div>
-        <div>background: {ppu.getLCDCBackgroundEnable()}</div>
-        <div>object: {ppu.getLCDCObjectEnable()}</div>
-        <div>window: {ppu.getLCDCWindowEnable()}</div>
-        <div>bg tilemap: {ppu.getLCDCBackgroundTilemapAdress()}</div>
-        <div>
-          bg&amp;win tileset: {ppu.getLCDCBackgroundAndWindowTilemapAdress()}
-        </div>
-        <div>window tilemap: {ppu.getLCDCWindowTilemapAdress()}</div>
+    <Container title="PPU" width={290}>
+      <div className="subsection">Background palette</div>
+      {getPalette(backgroundPalette)}
+      <div className="subsection">Object palette 0</div>
+      {getPalette(objectPalette0)}
+      <div className="subsection">Object palette 1</div>
+      {getPalette(objectPalette1)}
+      <div className="subsection">Scroll</div>
+      <div>
+        X: {ppu.getScrollX()}, Y: {ppu.getScrollY()}
       </div>
-    </Fragment>
+      <div className="subsection">Window</div>
+      <div>
+        X: {ppu.getWindowX()}, Y: {ppu.getWindowY()}
+      </div>
+      <div className="subsection">LCDC</div>
+      <div>LCD: {ppu.getLCDCLCDEnable()}</div>
+      <div>background: {ppu.getLCDCBackgroundEnable()}</div>
+      <div>object: {ppu.getLCDCObjectEnable()}</div>
+      <div>window: {ppu.getLCDCWindowEnable()}</div>
+      <div>bg tilemap: {ppu.getLCDCBackgroundTilemapAdress()}</div>
+      <div>
+        bg&amp;win tileset: {ppu.getLCDCBackgroundAndWindowTilemapAdress()}
+      </div>
+      <div>window tilemap: {ppu.getLCDCWindowTilemapAdress()}</div>
+    </Container>
   );
 };
 

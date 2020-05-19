@@ -1,8 +1,0 @@
-.mbc {
-  display: flex;
-  flex-direction: column;
-  width: 240px;
-  padding: 5px;
-  border: dotted gray 1px;
-  font-size: 14px;
-}

@@ -2,6 +2,7 @@ import React from 'react';
 import TilesGrid from '../../../Shared/TilesGrid/TilesGrid';
 
 import './Tiles.css';
+import Container from '../../../Shared/Container/Container';
 
 const Tiles = (props) => {
   const { config, ppu } = props;
@@ -22,8 +23,7 @@ const Tiles = (props) => {
   };
 
   return (
-    <div className="tileset">
-      <div className="section">Tileset</div>
+    <Container title="Tiles" width={290}>
       <TilesGrid
         tiles={tileSet.map(tileToPixels)}
         tilesPerRow={16}
@@ -33,7 +33,7 @@ const Tiles = (props) => {
         scale={1.4}
         gridColor={[230, 80, 90]}
       />
-    </div>
+    </Container>
   );
 };
 

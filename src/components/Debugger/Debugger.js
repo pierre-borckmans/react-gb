@@ -19,6 +19,7 @@ import Gamepad from './Gamepad/Gamepad';
 
 import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
+import Container from '../Shared/Container/Container';
 
 const Debugger = (props) => {
   const gameboy = props.gameboy;
@@ -55,7 +56,7 @@ const Debugger = (props) => {
 
   const run = () => {
     debugger_.run((frames) => {
-      if (frames % 25 === 0 || !debugger_.isRunning()) {
+      if (frames % 80 === 0 || !debugger_.isRunning()) {
         handleCPUChange();
       }
     });
@@ -142,53 +143,47 @@ const Debugger = (props) => {
           ).toFixed(2)} frames/s`}</span>
         </div>
         <div className="debugger_row">
-          <div>
-            <div className="debugger_row">
-              <MMU
-                debugger_={debugger_}
-                cpu={cpu}
-                mmu={mmu}
-                onCPUChange={handleCPUChange}
-                onDebuggerChange={handleDebuggerChange}
-              />
-              <CPU
-                cpu={cpu}
-                onCPUChange={handleCPUChange}
-                onDebuggerChange={handleDebuggerChange}
-              />
-            </div>
-            <div className="debugger_row">
-              <Breakpoints
-                debugger_={debugger_}
-                onDebuggerChange={handleDebuggerChange}
-              />
-              <Cartridge
-                cartridge={cartridge}
-                onDebuggerChange={handleDebuggerChange}
-              />
-              <MBC
-                cartridge={cartridge}
-                mbc={mbc}
-                onDebuggerChange={handleDebuggerChange}
-              />
-              <Background config={config} ppu={ppu} />
-            </div>
-          </div>
-          <div>
-            <PPU
-              config={config}
-              ppu={ppu}
-              onDebuggerChange={handleDebuggerChange}
-            />
-            <Tiles config={config} ppu={ppu} />
-          </div>
-          <APU apu={apu} />
-          <Joypad debugger_={debugger_} joypad={joypad} />
-          <Interrupt interrupts={interrupts} />
-          <Serial serial={serial} />
-          <Timer timer={timer} />
-          <Gamepad />
+          <MMU
+            debugger_={debugger_}
+            cpu={cpu}
+            mmu={mmu}
+            onCPUChange={handleCPUChange}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <CPU
+            cpu={cpu}
+            onCPUChange={handleCPUChange}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <Breakpoints
+            debugger_={debugger_}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <Cartridge
+            cartridge={cartridge}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <MBC
+            cartridge={cartridge}
+            mbc={mbc}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <Background config={config} ppu={ppu} />
         </div>
+        <div>
+          <PPU
+            config={config}
+            ppu={ppu}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <Tiles config={config} ppu={ppu} />
+        </div>
+        <APU apu={apu} />
+        <Joypad debugger_={debugger_} joypad={joypad} />
+        <Interrupt interrupts={interrupts} />
+        <Serial serial={serial} />
+        <Timer timer={timer} />
+        <Gamepad />
       </div>
       SPACE=Run until next breakpoint, ENTER=Step
     </Fragment>

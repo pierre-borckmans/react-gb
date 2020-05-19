@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border: dotted gray 1px;
+  user-select: none;
+}
+
+.section {
+  margin-bottom: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}

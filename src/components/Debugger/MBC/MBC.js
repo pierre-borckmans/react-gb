@@ -1,19 +1,20 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import './MBC.css';
+import Container from '../../Shared/Container/Container';
 
 const MBC = (props) => {
   const { cartridge, mbc } = props;
   return (
-    <div className="mbc">
-      <div className="section">MBC</div>
+    <Container title="MBC" width={240}>
       <div>Rom type: {mbc.getType()}</div>
       <div>ROM bank: {mbc.getRomBank()}</div>
       <div>Mode: {mbc.getMode() === mbc.ROM_MODE ? 'ROM' : 'RAM'}</div>
       <div>
         External ram: {mbc.isExternalRamEnabled() ? 'ENABLED' : 'DISABLED'}
       </div>
+
       <div>RAM bank: {mbc.getRamBank()}</div>
-    </div>
+    </Container>
   );
 };
 

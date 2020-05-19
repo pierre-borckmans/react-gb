@@ -1,16 +1,11 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import './APU.css';
+import Container from '../../Shared/Container/Container';
 
 const APU = (props) => {
   const { apu } = props;
-  return (
-    <Fragment>
-      <div className="apu">
-        <div className="section">APU</div>
-      </div>
-    </Fragment>
-  );
+  return <Container title="APU" width={200}></Container>;
 };
 
 export default APU;

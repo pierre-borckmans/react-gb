@@ -5,6 +5,7 @@ import { format } from '../../../utils/utils';
 import { getOpcodeLabels } from '../../../gameboy/cpu/opcodes/opcodesMap';
 
 import './CPU.css';
+import Container from '../../Shared/Container/Container';
 
 const bases = ['hex', 'bin', 'dec'];
 
@@ -35,9 +36,8 @@ const CPU = (props) => {
     opcodeLabelWithValues,
   ] = getOpcodeLabels(base, cpu);
   return (
-    <Fragment>
+    <Container title="CPU" width={240}>
       <div className="cpu" onClick={handleClick}>
-        <div className="section">CPU</div>
         <div className="subsection">Registers (8bit)</div>
         <div className="registers_pair">
           <div className="register_8bit">
@@ -121,7 +121,7 @@ const CPU = (props) => {
         </button>
         <div>HALTED: {cpu.getHalt() ? 'YES' : 'NO'}</div>
       </div>
-    </Fragment>
+    </Container>
   );
 };
 

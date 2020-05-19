@@ -1,9 +1,0 @@
-.tileset {
-  display: flex;
-  flex-direction: column;
-  width: 290px;
-  padding: 5px;
-  border: dotted gray 1px;
-  font-size: 14px;
-  align-items: center;
-}

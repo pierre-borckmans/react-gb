@@ -1,21 +1,20 @@
-import React, { Fragment } from 'react';
+import React from 'react';
+
+import Container from '../../Shared/Container/Container';
 
 import './Serial.css';
 
 const Serial = (props) => {
   const { serial } = props;
   return (
-    <Fragment>
-      <div className="serial">
-        <div className="section">Serial</div>
-        <div className="data">
-          {serial
-            .getSentBytes()
-            .map((b) => String.fromCharCode(b))
-            .join('')}
-        </div>
+    <Container title="Serial transfer">
+      <div className="data">
+        {serial
+          .getSentBytes()
+          .map((b) => String.fromCharCode(b))
+          .join('')}
       </div>
-    </Fragment>
+    </Container>
   );
 };
 

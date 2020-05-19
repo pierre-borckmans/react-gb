@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import './Gamepad.css';
+import Container from '../../Shared/Container/Container';
 
 const Gamepad = (props) => {
   const [gamepadButtons, setGamepadButtons] = useState({
@@ -34,12 +35,11 @@ const Gamepad = (props) => {
   }, []);
 
   return (
-    <div className="gamepad">
-      <div className="section">Gamepad</div>
+    <Container title="Gamepad">
       {Object.keys(gamepadButtons).map((b) => (
         <div key={b}>{`${b}: ${gamepadButtons[b]}`}</div>
       ))}
-    </div>
+    </Container>
   );
 };
 

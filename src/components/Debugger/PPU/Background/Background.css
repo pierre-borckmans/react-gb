@@ -1,13 +1,3 @@
-.background {
-  display: flex;
-  flex-direction: column;
-  width: 290px;
-  padding: 5px;
-  border: dotted gray 1px;
-  font-size: 14px;
-  align-items: center;
-}
-
 .background-canvas-div {
   border: solid black 1px;
   height: 256px;

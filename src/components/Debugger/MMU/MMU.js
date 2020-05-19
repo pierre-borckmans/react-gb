@@ -8,6 +8,7 @@ import { toHex, format } from '../../../utils/utils';
 import { chunk, find, range } from 'lodash';
 
 import './MMU.css';
+import Container from '../../Shared/Container/Container';
 
 const labels = [
   { address: 0x0000, label: 'RST00', color: 'rgb(180,180,180)' },
@@ -203,134 +204,131 @@ const MMU = (props) => {
   const memoryRows = chunk(memoryPage.slice(0, 256), 16);
 
   return (
-    <Fragment>
+    <Container title="MMU" width={760}>
       <div className="mmu">
-        <div className="section">MMU</div>
-        <div className="table">
-          <div className="table_header">
-            <div className={classNames('row_offset', 'page_count')}>
-              <span className="page_arrow" onClick={previousPage}>
-                ←
-              </span>
-              {`Page ${selectedPage}/255`}
-              <span className="page_arrow" onClick={nextPage}>
-                →
-              </span>
-            </div>
-            <div className="table_header_bytes">
-              {range(0, 16).map((index) => {
-                const selected = index === selectedAddress % 16;
-                return (
-                  <div
-                    key={index}
-                    className={classNames('table_header_item', {
-                      table_header_item_selected: selected,
-                    })}
-                  >
-                    {toHex(index)}
-                  </div>
-                );
-              })}
-            </div>
-            <div className="row_ascii"></div>
+        <div className="table_header">
+          <div className={classNames('row_offset', 'page_count')}>
+            <span className="page_arrow" onClick={previousPage}>
+              ←
+            </span>
+            {`Page ${selectedPage}/255`}
+            <span className="page_arrow" onClick={nextPage}>
+              →
+            </span>
           </div>
-          {memoryRows.map((row, rowIndex) => {
-            const rowSelected =
-              selectedPage * 16 + rowIndex === Math.floor(selectedAddress / 16);
-            const offset = selectedPage * 256 + rowIndex * 16;
-            const memoryType = mmu.getMemoryType(offset);
-            return (
-              <div key={rowIndex} className="row">
+          <div className="table_header_bytes">
+            {range(0, 16).map((index) => {
+              const selected = index === selectedAddress % 16;
+              return (
                 <div
-                  className={classNames('row_offset', {
-                    row_offset_selected: rowSelected,
+                  key={index}
+                  className={classNames('table_header_item', {
+                    table_header_item_selected: selected,
                   })}
                 >
-                  {`${memoryType}:${toHex(offset, 4)}`}
+                  {toHex(index)}
                 </div>
-
-                <div className="row_bytes">
-                  {row.map((byte, colIndex) => {
-                    const indexInPage = rowIndex * 16 + colIndex;
-                    const byteAddress = selectedPage * 256 + indexInPage;
-                    const selected = byteAddress === selectedAddress;
-                    const isBreakpoint = breakpoints
-                      .map((bp) => bp.address)
-                      .includes(byteAddress);
-                    const label = labels.find(
-                      (l) =>
-                        l.address === byteAddress ||
-                        (Array.isArray(l.address) &&
-                          range(l.address[0], l.address[1] + 1).includes(
-                            byteAddress
-                          ))
-                    );
-                    // TODO
-                    // const isBreakpointEnabled = isBreakpoint &&
-                    return (
-                      <div
-                        key={indexInPage}
-                        onClick={() => toggleBreakpoint(byteAddress)}
-                        onContextMenu={(e) => {
-                          e.preventDefault();
-                          changeValue(byteAddress);
-                        }}
-                        onMouseEnter={() => highlightAddress(byteAddress)}
-                        onMouseLeave={() => highlightAddress(null)}
-                        className={classNames('byte', {
-                          byte_selected: selected,
-                          byte_breakpoint: isBreakpoint,
-                          byte_breakpoint_disabled: false, // TODO
-                        })}
-                      >
-                        {showLabels && label ? (
-                          <div
-                            className="byte_with_label"
-                            style={{ backgroundColor: label.color }}
-                          >
-                            <div className="byte_in_label">{toHex(byte)}</div>
-                            <div className="label">{label.label}</div>
-                          </div>
-                        ) : showLabels && byteAddress === cpu.getSP() ? (
-                          <div
-                            className="byte_with_label"
-                            style={{ backgroundColor: 'green' }}
-                          >
-                            <div className="byte_in_label">{toHex(byte)}</div>
-                            <div className="label">SP</div>
-                          </div>
-                        ) : (
-                          toHex(byte)
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="row_ascii">
-                  {row.map((byte, colIndex) => {
-                    const index = rowIndex * 16 + colIndex;
-                    const selected =
-                      selectedPage * 256 + index === selectedAddress;
-                    const char = String.fromCharCode(byte % 128);
-                    const newChar =
-                      byte % 128 > 32 && byte % 128 < 127 ? char : '.';
-                    return (
-                      <div
-                        key={colIndex}
-                        className={classNames('ascii', {
-                          ascii_selected: selected,
-                        })}
-                      >
-                        {newChar}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+          <div className="row_ascii"></div>
         </div>
+        {memoryRows.map((row, rowIndex) => {
+          const rowSelected =
+            selectedPage * 16 + rowIndex === Math.floor(selectedAddress / 16);
+          const offset = selectedPage * 256 + rowIndex * 16;
+          const memoryType = mmu.getMemoryType(offset);
+          return (
+            <div key={rowIndex} className="row">
+              <div
+                className={classNames('row_offset', {
+                  row_offset_selected: rowSelected,
+                })}
+              >
+                {`${memoryType}:${toHex(offset, 4)}`}
+              </div>
+
+              <div className="row_bytes">
+                {row.map((byte, colIndex) => {
+                  const indexInPage = rowIndex * 16 + colIndex;
+                  const byteAddress = selectedPage * 256 + indexInPage;
+                  const selected = byteAddress === selectedAddress;
+                  const isBreakpoint = breakpoints
+                    .map((bp) => bp.address)
+                    .includes(byteAddress);
+                  const label = labels.find(
+                    (l) =>
+                      l.address === byteAddress ||
+                      (Array.isArray(l.address) &&
+                        range(l.address[0], l.address[1] + 1).includes(
+                          byteAddress
+                        ))
+                  );
+                  // TODO
+                  // const isBreakpointEnabled = isBreakpoint &&
+                  return (
+                    <div
+                      key={indexInPage}
+                      onClick={() => toggleBreakpoint(byteAddress)}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        changeValue(byteAddress);
+                      }}
+                      onMouseEnter={() => highlightAddress(byteAddress)}
+                      onMouseLeave={() => highlightAddress(null)}
+                      className={classNames('byte', {
+                        byte_selected: selected,
+                        byte_breakpoint: isBreakpoint,
+                        byte_breakpoint_disabled: false, // TODO
+                      })}
+                    >
+                      {showLabels && label ? (
+                        <div
+                          className="byte_with_label"
+                          style={{ backgroundColor: label.color }}
+                        >
+                          <div className="byte_in_label">{toHex(byte)}</div>
+                          <div className="label">{label.label}</div>
+                        </div>
+                      ) : showLabels && byteAddress === cpu.getSP() ? (
+                        <div
+                          className="byte_with_label"
+                          style={{ backgroundColor: 'green' }}
+                        >
+                          <div className="byte_in_label">{toHex(byte)}</div>
+                          <div className="label">SP</div>
+                        </div>
+                      ) : (
+                        toHex(byte)
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="row_ascii">
+                {row.map((byte, colIndex) => {
+                  const index = rowIndex * 16 + colIndex;
+                  const selected =
+                    selectedPage * 256 + index === selectedAddress;
+                  const char = String.fromCharCode(byte % 128);
+                  const newChar =
+                    byte % 128 > 32 && byte % 128 < 127 ? char : '.';
+                  return (
+                    <div
+                      key={colIndex}
+                      className={classNames('ascii', {
+                        ascii_selected: selected,
+                      })}
+                    >
+                      {newChar}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
         <div className="shortcuts">
           <button onClick={() => goTo('PC')}>PC</button>
           <button onClick={() => goTo('SP')}>SP</button>
@@ -356,7 +354,7 @@ const MMU = (props) => {
             : '-'}
         </div>
       </div>
-    </Fragment>
+    </Container>
   );
 };
 

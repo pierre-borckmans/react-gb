@@ -1,10 +1,5 @@
 .mmu {
-  display: flex;
-  flex-direction: column;
-  padding: 5px;
-  border: dotted gray 1px;
   width: 730px;
-  user-select: none;
 }
 
 .page_count {

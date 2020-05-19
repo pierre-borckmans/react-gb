@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { format } from '../../../utils/utils';
 
 import './Breakpoints.css';
+import Container from '../../Shared/Container/Container';
 
 const Breakpoints = (props) => {
   const [breakpointType, setBreakpointType] = useState('address');
@@ -106,47 +107,44 @@ const Breakpoints = (props) => {
   );
 
   return (
-    <Fragment>
-      <div className="breakpoints">
-        <div className="section">Breakpoints</div>
+    <Container title="Breakpoints" width={478}>
+      <div>
         <div>
-          <div>
-            <select
-              defaultValue={breakpointType}
-              onChange={(e) => setBreakpointType(e.target.value)}
-            >
-              <option value="address">Address</option>
-              <option value="opcode">Opcode</option>
-              <option value="reg_AF">Register AF</option>
-              <option value="reg_A">Register A</option>
-              <option value="reg_F">Register F</option>
-              <option value="reg_H">Register H</option>
-              <option value="reg_L">Register L</option>
-              <option value="reg_B">Register B</option>
-              <option value="reg_C">Register C</option>
-              <option value="reg_D">Register D</option>
-              <option value="reg_E">Register E</option>
-              <option value="flag_Z">Flag Z</option>
-              <option value="flag_N">Flag N</option>
-              <option value="flag_H">Flag H</option>
-              <option value="flag_C">Flag C</option>
-              <option value="interrupt_vblank">Interrupt VBlank</option>
-              <option value="interrupt_lcdstat">Interrupt LCDStat</option>
-              <option value="interrupt_timer">Interrupt Timer</option>
-              <option value="interrupt_serial">Interrupt Serial</option>
-              <option value="interrupt_joypad">Interrupt Joypad</option>
-            </select>
-            <input
-              defaultValue=""
-              onChange={(e) => setBreakpointValue(e.target.value)}
-            />
-          </div>
-          <button onClick={addBreakPoint}>Add breakpoint</button>
-          <button onClick={removeAllBreakpoints}>Remove all breakpoints</button>
+          <select
+            defaultValue={breakpointType}
+            onChange={(e) => setBreakpointType(e.target.value)}
+          >
+            <option value="address">Address</option>
+            <option value="opcode">Opcode</option>
+            <option value="reg_AF">Register AF</option>
+            <option value="reg_A">Register A</option>
+            <option value="reg_F">Register F</option>
+            <option value="reg_H">Register H</option>
+            <option value="reg_L">Register L</option>
+            <option value="reg_B">Register B</option>
+            <option value="reg_C">Register C</option>
+            <option value="reg_D">Register D</option>
+            <option value="reg_E">Register E</option>
+            <option value="flag_Z">Flag Z</option>
+            <option value="flag_N">Flag N</option>
+            <option value="flag_H">Flag H</option>
+            <option value="flag_C">Flag C</option>
+            <option value="interrupt_vblank">Interrupt VBlank</option>
+            <option value="interrupt_lcdstat">Interrupt LCDStat</option>
+            <option value="interrupt_timer">Interrupt Timer</option>
+            <option value="interrupt_serial">Interrupt Serial</option>
+            <option value="interrupt_joypad">Interrupt Joypad</option>
+          </select>
+          <input
+            defaultValue=""
+            onChange={(e) => setBreakpointValue(e.target.value)}
+          />
         </div>
-        {breakpoints.map(getBreakpoint)}
+        <button onClick={addBreakPoint}>Add breakpoint</button>
+        <button onClick={removeAllBreakpoints}>Remove all breakpoints</button>
       </div>
-    </Fragment>
+      {breakpoints.map(getBreakpoint)}
+    </Container>
   );
 };
 
