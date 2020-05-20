@@ -6,7 +6,7 @@ const Container = (props) => {
   const [collapsed, setCollapsed] = useState(true);
 
   return (
-    <div class="container" style={{ width: props.width || 'auto' }}>
+    <div className="container" style={{ width: props.width || 'auto' }}>
       <div className="section" onClick={() => setCollapsed(!collapsed)}>
         {props.title}
       </div>

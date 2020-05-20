@@ -28,6 +28,7 @@ const START_TILESET1_ADDR = 0x8000;
 const END_TILESET1_ADDR = 0x8fff;
 const START_TILESET0_ADDR = 0x8800;
 const END_TILESET0_ADDR = 0x97ff;
+
 const START_TILEMAP0_ADDR = 0x9800;
 const END_TILEMAP0_ADDR = 0x9bff;
 const START_TILEMAP1_ADDR = 0x9c00;
@@ -43,25 +44,24 @@ const LCD_CTRL_WINDOW_ENABLE_BIT = 5;
 const LCD_CTRL_WINDOW_TILEMAP_BIT = 6;
 const LCD_CTRL_LCD_ENABLE_BIT = 7;
 
+// LCD CONTROL
+const LCD_STATUS_MODE_BITS = [0, 1];
+const LCD_STATUS_MODE_0_HBLANK_INTERRUPT_BIT = 3;
+const LCD_STATUS_MODE_1_VBLANK_INTERRUPT_BIT = 4;
+const LCD_STATUS_MODE_2_OAM_INTERRUPT_BIT = 5;
+
 let registers = {};
 let data = {};
 
-const getLCDCBackgroundEnable = () =>
-  readBit(registers.LCD_CTRL, LCD_CTRL_BACKGROUND_ENABLE_BIT);
-const getLCDCObjectEnable = () =>
-  readBit(registers.LCD_CTRL, LCD_CTRL_OBJ_ENABLE_BIT);
-const getLCDCObjectSize = () =>
-  readBit(registers.LCD_CTRL, LCD_CTRL_OBJ_SIZE_BIT);
-const getLCDCBackgroundTilemapAdress = () =>
-  readBit(registers.LCD_CTRL, LCD_CTRL_BG_TILEMAP_BIT);
-const getLCDCBackgroundAndWindowTilemapAdress = () =>
-  readBit(registers.LCD_CTRL, LCD_CTRL_BG_AND_WINDOW_TILESET_BIT);
-const getLCDCWindowEnable = () =>
-  readBit(registers.LCD_CTRL, LCD_CTRL_WINDOW_ENABLE_BIT);
-const getLCDCWindowTilemapAdress = () =>
-  readBit(registers.LCD_CTRL, LCD_CTRL_WINDOW_TILEMAP_BIT);
-const getLCDCLCDEnable = () =>
-  readBit(registers.LCD_CTRL, LCD_CTRL_LCD_ENABLE_BIT);
+const getLCDCBackgroundEnable = () => registers.BACKGROUND_ENABLED;
+const getLCDCObjectEnable = () => registers.SPRITES_ENABLED;
+const getLCDCObjectSize = () => registers.SPRITES_SIZE;
+const getLCDCBackgroundTilemap = () => registers.BACKGROUND_TILEMAP;
+const getLCDCBackgroundAndWindowTileset = () =>
+  registers.BACKGROUND_AND_WINDOW_TILESET;
+const getLCDCWindowEnable = () => registers.WINDOW_ENABLED;
+const getLCDCWindowTilemap = () => registers.WINDOW_TILEMAP;
+const getLCDCLCDEnable = () => registers.LCD_ENABLED;
 
 const SCREEN_WIDTH = 160;
 const SCREEN_HEIGHT = 144;
@@ -153,7 +153,7 @@ const readLCDCtrl = () => {
     ((registers.LCD_ENABLED ? 1 : 0) << LCD_CTRL_LCD_ENABLE_BIT) |
     (registers.WINDOW_TILEMAP << LCD_CTRL_WINDOW_TILEMAP_BIT) |
     ((registers.WINDOW_ENABLED ? 1 : 0) << LCD_CTRL_WINDOW_ENABLE_BIT) |
-    (registers.BACKGROUND_WINDOW_TILESET <<
+    (registers.BACKGROUND_AND_WINDOW_TILESET <<
       LCD_CTRL_BG_AND_WINDOW_TILESET_BIT) |
     (registers.BACKGROUND_TILEMAP << LCD_CTRL_BG_TILEMAP_BIT) |
     (registers.SPRITES_SIZE << LCD_CTRL_OBJ_SIZE_BIT) |
@@ -167,7 +167,7 @@ const writeLCDCtrl = (value) => {
   registers.WINDOW_TILEMAP = value & (1 << LCD_CTRL_WINDOW_TILEMAP_BIT) ? 1 : 0;
   registers.WINDOW_ENABLED =
     value & (1 << LCD_CTRL_WINDOW_ENABLE_BIT) ? true : false;
-  registers.BACKGROUND_WINDOW_TILESET =
+  registers.BACKGROUND_AND_WINDOW_TILESET =
     value & (1 << LCD_CTRL_BG_AND_WINDOW_TILESET_BIT) ? 1 : 0;
   registers.BACKGROUND_TILEMAP = value & (1 << LCD_CTRL_BG_TILEMAP_BIT) ? 1 : 0;
   registers.SPRITES_SIZE = value & (1 << LCD_CTRL_OBJ_SIZE_BIT) ? 1 : 0;
@@ -177,12 +177,38 @@ const writeLCDCtrl = (value) => {
     value & (1 << LCD_CTRL_BACKGROUND_ENABLE_BIT) ? true : false;
 };
 
+const readLCDStatus = () => {
+  return (
+    ((registers.MODE & (1 << LCD_STATUS_MODE_BITS[0]) ? 1 : 0) <<
+      LCD_STATUS_MODE_BITS[0]) |
+    ((registers.MODE & (1 << LCD_STATUS_MODE_BITS[1]) ? 1 : 0) <<
+      LCD_STATUS_MODE_BITS[1]) |
+    ((registers.HBLANK_INTERRUPT ? 1 : 0) <<
+      LCD_STATUS_MODE_0_HBLANK_INTERRUPT_BIT) |
+    ((registers.VBLANK_INTERRUPT ? 1 : 0) <<
+      LCD_STATUS_MODE_1_VBLANK_INTERRUPT_BIT) |
+    ((registers.OAM_INTERRUPT ? 1 : 0) << LCD_STATUS_MODE_2_OAM_INTERRUPT_BIT)
+  );
+};
+
+const writeLCDStatus = (value) => {
+  registers.MODE =
+    (value & (1 << LCD_STATUS_MODE_BITS[0])) |
+    (value & (1 << LCD_STATUS_MODE_BITS[1]));
+  registers.HBLANK_INTERRUPT =
+    value & (1 << LCD_STATUS_MODE_0_HBLANK_INTERRUPT_BIT) ? 1 : 0;
+  registers.VBLANK_INTERRUPT =
+    value & (1 << LCD_STATUS_MODE_1_VBLANK_INTERRUPT_BIT) ? 1 : 0;
+  registers.OAM_INTERRUPT =
+    value & (1 << LCD_STATUS_MODE_2_OAM_INTERRUPT_BIT) ? 1 : 0;
+};
+
 const read = (address) => {
   switch (address) {
     case LCD_CTRL_ADDR:
       return readLCDCtrl();
     case LCDC_STATUS_ADDR:
-      return registers.LCDC_STATUS;
+      return readLCDStatus();
     case SCROLLY_ADDR:
       return registers.SCROLLY;
     case SCROLLX_ADDR:
@@ -217,7 +243,7 @@ const write = (address, value) => {
       writeLCDCtrl(value);
       break;
     case LCDC_STATUS_ADDR:
-      registers.LCDC_STATUS = value;
+      writeLCDStatus(value);
       break;
     case SCROLLY_ADDR:
       registers.SCROLLY = value;
@@ -261,14 +287,12 @@ const reset = () => {
     cycles: 0,
     mode: MODES.HBLANK,
     modeCycles: 0,
-    scanLines: new Array(SCREEN_HEIGHT).fill(
-      new Int8Array(SCREEN_HEIGHT).fill(0)
-    ),
+    scanLines: Array(SCREEN_HEIGHT)
+      .fill()
+      .map(() => Array(SCREEN_WIDTH).fill(0)),
   };
 
   registers = {
-    LCD_CTRL: 0x00,
-    LCDC_STATUS: 0x00,
     SCROLLY: 0x00,
     SCROLLX: 0x00,
     LCDC_YCOORD: 0x00,
@@ -287,8 +311,14 @@ const reset = () => {
     SPRITES_ENABLED: false,
     BACKGROUND_TILEMAP: 0,
     WINDOW_TILEMAP: 0,
-    BACKGROUND_WINDOW_TILESET: 0,
+    BACKGROUND_AND_WINDOW_TILESET: 0,
     SPRITES_SIZE: 0,
+
+    // LCD STATUS
+    MODE: MODES.HBLANK,
+    HBLANK_INTERRUPT: 0,
+    VBLANK_INTERRUPT: 0,
+    OAM_INTERRUPT: 0,
   };
 };
 reset();
@@ -310,7 +340,7 @@ const step = (stepMachineCycles) => {
         data.mode = MODES.HBLANK;
         data.modeCycles = 0;
 
-        // renderScanLine();
+        renderScanLine();
       }
       break;
 
@@ -353,32 +383,46 @@ const renderScanLine = () => {
       ? START_TILEMAP0_ADDR
       : START_TILEMAP1_ADDR;
 
-  const tileMapRow = ((registers.LCDC_YCOORD + registers.SCROLLY) & 0xff) >> 5;
-  let tileMapCol = registers.SCROLLX >> 5;
+  const tileMapRow = (registers.LCDC_YCOORD + registers.SCROLLY) % 256 >> 3;
+  let tileMapCol = registers.SCROLLX >> 3;
 
   let tileMapOffset = tileMapStartAddr + tileMapRow * 32 + tileMapCol;
-  let tileIdx = mmu.read(tileMapOffset);
+  let tileIdx = getTileIndex(tileMapOffset);
 
   const tileRow = (registers.LCDC_YCOORD + registers.SCROLLY) % 8;
-  const tileStartCol = registers.SCROLLY % 8;
+  const tileStartCol = registers.SCROLLX % 8;
 
   const scanLine = new Uint8Array(SCREEN_WIDTH);
 
   for (let i = 0; i < SCREEN_WIDTH; i++) {
-    scanLine[i] = tileSet[tileIdx][tileRow][(tileStartCol + i) % 8];
+    const color = tileSet[tileIdx][tileRow][(tileStartCol + i) % 8];
+    scanLine[i] = color;
     if ((tileStartCol + i + 1) % 8 === 0) {
       tileMapCol = (tileMapCol + 1) % 32;
       tileMapOffset = tileMapStartAddr + tileMapRow * 32 + tileMapCol;
-      tileIdx = mmu.read(tileMapOffset);
+      tileIdx = getTileIndex(tileMapOffset);
     }
   }
 
+  if (registers.LCDC_YCOORD === 100) {
+    // console.log(data.scanLines);
+  }
   data.scanLines[registers.LCDC_YCOORD] = scanLine;
 };
 
 const getScanLines = () => data.scanLines;
 
-const getBackground = () => {
+const getTileIndex = (tileMapAddress) => {
+  const tileIdx = mmu.read(tileMapAddress);
+  const signedTileIdx = getSignedByte(tileIdx);
+  const tileIdxCorrected =
+    registers.BACKGROUND_AND_WINDOW_TILESET === 1
+      ? tileIdx
+      : 256 + signedTileIdx;
+  return tileIdxCorrected;
+};
+
+const getBackgroundBuffer = () => {
   const tileSet = getTileSet();
   const background = Array(256)
     .fill()
@@ -392,20 +436,79 @@ const getBackground = () => {
 
   for (let row = 0; row < 256; row++) {
     for (let col = 0; col < 256; col++) {
-      const tileMapAddress = tileMapStartAddr + (col >> 3) + (row >> 3) * 32;
-      const tileIdx = mmu.read(tileMapAddress);
-      const signedTileIdx = getSignedByte(tileIdx);
-      const tileIdxCorrected =
-        registers.BACKGROUND_WINDOW_TILESET === 1
-          ? tileIdx
-          : 256 + signedTileIdx;
-      const tile = tileSet[tileIdxCorrected];
+      const tileMapAddress = tileMapStartAddr + (row >> 3) * 32 + (col >> 3);
+      const tile = tileSet[getTileIndex(tileMapAddress)];
       background[row][col] = tile[row % 8][col % 8];
     }
   }
 
   return background;
 };
+
+const getWindowBuffer = () => {
+  const tileSet = getTileSet();
+  const windowBuffer = Array(256)
+    .fill()
+    .map(() => Array(256).fill(0));
+
+  // Tilemap = 32*32
+  const tileMapStartAddr =
+    registers.WINDOW_TILEMAP === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
+
+  for (let row = 0; row < 256; row++) {
+    for (let col = 0; col < 256; col++) {
+      if (
+        row - registers.SCROLLY >= registers.WINY &&
+        col - registers.SCROLLX + 7 >= registers.WINX
+      ) {
+        const y = row - registers.SCROLLY - registers.WINY;
+        const x = col - registers.SCROLLX + 7 - registers.WINX;
+
+        const tileMapAddress = tileMapStartAddr + (x >> 3) + (y >> 3) * 32;
+        const tile = tileSet[getTileIndex(tileMapAddress)];
+        windowBuffer[row][col] = tile[y % 8][x % 8];
+      } else {
+        windowBuffer[row][col] = -1;
+      }
+    }
+  }
+
+  return windowBuffer;
+};
+
+const getSpritesBuffer = () => {};
+
+const getBackgroundLayer = () => {
+  const fullBackground = getBackgroundBuffer();
+  const layer = [];
+  for (let row = 0; row < SCREEN_HEIGHT; row++) {
+    layer[row] = [];
+    for (let col = 0; col < SCREEN_WIDTH; col++) {
+      layer[row][col] =
+        fullBackground[(registers.SCROLLY + row) % 256][
+          (registers.SCROLLX + col) % 256
+        ];
+    }
+  }
+  return layer;
+};
+
+const getWindowLayer = () => {
+  const windowBuffer = getWindowBuffer();
+  const layer = [];
+  for (let row = 0; row < SCREEN_HEIGHT; row++) {
+    layer[row] = [];
+    for (let col = 0; col < SCREEN_WIDTH; col++) {
+      layer[row][col] =
+        windowBuffer[(registers.SCROLLY + row) % 256][
+          (registers.SCROLLX + col) % 256
+        ];
+    }
+  }
+  return layer;
+};
+
+const getSpritesLayer = () => {};
 
 const ppu = {
   getBackgroundPalette,
@@ -417,16 +520,24 @@ const ppu = {
   getWindowY,
 
   getTileSet,
-  getBackground,
+
+  getBackgroundBuffer,
+  getWindowBuffer,
+  getSpritesBuffer,
+
+  getBackgroundLayer,
+  getWindowLayer,
+  getSpritesLayer,
+
   getScanLines,
 
   getLCDCBackgroundEnable,
   getLCDCObjectEnable,
   getLCDCObjectSize,
-  getLCDCBackgroundTilemapAdress,
-  getLCDCBackgroundAndWindowTilemapAdress,
+  getLCDCBackgroundTilemap,
+  getLCDCBackgroundAndWindowTileset,
   getLCDCWindowEnable,
-  getLCDCWindowTilemapAdress,
+  getLCDCWindowTilemap,
   getLCDCLCDEnable,
 
   read,

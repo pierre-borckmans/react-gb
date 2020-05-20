@@ -12,7 +12,7 @@ const Background = (props) => {
 
   const [scrollX, scrollY] = [ppu.getScrollX(), ppu.getScrollY()];
   const backgroundPalette = ppu.getBackgroundPalette();
-  const background = ppu.getBackground();
+  const background = ppu.getBackgroundBuffer();
 
   const pixels = [];
   const red = [255, 0, 0];

@@ -170,9 +170,9 @@ const write = (address, value) => {
       registers.SOUND_ON_OFF = value;
       break;
     default:
-      console.error(
-        `Trying to write to invalid apu address ${format('hex', address, 16)}`
-      );
+    // console.error(
+    //   `Trying to write to invalid apu address ${format('hex', address, 16)}`
+    // );
   }
 };
 

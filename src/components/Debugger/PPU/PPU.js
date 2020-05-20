@@ -46,15 +46,13 @@ const PPU = (props) => {
         X: {ppu.getWindowX()}, Y: {ppu.getWindowY()}
       </div>
       <div className="subsection">LCDC</div>
-      <div>LCD: {ppu.getLCDCLCDEnable()}</div>
-      <div>background: {ppu.getLCDCBackgroundEnable()}</div>
-      <div>object: {ppu.getLCDCObjectEnable()}</div>
-      <div>window: {ppu.getLCDCWindowEnable()}</div>
-      <div>bg tilemap: {ppu.getLCDCBackgroundTilemapAdress()}</div>
-      <div>
-        bg&amp;win tileset: {ppu.getLCDCBackgroundAndWindowTilemapAdress()}
-      </div>
-      <div>window tilemap: {ppu.getLCDCWindowTilemapAdress()}</div>
+      <div>LCD: {ppu.getLCDCLCDEnable() ? 'on' : 'off'}</div>
+      <div>background: {ppu.getLCDCBackgroundEnable() ? 'on' : 'off'}</div>
+      <div>object: {ppu.getLCDCObjectEnable() ? 'on' : 'off'}</div>
+      <div>window: {ppu.getLCDCWindowEnable() ? 'on' : 'off'}</div>
+      <div>bg tilemap: {ppu.getLCDCBackgroundTilemap()}</div>
+      <div>bg&amp;win tileset: {ppu.getLCDCBackgroundAndWindowTileset()}</div>
+      <div>window tilemap: {ppu.getLCDCWindowTilemap()}</div>
     </Container>
   );
 };

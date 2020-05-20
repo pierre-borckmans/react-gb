@@ -20,6 +20,7 @@ import Gamepad from './Gamepad/Gamepad';
 import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
 import Container from '../Shared/Container/Container';
+import LCD from './LCD/LCD';
 
 const Debugger = (props) => {
   const gameboy = props.gameboy;
@@ -56,7 +57,7 @@ const Debugger = (props) => {
 
   const run = () => {
     debugger_.run((frames) => {
-      if (frames % 80 === 0 || !debugger_.isRunning()) {
+      if (frames % 30 === 0 || !debugger_.isRunning()) {
         handleCPUChange();
       }
     });
@@ -142,35 +143,34 @@ const Debugger = (props) => {
             cyclesPerSecond / 17556
           ).toFixed(2)} frames/s`}</span>
         </div>
+        <MMU
+          debugger_={debugger_}
+          cpu={cpu}
+          mmu={mmu}
+          onCPUChange={handleCPUChange}
+          onDebuggerChange={handleDebuggerChange}
+        />
+        <CPU
+          cpu={cpu}
+          onCPUChange={handleCPUChange}
+          onDebuggerChange={handleDebuggerChange}
+        />
+        <Breakpoints
+          debugger_={debugger_}
+          onDebuggerChange={handleDebuggerChange}
+        />
+        <Cartridge
+          cartridge={cartridge}
+          onDebuggerChange={handleDebuggerChange}
+        />
+        <MBC
+          cartridge={cartridge}
+          mbc={mbc}
+          onDebuggerChange={handleDebuggerChange}
+        />
         <div className="debugger_row">
-          <MMU
-            debugger_={debugger_}
-            cpu={cpu}
-            mmu={mmu}
-            onCPUChange={handleCPUChange}
-            onDebuggerChange={handleDebuggerChange}
-          />
-          <CPU
-            cpu={cpu}
-            onCPUChange={handleCPUChange}
-            onDebuggerChange={handleDebuggerChange}
-          />
-          <Breakpoints
-            debugger_={debugger_}
-            onDebuggerChange={handleDebuggerChange}
-          />
-          <Cartridge
-            cartridge={cartridge}
-            onDebuggerChange={handleDebuggerChange}
-          />
-          <MBC
-            cartridge={cartridge}
-            mbc={mbc}
-            onDebuggerChange={handleDebuggerChange}
-          />
+          <LCD config={config} ppu={ppu} />
           <Background config={config} ppu={ppu} />
-        </div>
-        <div>
           <PPU
             config={config}
             ppu={ppu}
