@@ -1,5 +1,4 @@
 import prefixCBOpcodesMap from '../opcodes/prefixCBOpcodesMap';
-import interrupts from '../../interrupts/interrupts';
 
 // NOP
 // - - - -

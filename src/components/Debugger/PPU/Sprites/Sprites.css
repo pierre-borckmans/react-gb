@@ -1,5 +1,7 @@
 .sprites-canvas-div {
   border: solid black 1px;
-  height: 256px;
-  width: 256px;
+}
+
+.sprites_table {
+  font-size: small;
 }

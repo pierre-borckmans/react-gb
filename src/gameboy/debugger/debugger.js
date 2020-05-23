@@ -29,7 +29,6 @@ const run = async (callback) => {
   let steps = 0;
 
   const startMachineCycles = cpu.getMachineCycles();
-  const startPC = cpu.getPC();
 
   totalSteps = 0;
   stepsPerSecond = 0;

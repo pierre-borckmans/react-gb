@@ -1,7 +1,7 @@
 import mmu from '../mmu/mmu';
 import mbc from './mbc/mbc';
 
-import rom from '../../assets/roms/rom1.gb';
+import rom from '../../assets/roms/rom3.gb';
 
 import testRomCpu1 from '../../assets/roms/tests/cpu_instrs/01-special.gb';
 import testRomCpu2 from '../../assets/roms/tests/cpu_instrs/02-interrupts.gb';
@@ -51,8 +51,8 @@ const testRoms = {
 
 const SIZE = 0x80000;
 
-const NINTENDO_LOGO_START_ADDR = 0x104;
-const NINTENDO_LOGO_END_ADDR = 0x133;
+// const NINTENDO_LOGO_START_ADDR = 0x104;
+// const NINTENDO_LOGO_END_ADDR = 0x133;
 const TITLE_START_ADDR = 0x134;
 const TITLE_END_ADDR = 0x142;
 const GB_OR_CGB_ADDR = 0x143; // CGB if 0x80
@@ -96,7 +96,7 @@ const DESTINATION_CODE_ADDR = 0x14a;
 // 00 Japan
 // != 0 NON Japan
 
-const COMPLEMENT_CHECK_ADDR = 0x14d;
+// const COMPLEMENT_CHECK_ADDR = 0x14d;
 
 let loadedROM = new Uint8Array(SIZE).fill(0);
 

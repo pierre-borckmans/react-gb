@@ -82,7 +82,7 @@ const read = (address) => {
     case ECHO_RAM:
       return workRam.read(address - START_ECHO_RAM);
     case OAM:
-      return oam.read(address - START_OAM);
+      return oam.read(address);
     case IO:
       return io.read(address);
     case HIGH_RAM:
@@ -115,7 +115,8 @@ const write = (address, value) => {
     case ECHO_RAM:
       return workRam.write(address - START_ECHO_RAM, value);
     case OAM:
-      return oam.write(address - START_OAM, value);
+      console.log('oam', address, value);
+      return oam.write(address, value);
     case IO:
       return io.write(address, value);
     case HIGH_RAM:
@@ -145,8 +146,7 @@ const getMemoryType = (address) => {
     return EXTERNAL_RAM;
   } else if (address >= START_WORK_RAM && address <= END_WORK_RAM) {
     return WORK_RAM;
-  }
-  if (address >= START_ECHO_RAM && address <= END_ECHO_RAM) {
+  } else if (address >= START_ECHO_RAM && address <= END_ECHO_RAM) {
     return ECHO_RAM;
   } else if (address >= START_OAM && address <= END_OAM) {
     // OAM (Sprite Attribute Table)

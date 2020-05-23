@@ -56,21 +56,21 @@ const LCD = (props) => {
           checked={backgroundSelected}
           onChange={(e) => setBackgroundSelected(e.target.checked)}
         />
-        <label for="background">Background</label>
+        <label htmlFor="background">Background</label>
         <input
           type="checkbox"
           name="window"
           checked={windowSelected}
           onChange={(e) => setWindowSelected(e.target.checked)}
         />
-        <label for="window">Window</label>
+        <label htmlFor="window">Window</label>
         <input
           type="checkbox"
           name="sprites"
           checked={spritesSelected}
           onChange={(e) => setSpritesSelected(e.target.checked)}
         />
-        <label for="sprites">Sprites</label>
+        <label htmlFor="sprites">Sprites</label>
       </div>
     </Container>
   );

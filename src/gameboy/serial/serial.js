@@ -3,8 +3,8 @@ import { format } from '../../utils/utils';
 const SERIAL_TRANSFER_DATA_ADDR = 0xff01;
 const SERIAL_IO_CONTROL_ADDR = 0xff02;
 
-const TRANSFER_START_FLAG_BIT = 7;
-const SHIFT_CLOCK_BIT = 0; // 1 internal (8192 Hz), 0 external (up to 500kHz max)
+// const TRANSFER_START_FLAG_BIT = 7;
+// const SHIFT_CLOCK_BIT = 0; // 1 internal (8192 Hz), 0 external (up to 500kHz max)
 
 // INTERRUPT RST 58 when data transfer complete
 

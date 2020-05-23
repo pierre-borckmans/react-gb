@@ -25,14 +25,10 @@ const WINX_ADDR = 0xff4b;
 //  9800-9BFF	Tile map #0
 //  9C00-9FFF	Tile map #1
 const START_TILESET1_ADDR = 0x8000;
-const END_TILESET1_ADDR = 0x8fff;
-const START_TILESET0_ADDR = 0x8800;
 const END_TILESET0_ADDR = 0x97ff;
 
 const START_TILEMAP0_ADDR = 0x9800;
-const END_TILEMAP0_ADDR = 0x9bff;
 const START_TILEMAP1_ADDR = 0x9c00;
-const END_TILEMAP1_ADDR = 0x9fff;
 
 // LCD CONTROL
 const LCD_CTRL_BACKGROUND_ENABLE_BIT = 0;
@@ -46,9 +42,11 @@ const LCD_CTRL_LCD_ENABLE_BIT = 7;
 
 // LCD CONTROL
 const LCD_STATUS_MODE_BITS = [0, 1];
+const LCD_STATUS_YCOORD_COINCIDENCE_FLAG = 2;
 const LCD_STATUS_MODE_0_HBLANK_INTERRUPT_BIT = 3;
 const LCD_STATUS_MODE_1_VBLANK_INTERRUPT_BIT = 4;
 const LCD_STATUS_MODE_2_OAM_INTERRUPT_BIT = 5;
+const LCD_STATUS_YCOORD_COINCIDENCE_INTERRUPT = 6;
 
 let registers = {};
 let data = {};
@@ -136,6 +134,30 @@ const getTileSet = () => {
   //   updateTile(tileIdx);
   // }
   return tileSet;
+};
+
+const getSprites = () => {
+  const sprites = [];
+  for (let i = 0; i < 40; i++) {
+    const x = mmu.read(mmu.START_OAM + i * 4 + 0) - 8;
+    const y = mmu.read(mmu.START_OAM + i * 4 + 1) - 16;
+    const tileIdx = mmu.read(mmu.START_OAM + i * 4 + 2);
+    const flags = mmu.read(mmu.START_OAM + i * 4 + 3);
+    const priority = readBit(flags, 7);
+    const flipY = readBit(flags, 6);
+    const flipX = readBit(flags, 5);
+    const palette = readBit(flags, 4);
+    sprites.push({
+      x,
+      y,
+      tileIdx,
+      priority,
+      flipX,
+      flipY,
+      palette,
+    });
+  }
+  return sprites;
 };
 
 const getBackgroundPalette = () => getPalette(BG_PALETTE_ADDR);
@@ -306,19 +328,21 @@ const reset = () => {
 
     // LCD_CTRL
     LCD_ENABLED: false,
-    BACKGROUND_ENABLED: false,
-    WINDOW_ENABLED: false,
-    SPRITES_ENABLED: false,
-    BACKGROUND_TILEMAP: 0,
     WINDOW_TILEMAP: 0,
+    WINDOW_ENABLED: false,
     BACKGROUND_AND_WINDOW_TILESET: 0,
+    BACKGROUND_TILEMAP: 0,
     SPRITES_SIZE: 0,
+    SPRITES_ENABLED: false,
+    BACKGROUND_ENABLED: false,
 
     // LCD STATUS
     MODE: MODES.HBLANK,
+    YCOORD_COINCIDENCE_FLAG: 0,
     HBLANK_INTERRUPT: 0,
     VBLANK_INTERRUPT: 0,
     OAM_INTERRUPT: 0,
+    YCOORD_COINCIDENCE_INTERRUPT: 0,
   };
 };
 reset();
@@ -371,6 +395,8 @@ const step = (stepMachineCycles) => {
         }
       }
       break;
+
+    default:
   }
 };
 
@@ -383,7 +409,8 @@ const renderScanLine = () => {
       ? START_TILEMAP0_ADDR
       : START_TILEMAP1_ADDR;
 
-  const tileMapRow = (registers.LCDC_YCOORD + registers.SCROLLY) % 256 >> 3;
+  const tileMapRow =
+    (registers.LCDC_YCOORD + registers.SCROLLY) % BUFFER_HEIGHT >> 3;
   let tileMapCol = registers.SCROLLX >> 3;
 
   let tileMapOffset = tileMapStartAddr + tileMapRow * 32 + tileMapCol;
@@ -424,9 +451,9 @@ const getTileIndex = (tileMapAddress) => {
 
 const getBackgroundBuffer = () => {
   const tileSet = getTileSet();
-  const background = Array(256)
+  const background = Array(BUFFER_HEIGHT)
     .fill()
-    .map(() => Array(256).fill(0));
+    .map(() => Array(BUFFER_WIDTH).fill(0));
 
   // Tilemap = 32*32
   const tileMapStartAddr =
@@ -434,8 +461,8 @@ const getBackgroundBuffer = () => {
       ? START_TILEMAP0_ADDR
       : START_TILEMAP1_ADDR;
 
-  for (let row = 0; row < 256; row++) {
-    for (let col = 0; col < 256; col++) {
+  for (let row = 0; row < BUFFER_HEIGHT; row++) {
+    for (let col = 0; col < BUFFER_WIDTH; col++) {
       const tileMapAddress = tileMapStartAddr + (row >> 3) * 32 + (col >> 3);
       const tile = tileSet[getTileIndex(tileMapAddress)];
       background[row][col] = tile[row % 8][col % 8];
@@ -447,16 +474,16 @@ const getBackgroundBuffer = () => {
 
 const getWindowBuffer = () => {
   const tileSet = getTileSet();
-  const windowBuffer = Array(256)
+  const windowBuffer = Array(BUFFER_HEIGHT)
     .fill()
-    .map(() => Array(256).fill(0));
+    .map(() => Array(BUFFER_WIDTH).fill(0));
 
   // Tilemap = 32*32
   const tileMapStartAddr =
     registers.WINDOW_TILEMAP === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
 
-  for (let row = 0; row < 256; row++) {
-    for (let col = 0; col < 256; col++) {
+  for (let row = 0; row < BUFFER_HEIGHT; row++) {
+    for (let col = 0; col < BUFFER_WIDTH; col++) {
       if (
         row - registers.SCROLLY >= registers.WINY &&
         col - registers.SCROLLX + 7 >= registers.WINX
@@ -485,8 +512,8 @@ const getBackgroundLayer = () => {
     layer[row] = [];
     for (let col = 0; col < SCREEN_WIDTH; col++) {
       layer[row][col] =
-        fullBackground[(registers.SCROLLY + row) % 256][
-          (registers.SCROLLX + col) % 256
+        fullBackground[(registers.SCROLLY + row) % BUFFER_HEIGHT][
+          (registers.SCROLLX + col) % BUFFER_WIDTH
         ];
     }
   }
@@ -500,8 +527,8 @@ const getWindowLayer = () => {
     layer[row] = [];
     for (let col = 0; col < SCREEN_WIDTH; col++) {
       layer[row][col] =
-        windowBuffer[(registers.SCROLLY + row) % 256][
-          (registers.SCROLLX + col) % 256
+        windowBuffer[(registers.SCROLLY + row) % BUFFER_HEIGHT][
+          (registers.SCROLLX + col) % BUFFER_WIDTH
         ];
     }
   }
@@ -520,6 +547,7 @@ const ppu = {
   getWindowY,
 
   getTileSet,
+  getSprites,
 
   getBackgroundBuffer,
   getWindowBuffer,

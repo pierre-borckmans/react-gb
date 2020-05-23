@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 
 import { getOpcodeLabel } from '../../../gameboy/cpu/opcodes/opcodesMap';
@@ -159,7 +159,7 @@ const MMU = (props) => {
     return () => {
       document.removeEventListener('keydown', keyListener);
     };
-  }, [selectedPage, showLabels]);
+  }, [selectedPage, showLabels, keyListener]);
 
   const goTo = (target) => {
     switch (target) {

@@ -103,6 +103,7 @@ const read = (address) => {
       return getInterruptEnable();
     case INTERRUPT_FLAGS_ADDR:
       return getInterruptFlags();
+    default:
   }
 };
 
@@ -112,6 +113,7 @@ const write = (address, value) => {
       return setInterruptEnable(value);
     case INTERRUPT_FLAGS_ADDR:
       return setInterruptFlags(value);
+    default:
   }
 };
 

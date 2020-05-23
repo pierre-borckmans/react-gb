@@ -1,5 +1,3 @@
-import { format } from '../../utils/utils';
-
 const CHANNEL1_SWEEP_REGISTER_ADDR = 0xff10;
 const CHANNEL1_SOUND_LENGTH_WAVE_PATTERN_DUTY_ADDR = 0xff11;
 const CHANNEL1_VOLUME_ENVELOPE_ADDR = 0xff12;

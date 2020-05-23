@@ -27,7 +27,7 @@ const Cartridge = (props) => {
     return () => {
       document.removeEventListener('keydown', keyListener);
     };
-  }, [selectedRom]);
+  }, [selectedRom, keyListener]);
 
   return (
     <Container title="Cartridge" width={240}>

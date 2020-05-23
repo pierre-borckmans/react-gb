@@ -3,7 +3,7 @@ import './MBC.css';
 import Container from '../../Shared/Container/Container';
 
 const MBC = (props) => {
-  const { cartridge, mbc } = props;
+  const { mbc } = props;
   return (
     <Container title="MBC" width={240}>
       <div>Rom type: {mbc.getType()}</div>

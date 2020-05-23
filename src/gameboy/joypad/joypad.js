@@ -1,5 +1,3 @@
-import { readBit } from '../../utils/utils';
-
 const SELECT_BUTTON_KEYS_BIT = 5;
 const SELECT_DIRECTION_KEYS_BIT = 4;
 const DOWN_START_BIT = 3;

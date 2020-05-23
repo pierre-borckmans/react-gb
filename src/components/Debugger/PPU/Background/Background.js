@@ -16,7 +16,6 @@ const Background = (props) => {
 
   const pixels = [];
   const red = [255, 0, 0];
-  const white = [255, 255, 255];
 
   range(0, 256).forEach((row) =>
     range(0, 256).forEach((col) => {

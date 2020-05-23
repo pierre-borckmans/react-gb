@@ -19,8 +19,8 @@ import Gamepad from './Gamepad/Gamepad';
 
 import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
-import Container from '../Shared/Container/Container';
 import LCD from './LCD/LCD';
+import Sprites from './PPU/Sprites/Sprites';
 
 const Debugger = (props) => {
   const gameboy = props.gameboy;
@@ -110,7 +110,7 @@ const Debugger = (props) => {
     return () => {
       document.removeEventListener('keydown', keyListener);
     };
-  }, [isRunning]);
+  }, [isRunning, keyListener]);
 
   return (
     <Fragment>
@@ -177,6 +177,7 @@ const Debugger = (props) => {
             onDebuggerChange={handleDebuggerChange}
           />
           <Tiles config={config} ppu={ppu} />
+          <Sprites config={config} ppu={ppu} />
         </div>
         <APU apu={apu} />
         <Joypad debugger_={debugger_} joypad={joypad} />
