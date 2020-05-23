@@ -1,7 +1,7 @@
 import mmu from '../mmu';
 
 const SIZE = 0xa0;
-const data = new Uint8Array(SIZE).fill(0);
+const data = new Uint8Array(SIZE).fill(0x0);
 
 const read = (address) => data[address - mmu.START_OAM];
 const write = (address, value) => {

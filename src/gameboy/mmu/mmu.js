@@ -42,9 +42,9 @@ const START_IO_MAPPING = 0xff00;
 const END_IO_MAPPING = 0xff4b;
 const START_HIGH_RAM = 0xff80;
 const END_HIGH_RAM = 0xfffe;
-const INTERRUPT_ENABLE_ADDR = 0xffff;
 
 const BOOTROM_LOADED_ADDR = 0xff50;
+const INTERRUPT_ENABLE_ADDR = 0xffff;
 
 let registers = {};
 
@@ -115,7 +115,6 @@ const write = (address, value) => {
     case ECHO_RAM:
       return workRam.write(address - START_ECHO_RAM, value);
     case OAM:
-      console.log('oam', address, value);
       return oam.write(address, value);
     case IO:
       return io.write(address, value);

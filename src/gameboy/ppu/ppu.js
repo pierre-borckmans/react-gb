@@ -139,8 +139,8 @@ const getTileSet = () => {
 const getSprites = () => {
   const sprites = [];
   for (let i = 0; i < 40; i++) {
-    const x = mmu.read(mmu.START_OAM + i * 4 + 0) - 8;
-    const y = mmu.read(mmu.START_OAM + i * 4 + 1) - 16;
+    const y = mmu.read(mmu.START_OAM + i * 4 + 0);
+    const x = mmu.read(mmu.START_OAM + i * 4 + 1);
     const tileIdx = mmu.read(mmu.START_OAM + i * 4 + 2);
     const flags = mmu.read(mmu.START_OAM + i * 4 + 3);
     const priority = readBit(flags, 7);
@@ -281,6 +281,7 @@ const write = (address, value) => {
       break;
     case DMA_TRANSFER_AND_START_ADDR:
       registers.DMA_TRANSFER_AND_START = value;
+      startDMATransfer();
       break;
     case BG_PALETTE_ADDR:
       registers.BG_PALETTE = value;
@@ -397,6 +398,13 @@ const step = (stepMachineCycles) => {
       break;
 
     default:
+  }
+};
+
+const startDMATransfer = () => {
+  const startAddress = registers.DMA_TRANSFER_AND_START * 0x100;
+  for (let i = 0; i < 0x9f; i++) {
+    mmu.write(mmu.START_OAM + i, mmu.read(startAddress + i));
   }
 };
 
