@@ -1,6 +1,9 @@
 import mmu from '../mmu/mmu';
 import interrupts from '../interrupts/interrupts';
 
+import config from '../config';
+import { range } from 'lodash';
+
 import { format, readBit, getSignedByte } from '../../utils/utils';
 
 const LCD_CTRL_ADDR = 0xff40;
@@ -158,6 +161,11 @@ const getSprites = () => {
     });
   }
   return sprites;
+};
+
+const getSprite = (spriteIdx) => {
+  const sprites = getSprites();
+  const sprite = sprites[spriteIdx];
 };
 
 const getBackgroundPalette = () => getPalette(BG_PALETTE_ADDR);
@@ -386,7 +394,7 @@ const step = (stepMachineCycles) => {
           registers.MODE = MODES.OAM_SEARCH;
         } else {
           registers.MODE = MODES.VBLANK;
-          // renderCanvas();
+          renderCanvas();
         }
       }
       break;
@@ -407,6 +415,39 @@ const step = (stepMachineCycles) => {
 
     default:
   }
+};
+
+const renderCanvas = () => {
+  const ctx = document.querySelector('#test_canvas').getContext('2d');
+  const paletteColors = config.paletteColors;
+  const backgroundPalette = getBackgroundPalette();
+
+  const pixels = [];
+
+  range(0, 144).forEach((row) =>
+    range(0, 160).forEach((col) => {
+      const pixel =
+        paletteColors[backgroundPalette[data.backgroundScanLines[row][col]]];
+
+      pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
+      pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
+      pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
+    })
+  );
+
+  const imageData = ctx.createImageData(160, 144);
+  for (let i = 0; i < pixels.length / 3; i++) {
+    const x = i % 160;
+    const y = Math.floor(i / 160);
+    const offset = (y * 160 + x) * 4;
+    imageData.data[offset] = pixels[3 * i];
+
+    imageData.data[offset + 1] = pixels[3 * i + 1];
+    imageData.data[offset + 2] = pixels[3 * i + 2];
+    imageData.data[offset + 3] = 255;
+  }
+
+  ctx.putImageData(imageData, 0, 0);
 };
 
 const startDMATransfer = () => {

@@ -57,7 +57,7 @@ const Debugger = (props) => {
 
   const run = () => {
     debugger_.run((frames) => {
-      if (frames % 30 === 0 || !debugger_.isRunning()) {
+      if (frames % 300 === 0 || !debugger_.isRunning()) {
         handleCPUChange();
       }
     });
@@ -144,7 +144,7 @@ const Debugger = (props) => {
           ).toFixed(2)} frames/s`}</span>
         </div>
         <div className="debugger_row">
-          <MMU
+          {/* <MMU
             debugger_={debugger_}
             cpu={cpu}
             mmu={mmu}
@@ -155,10 +155,10 @@ const Debugger = (props) => {
             cpu={cpu}
             onCPUChange={handleCPUChange}
             onDebuggerChange={handleDebuggerChange}
-          />
+          /> */}
         </div>
         <div className="debugger_row">
-          <Breakpoints
+          {/* <Breakpoints
             debugger_={debugger_}
             onDebuggerChange={handleDebuggerChange}
           />
@@ -170,25 +170,25 @@ const Debugger = (props) => {
             cartridge={cartridge}
             mbc={mbc}
             onDebuggerChange={handleDebuggerChange}
-          />
+          /> */}
         </div>
         <div className="debugger_row">
-          <LCD config={config} ppu={ppu} visible />
-          <TileMaps config={config} ppu={ppu} visible />
+          {/* <LCD config={config} ppu={ppu} visible /> */}
+          {/* <TileMaps config={config} ppu={ppu} visible />
           <Tiles config={config} ppu={ppu} visible />
           <Sprites config={config} ppu={ppu} visible />
           <PPU
             config={config}
             ppu={ppu}
             onDebuggerChange={handleDebuggerChange}
-          />
+          /> */}
         </div>
-        <APU apu={apu} />
+        {/* <APU apu={apu} />
         <Joypad debugger_={debugger_} joypad={joypad} />
         <Interrupt interrupts={interrupts} />
         <Serial serial={serial} />
         <Timer timer={timer} />
-        <Gamepad />
+        <Gamepad /> */}
       </div>
       SPACE=Run until next breakpoint, ENTER=Step
     </Fragment>
