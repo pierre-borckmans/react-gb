@@ -23,7 +23,7 @@ const Tiles = (props) => {
   };
 
   return (
-    <Container title="Tiles" width={290}>
+    <Container title="Tiles" width={220} visible>
       <TilesGrid
         tiles={tileSet.map(tileToPixels)}
         tilesPerRow={16}

@@ -16,8 +16,11 @@ const LCD = (props) => {
   const paletteColors = config.paletteColors;
   const backgroundPalette = ppu.getBackgroundPalette();
 
-  const backgroundLayer = ppu.getScanLines();
+  const allLayers = ppu.getAllLayers();
+  const backgroundLayer = ppu.getBackgroundLayer();
   const windowLayer = ppu.getWindowLayer();
+  const spritesLayer = ppu.getSpritesLayer();
+
   const pixels = Array(144 * 160 * 3).fill(0);
 
   range(0, 144).forEach((row) =>
@@ -30,22 +33,22 @@ const LCD = (props) => {
         pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
         pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
       }
-      if (windowSelected) {
-        const pixel =
-          windowLayer[row][col] === -1
-            ? [-1, -1, -1]
-            : paletteColors[backgroundPalette[windowLayer[row][col]]];
+      // if (windowSelected) {
+      //   const pixel =
+      //     windowLayer[row][col] === -1
+      //       ? [-1, -1, -1]
+      //       : paletteColors[backgroundPalette[windowLayer[row][col]]];
 
-        if (pixel[0] !== -1) {
-          pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
-          pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
-          pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
-        }
-      }
+      //   if (pixel[0] !== -1) {
+      //     pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
+      //     pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
+      //     pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
+      //   }
+      // }
     })
   );
   return (
-    <Container title="LCD">
+    <Container title="LCD" visible={props.visible}>
       <div className="lcd-canvas-div">
         <PixelGrid width={160} height={144} pixels={pixels} />
       </div>

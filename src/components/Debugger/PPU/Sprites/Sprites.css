@@ -1,7 +1,10 @@
-.sprites-canvas-div {
-  border: solid black 1px;
+.sprites_table {
+  font-size: 10px;
+  text-align: left;
 }
 
-.sprites_table {
-  font-size: small;
+.sprites_table_container {
+  max-height: 300px;
+  overflow: hidden;
+  overflow-y: scroll;
 }

@@ -308,9 +308,17 @@ const write = (address, value) => {
 const reset = () => {
   data = {
     cycles: 0,
-    mode: MODES.HBLANK,
     modeCycles: 0,
     scanLines: Array(SCREEN_HEIGHT)
+      .fill()
+      .map(() => Array(SCREEN_WIDTH).fill(0)),
+    backgroundScanLines: Array(SCREEN_HEIGHT)
+      .fill()
+      .map(() => Array(SCREEN_WIDTH).fill(0)),
+    windowScanLines: Array(SCREEN_HEIGHT)
+      .fill()
+      .map(() => Array(SCREEN_WIDTH).fill(0)),
+    spritesScanLines: Array(SCREEN_HEIGHT)
       .fill()
       .map(() => Array(SCREEN_WIDTH).fill(0)),
   };
@@ -352,17 +360,17 @@ const step = (stepMachineCycles) => {
   data.cycles += stepMachineCycles;
   data.modeCycles += stepMachineCycles;
 
-  switch (data.mode) {
+  switch (registers.MODE) {
     case MODES.OAM_SEARCH:
       if (data.modeCycles >= CYCLES_OAM_SEARCH) {
-        data.mode = MODES.PIXEL_TRANSFER;
+        registers.MODE = MODES.PIXEL_TRANSFER;
         data.modeCycles = 0;
       }
       break;
 
     case MODES.PIXEL_TRANSFER:
       if (data.modeCycles >= CYCLES_PIXEL_TRANSFER) {
-        data.mode = MODES.HBLANK;
+        registers.MODE = MODES.HBLANK;
         data.modeCycles = 0;
 
         renderScanLine();
@@ -375,9 +383,9 @@ const step = (stepMachineCycles) => {
         registers.LCDC_YCOORD++;
 
         if (registers.LCDC_YCOORD < SCREEN_HEIGHT - 1) {
-          data.mode = MODES.OAM_SEARCH;
+          registers.MODE = MODES.OAM_SEARCH;
         } else {
-          data.mode = MODES.VBLANK;
+          registers.MODE = MODES.VBLANK;
           // renderCanvas();
         }
       }
@@ -391,7 +399,7 @@ const step = (stepMachineCycles) => {
         if (registers.LCDC_YCOORD > SCREEN_HEIGHT + LINES_VBLANK - 1) {
           // Back to new frame
           registers.LCDC_YCOORD = 0;
-          data.mode = MODES.OAM_SEARCH;
+          registers.MODE = MODES.OAM_SEARCH;
           interrupts.setVBlankInterruptFlag();
         }
       }
@@ -442,7 +450,7 @@ const renderScanLine = () => {
   if (registers.LCDC_YCOORD === 100) {
     // console.log(data.scanLines);
   }
-  data.scanLines[registers.LCDC_YCOORD] = scanLine;
+  data.backgroundScanLines[registers.LCDC_YCOORD] = scanLine;
 };
 
 const getScanLines = () => data.scanLines;
@@ -457,91 +465,40 @@ const getTileIndex = (tileMapAddress) => {
   return tileIdxCorrected;
 };
 
-const getBackgroundBuffer = () => {
+const getTileMaps = () => {
   const tileSet = getTileSet();
-  const background = Array(BUFFER_HEIGHT)
+
+  const tileMaps = Array(2)
     .fill()
-    .map(() => Array(BUFFER_WIDTH).fill(0));
+    .map(() =>
+      Array(BUFFER_HEIGHT)
+        .fill()
+        .map(() => Array(BUFFER_WIDTH).fill(0))
+    );
 
-  // Tilemap = 32*32
-  const tileMapStartAddr =
-    registers.BACKGROUND_TILEMAP === 0
-      ? START_TILEMAP0_ADDR
-      : START_TILEMAP1_ADDR;
+  for (let tileMapIdx = 0; tileMapIdx < 2; tileMapIdx++) {
+    const tileMapStartAddr =
+      tileMapIdx === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
 
-  for (let row = 0; row < BUFFER_HEIGHT; row++) {
-    for (let col = 0; col < BUFFER_WIDTH; col++) {
-      const tileMapAddress = tileMapStartAddr + (row >> 3) * 32 + (col >> 3);
-      const tile = tileSet[getTileIndex(tileMapAddress)];
-      background[row][col] = tile[row % 8][col % 8];
-    }
-  }
-
-  return background;
-};
-
-const getWindowBuffer = () => {
-  const tileSet = getTileSet();
-  const windowBuffer = Array(BUFFER_HEIGHT)
-    .fill()
-    .map(() => Array(BUFFER_WIDTH).fill(0));
-
-  // Tilemap = 32*32
-  const tileMapStartAddr =
-    registers.WINDOW_TILEMAP === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
-
-  for (let row = 0; row < BUFFER_HEIGHT; row++) {
-    for (let col = 0; col < BUFFER_WIDTH; col++) {
-      if (
-        row - registers.SCROLLY >= registers.WINY &&
-        col - registers.SCROLLX + 7 >= registers.WINX
-      ) {
-        const y = row - registers.SCROLLY - registers.WINY;
-        const x = col - registers.SCROLLX + 7 - registers.WINX;
-
-        const tileMapAddress = tileMapStartAddr + (x >> 3) + (y >> 3) * 32;
+    for (let row = 0; row < BUFFER_HEIGHT; row++) {
+      for (let col = 0; col < BUFFER_WIDTH; col++) {
+        const tileMapAddress = tileMapStartAddr + (row >> 3) * 32 + (col >> 3);
         const tile = tileSet[getTileIndex(tileMapAddress)];
-        windowBuffer[row][col] = tile[y % 8][x % 8];
-      } else {
-        windowBuffer[row][col] = -1;
+        tileMaps[tileMapIdx][row][col] = tile[row % 8][col % 8];
       }
     }
   }
 
-  return windowBuffer;
+  return tileMaps;
 };
 
-const getSpritesBuffer = () => {};
+const getAllLayers = () => {};
 
 const getBackgroundLayer = () => {
-  const fullBackground = getBackgroundBuffer();
-  const layer = [];
-  for (let row = 0; row < SCREEN_HEIGHT; row++) {
-    layer[row] = [];
-    for (let col = 0; col < SCREEN_WIDTH; col++) {
-      layer[row][col] =
-        fullBackground[(registers.SCROLLY + row) % BUFFER_HEIGHT][
-          (registers.SCROLLX + col) % BUFFER_WIDTH
-        ];
-    }
-  }
-  return layer;
+  return data.backgroundScanLines;
 };
 
-const getWindowLayer = () => {
-  const windowBuffer = getWindowBuffer();
-  const layer = [];
-  for (let row = 0; row < SCREEN_HEIGHT; row++) {
-    layer[row] = [];
-    for (let col = 0; col < SCREEN_WIDTH; col++) {
-      layer[row][col] =
-        windowBuffer[(registers.SCROLLY + row) % BUFFER_HEIGHT][
-          (registers.SCROLLX + col) % BUFFER_WIDTH
-        ];
-    }
-  }
-  return layer;
-};
+const getWindowLayer = () => {};
 
 const getSpritesLayer = () => {};
 
@@ -555,17 +512,13 @@ const ppu = {
   getWindowY,
 
   getTileSet,
+  getTileMaps,
   getSprites,
 
-  getBackgroundBuffer,
-  getWindowBuffer,
-  getSpritesBuffer,
-
+  getAllLayers,
   getBackgroundLayer,
   getWindowLayer,
   getSpritesLayer,
-
-  getScanLines,
 
   getLCDCBackgroundEnable,
   getLCDCObjectEnable,

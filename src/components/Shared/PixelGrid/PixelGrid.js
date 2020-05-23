@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, createContext } from 'react';
 
 const PixelGrid = (props) => {
   const { width, height, pixels } = props;
+  const shapes = props.shapes || [];
   const scale = props.scale || 1;
 
   const canvas = useRef(null);
@@ -22,6 +23,26 @@ const PixelGrid = (props) => {
       }
 
       ctx.putImageData(imageData, 0, 0);
+
+      shapes.forEach((shape) => {
+        if (shape.type === 'line') {
+          ctx.beginPath();
+          ctx.moveTo(shape.coords[0], shape.coords[1]);
+          ctx.lineTo(shape.coords[2], shape.coords[3]);
+          ctx.strokeStyle = shape.color;
+          ctx.stroke();
+        }
+
+        if (shape.type === 'rectangle') {
+          ctx.fillStyle = shape.color;
+          ctx.fillRect(
+            shape.coords[0],
+            shape.coords[1],
+            shape.coords[2] - shape.coords[0],
+            shape.coords[3] - shape.coords[1]
+          );
+        }
+      });
     };
     draw();
   });

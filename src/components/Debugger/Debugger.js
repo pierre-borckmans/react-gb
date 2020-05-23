@@ -11,7 +11,7 @@ import Joypad from './Joypad/Joypad';
 import MMU from './MMU/MMU';
 import PPU from './PPU/PPU';
 import Tiles from './PPU/Tiles/Tiles';
-import Background from './PPU/Background/Background';
+import TileMaps from './PPU/TileMaps/TileMaps';
 import Serial from './Serial/Serial';
 import Timer from './Timer/Timer';
 
@@ -143,41 +143,45 @@ const Debugger = (props) => {
             cyclesPerSecond / 17556
           ).toFixed(2)} frames/s`}</span>
         </div>
-        <MMU
-          debugger_={debugger_}
-          cpu={cpu}
-          mmu={mmu}
-          onCPUChange={handleCPUChange}
-          onDebuggerChange={handleDebuggerChange}
-        />
-        <CPU
-          cpu={cpu}
-          onCPUChange={handleCPUChange}
-          onDebuggerChange={handleDebuggerChange}
-        />
-        <Breakpoints
-          debugger_={debugger_}
-          onDebuggerChange={handleDebuggerChange}
-        />
-        <Cartridge
-          cartridge={cartridge}
-          onDebuggerChange={handleDebuggerChange}
-        />
-        <MBC
-          cartridge={cartridge}
-          mbc={mbc}
-          onDebuggerChange={handleDebuggerChange}
-        />
         <div className="debugger_row">
-          <LCD config={config} ppu={ppu} />
-          <Background config={config} ppu={ppu} />
+          <MMU
+            debugger_={debugger_}
+            cpu={cpu}
+            mmu={mmu}
+            onCPUChange={handleCPUChange}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <CPU
+            cpu={cpu}
+            onCPUChange={handleCPUChange}
+            onDebuggerChange={handleDebuggerChange}
+          />
+        </div>
+        <div className="debugger_row">
+          <Breakpoints
+            debugger_={debugger_}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <Cartridge
+            cartridge={cartridge}
+            onDebuggerChange={handleDebuggerChange}
+          />
+          <MBC
+            cartridge={cartridge}
+            mbc={mbc}
+            onDebuggerChange={handleDebuggerChange}
+          />
+        </div>
+        <div className="debugger_row">
+          <LCD config={config} ppu={ppu} visible />
+          <TileMaps config={config} ppu={ppu} visible />
+          <Tiles config={config} ppu={ppu} visible />
+          <Sprites config={config} ppu={ppu} visible />
           <PPU
             config={config}
             ppu={ppu}
             onDebuggerChange={handleDebuggerChange}
           />
-          <Tiles config={config} ppu={ppu} />
-          <Sprites config={config} ppu={ppu} />
         </div>
         <APU apu={apu} />
         <Joypad debugger_={debugger_} joypad={joypad} />
