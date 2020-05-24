@@ -160,6 +160,13 @@ const getSprites = () => {
   return sprites;
 };
 
+const getSprite = (spriteIdx) => {
+  const sprites = getSprites();
+  const sprite = sprites[spriteIdx];
+  const tile = getTileSet()[sprite.tileIdx];
+  return tile;
+};
+
 const getBackgroundPalette = () => getPalette(BG_PALETTE_ADDR);
 const getObjectPalette0 = () => getPalette(OBJ_PALETTE0_ADDR);
 const getObjectPalette1 = () => getPalette(OBJ_PALETTE1_ADDR);
@@ -514,6 +521,7 @@ const ppu = {
   getTileSet,
   getTileMaps,
   getSprites,
+  getSprite,
 
   getAllLayers,
   getBackgroundLayer,
