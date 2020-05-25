@@ -4,7 +4,7 @@ import config from '../config';
 
 import { format, readBit, getSignedByte } from '../../utils/utils';
 
-import { reverse, range } from 'lodash';
+import { range } from 'lodash';
 
 const LCD_CTRL_ADDR = 0xff40;
 const LCDC_STATUS_ADDR = 0xff41;
@@ -510,22 +510,24 @@ const renderSpritesScanLine = () => {
   const spritesScanLine = new Array(SCREEN_WIDTH).fill(null);
   const spriteHeight = registers.LCD_CTRL_OBJ_SIZE_BIT ? 16 : 8;
 
-  const visibleSpritesOnLine = reverse(
-    getSprites()
-      .filter(
-        (sprite) =>
-          sprite.x !== 0 &&
-          registers.LCDC_YCOORD >= sprite.y - 16 &&
-          registers.LCDC_YCOORD < sprite.y - 16 + spriteHeight
-      )
-      .slice(0, 10)
-  );
+  const visibleSpritesOnLine = getSprites()
+    .filter(
+      (sprite) =>
+        sprite.x !== 0 &&
+        registers.LCDC_YCOORD >= sprite.y - 16 &&
+        registers.LCDC_YCOORD < sprite.y - 16 + spriteHeight
+    )
+    .slice(0, 10)
+    .reverse();
 
   visibleSpritesOnLine.forEach((sprite) => {
     const tile = tiles[sprite.tileIdx];
     const flippedTile = sprite.flipY
-      ? reverse(tile.map((row) => (sprite.flipX ? reverse(row) : row)))
-      : tile.map((row) => (sprite.flipX ? reverse(row) : row));
+      ? tile
+          .map((row) => (sprite.flipX ? row.slice().reverse() : row))
+          .slice()
+          .reverse()
+      : tile.map((row) => (sprite.flipX ? row.slice().reverse() : row));
 
     for (let col = 0; col < 8; col++) {
       const pixelColor =
