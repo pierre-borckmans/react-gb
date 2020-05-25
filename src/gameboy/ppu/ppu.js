@@ -363,6 +363,8 @@ const reset = () => {
 };
 reset();
 
+// TODO: understand interrupts better (when , how, whem are the flags reset, etc...)
+// TODO: and possiblity to render lines in a more fine-grained fashion
 const step = (stepMachineCycles) => {
   data.cycles += stepMachineCycles;
   data.modeCycles += stepMachineCycles;
@@ -371,14 +373,14 @@ const step = (stepMachineCycles) => {
     case MODES.OAM_SEARCH:
       if (data.modeCycles >= CYCLES_OAM_SEARCH) {
         registers.MODE = MODES.PIXEL_TRANSFER;
-        data.modeCycles = 0;
+        data.modeCycles -= CYCLES_OAM_SEARCH;
       }
       break;
 
     case MODES.PIXEL_TRANSFER:
       if (data.modeCycles >= CYCLES_PIXEL_TRANSFER) {
         registers.MODE = MODES.HBLANK;
-        data.modeCycles = 0;
+        data.modeCycles -= CYCLES_PIXEL_TRANSFER;
 
         renderScanLine();
       }
@@ -386,10 +388,18 @@ const step = (stepMachineCycles) => {
 
     case MODES.HBLANK:
       if (data.modeCycles >= CYCLES_HBLANK) {
-        data.modeCycles = 0;
+        data.modeCycles -= CYCLES_HBLANK;
         registers.LCDC_YCOORD++;
 
-        if (registers.LCDC_YCOORD < SCREEN_HEIGHT - 1) {
+        if (
+          // registers.YCOORD_COINCIDENCE_FLAG === 1 &&
+          registers.LCDC_YCOORD === registers.LCDC_YCOORD_COMPARE
+        ) {
+          registers.YCOORD_COINCIDENCE_INTERRUPT = 1;
+          interrupts.setLCDStatInterruptFlag();
+        }
+
+        if (registers.LCDC_YCOORD < SCREEN_HEIGHT) {
           registers.MODE = MODES.OAM_SEARCH;
         } else {
           registers.MODE = MODES.VBLANK;
@@ -400,7 +410,7 @@ const step = (stepMachineCycles) => {
 
     case MODES.VBLANK:
       if (data.modeCycles >= CYCLES_PER_LINE) {
-        data.modeCycles = 0;
+        data.modeCycles -= CYCLES_PER_LINE;
         registers.LCDC_YCOORD++;
 
         if (registers.LCDC_YCOORD > SCREEN_HEIGHT + LINES_VBLANK - 1) {
@@ -408,6 +418,7 @@ const step = (stepMachineCycles) => {
           registers.LCDC_YCOORD = 0;
           registers.MODE = MODES.OAM_SEARCH;
           interrupts.setVBlankInterruptFlag();
+          data.cycles = 0;
         }
       }
       break;
@@ -416,6 +427,8 @@ const step = (stepMachineCycles) => {
   }
 };
 
+const getCycles = () => data.cycles;
+
 const startDMATransfer = () => {
   const startAddress = registers.DMA_TRANSFER_AND_START * 0x100;
   for (let i = 0; i < 0x9f; i++) {
@@ -423,7 +436,7 @@ const startDMATransfer = () => {
   }
 };
 
-const renderScanLine = () => {
+const renderBackgroundScanLine = () => {
   const tileSet = getTileSet();
 
   // Tilemap = 32*32
@@ -442,25 +455,64 @@ const renderScanLine = () => {
   const tileRow = (registers.LCDC_YCOORD + registers.SCROLLY) % 8;
   const tileStartCol = registers.SCROLLX % 8;
 
-  const scanLine = new Uint8Array(SCREEN_WIDTH);
+  const backgroundScanLine = new Array(SCREEN_WIDTH);
 
   for (let i = 0; i < SCREEN_WIDTH; i++) {
     const color = tileSet[tileIdx][tileRow][(tileStartCol + i) % 8];
-    scanLine[i] = color;
+    backgroundScanLine[i] = color;
     if ((tileStartCol + i + 1) % 8 === 0) {
       tileMapCol = (tileMapCol + 1) % 32;
       tileMapOffset = tileMapStartAddr + tileMapRow * 32 + tileMapCol;
       tileIdx = getTileIndex(tileMapOffset);
     }
   }
-
-  if (registers.LCDC_YCOORD === 100) {
-    // console.log(data.scanLines);
-  }
-  data.backgroundScanLines[registers.LCDC_YCOORD] = scanLine;
+  data.backgroundScanLines[registers.LCDC_YCOORD] = backgroundScanLine;
 };
 
-const getScanLines = () => data.scanLines;
+const renderWindowScanLine = () => {
+  let windowScanLine = new Array(SCREEN_WIDTH).fill(null);
+
+  const tileSet = getTileSet();
+
+  // Tilemap = 32*32
+  const tileMapStartAddr =
+    registers.WINDOW_TILEMAP === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
+
+  if (registers.WINDOW_ENABLED && registers.LCDC_YCOORD >= registers.WINY) {
+    const y = registers.LCDC_YCOORD - registers.WINY;
+    const tileMapRow = y >> 3;
+    const tileRow = y % 8;
+
+    for (let i = 0; i < SCREEN_WIDTH; i++) {
+      if (i >= registers.WINX - 7) {
+        const x = i - registers.WINX + 7;
+
+        let tileMapCol = x >> 3;
+
+        let tileMapOffset = tileMapStartAddr + tileMapRow * 32 + tileMapCol;
+        let tileIdx = getTileIndex(tileMapOffset);
+
+        const tileCol = x % 8;
+        const color = tileSet[tileIdx][tileRow][tileCol];
+        windowScanLine[i] = color;
+      }
+    }
+  }
+
+  data.windowScanLines[registers.LCDC_YCOORD] = windowScanLine;
+};
+
+const renderSpritesScanLine = () => {
+  const spritesScanLine = new Array(SCREEN_WIDTH).fill(null);
+
+  data.spritesScanLines[registers.LCDC_YCOORD] = spritesScanLine;
+};
+
+const renderScanLine = () => {
+  renderBackgroundScanLine();
+  renderWindowScanLine();
+  renderSpritesScanLine();
+};
 
 const getTileIndex = (tileMapAddress) => {
   const tileIdx = mmu.read(tileMapAddress);
@@ -505,7 +557,9 @@ const getBackgroundLayer = () => {
   return data.backgroundScanLines;
 };
 
-const getWindowLayer = () => {};
+const getWindowLayer = () => {
+  return data.windowScanLines;
+};
 
 const getSpritesLayer = () => {};
 
@@ -542,6 +596,7 @@ const ppu = {
   reset,
 
   step,
+  getCycles,
 
   START_TILESET1_ADDR,
   END_TILESET0_ADDR,

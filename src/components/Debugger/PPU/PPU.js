@@ -53,6 +53,7 @@ const PPU = (props) => {
       <div>bg tilemap: {ppu.getLCDCBackgroundTilemap()}</div>
       <div>bg&amp;win tileset: {ppu.getLCDCBackgroundAndWindowTileset()}</div>
       <div>window tilemap: {ppu.getLCDCWindowTilemap()}</div>
+      <div>cycles: {ppu.getCycles()}/17556</div>
     </Container>
   );
 };

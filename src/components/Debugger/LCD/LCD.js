@@ -21,7 +21,10 @@ const LCD = (props) => {
   const windowLayer = ppu.getWindowLayer();
   const spritesLayer = ppu.getSpritesLayer();
 
-  const pixels = Array(144 * 160 * 3).fill(0);
+  const emptyColor = [0, 255, 0];
+  const pixels = Array(144 * 160)
+    .fill()
+    .flatMap(() => emptyColor);
 
   range(0, 144).forEach((row) =>
     range(0, 160).forEach((col) => {
@@ -33,18 +36,18 @@ const LCD = (props) => {
         pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
         pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
       }
-      // if (windowSelected) {
-      //   const pixel =
-      //     windowLayer[row][col] === -1
-      //       ? [-1, -1, -1]
-      //       : paletteColors[backgroundPalette[windowLayer[row][col]]];
+      if (windowSelected) {
+        const pixel =
+          windowLayer[row][col] === null
+            ? null
+            : paletteColors[backgroundPalette[windowLayer[row][col]]];
 
-      //   if (pixel[0] !== -1) {
-      //     pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
-      //     pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
-      //     pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
-      //   }
-      // }
+        if (pixel !== null) {
+          pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
+          pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
+          pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
+        }
+      }
     })
   );
   return (
