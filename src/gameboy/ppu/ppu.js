@@ -503,7 +503,45 @@ const renderWindowScanLine = () => {
 };
 
 const renderSpritesScanLine = () => {
+  const tiles = getTileSet();
   const spritesScanLine = new Array(SCREEN_WIDTH).fill(null);
+  const spriteHeight = registers.LCD_CTRL_OBJ_SIZE_BIT ? 16 : 8;
+
+  const visibleSpritesOnLine = getSprites()
+    .filter(
+      (sprite) =>
+        sprite.x !== 0 &&
+        registers.LCDC_YCOORD >= sprite.y - 16 &&
+        registers.LCDC_YCOORD < sprite.y - 16 + spriteHeight
+    )
+    .slice(0, 10)
+    .reverse();
+
+  const backgroundLine = data.backgroundScanLines[registers.LCDC_YCOORD];
+  const windowLine = data.backgroundScanLines[registers.LCDC_YCOORD];
+
+  visibleSpritesOnLine.forEach((sprite) => {
+    const tile = tiles[sprite.tileIdx];
+    const flippedTile = sprite.flipY
+      ? tile
+          .map((row) => (sprite.flipX ? row.slice().reverse() : row))
+          .slice()
+          .reverse()
+      : tile.map((row) => (sprite.flipX ? row.slice().reverse() : row));
+
+    for (let col = 0; col < 8; col++) {
+      const backgroundPixel = backgroundLine[sprite.x + col - 8];
+      const windowPixel = windowLine[sprite.x + col - 8];
+      const pixelColor =
+        flippedTile[registers.LCDC_YCOORD - sprite.y + 16][col];
+      if (
+        pixelColor &&
+        (sprite.priority === 0 || (!backgroundPixel && !windowPixel))
+      ) {
+        spritesScanLine[sprite.x + col - 8] = pixelColor;
+      }
+    }
+  });
 
   data.spritesScanLines[registers.LCDC_YCOORD] = spritesScanLine;
 };
@@ -561,7 +599,9 @@ const getWindowLayer = () => {
   return data.windowScanLines;
 };
 
-const getSpritesLayer = () => {};
+const getSpritesLayer = () => {
+  return data.spritesScanLines;
+};
 
 const ppu = {
   getBackgroundPalette,

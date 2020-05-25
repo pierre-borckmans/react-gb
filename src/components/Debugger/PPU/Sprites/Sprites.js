@@ -14,8 +14,11 @@ const Sprites = (props) => {
 
   const spriteToPixelGrid = (tile, spriteInfos) => {
     const flippedTile = spriteInfos.flipY
-      ? reverse(tile.map((row) => (spriteInfos.flipX ? reverse(row) : row)))
-      : tile.map((row) => (spriteInfos.flipX ? reverse(row) : row));
+      ? tile
+          .map((row) => (spriteInfos.flipX ? row.slice().reverse() : row))
+          .slice()
+          .reverse()
+      : tile.map((row) => (spriteInfos.flipX ? row.slice().reverse() : row));
     const pixels = [];
     const spritePalette = spritePalettes[spriteInfos.palette];
     range(0, 8).forEach((row) =>
