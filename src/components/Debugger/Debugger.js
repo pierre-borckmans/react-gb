@@ -48,9 +48,9 @@ const Debugger = (props) => {
   }, []);
 
   const handleCPUChange = () => {
-    setCPU({ ...cpu });
-    setStepsPerSecond(debugger_.getStepsPerSecond());
-    setCyclesPerSecond(debugger_.getMachineCyclesPerSecond());
+    // setCPU({ ...cpu });
+    // setStepsPerSecond(debugger_.getStepsPerSecond());
+    // setCyclesPerSecond(debugger_.getMachineCyclesPerSecond());
   };
 
   const handleDebuggerChange = () => setDebugger({ ...debugger_ });
@@ -143,7 +143,7 @@ const Debugger = (props) => {
             cyclesPerSecond / 17556
           ).toFixed(2)} frames/s`}</span>
         </div>
-        <div className="debugger_row">
+        {/* <div className="debugger_row">
           <MMU
             debugger_={debugger_}
             cpu={cpu}
@@ -171,24 +171,24 @@ const Debugger = (props) => {
             mbc={mbc}
             onDebuggerChange={handleDebuggerChange}
           />
-        </div>
+        </div> */}
         <div className="debugger_row">
-          <LCD config={config} ppu={ppu} visible />
-          <TileMaps config={config} ppu={ppu} visible />
+          {/* <LCD config={config} ppu={ppu} visible /> */}
+          {/* <TileMaps config={config} ppu={ppu} visible />
           <Tiles config={config} ppu={ppu} visible />
           <Sprites config={config} ppu={ppu} visible />
           <PPU
             config={config}
             ppu={ppu}
             onDebuggerChange={handleDebuggerChange}
-          />
+          /> */}
         </div>
-        <APU apu={apu} />
+        {/* <APU apu={apu} />
         <Joypad debugger_={debugger_} joypad={joypad} />
         <Interrupt interrupts={interrupts} />
         <Serial serial={serial} />
         <Timer timer={timer} />
-        <Gamepad />
+        <Gamepad /> */}
       </div>
       SPACE=Run until next breakpoint, ENTER=Step
     </Fragment>
