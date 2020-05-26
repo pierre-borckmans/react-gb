@@ -8,26 +8,21 @@ import Container from '../../../Shared/Container/Container';
 
 const TileMaps = (props) => {
   const { config, ppu } = props;
-  const paletteColors = config.paletteColors;
+  const paletteColors = config.paletteColors.neutral;
 
   const [showGrid, setShowGrid] = useState(false);
   const [selectedTileMap, setSelectedTileMap] = useState(0);
 
   const [scrollX, scrollY] = [ppu.getScrollX(), ppu.getScrollY()];
-  const backgroundPalette = ppu.getBackgroundPalette();
   const tileMaps = ppu.getTileMaps();
 
   const pixels = [];
-  const blue = [0, 0, 255];
-  const red = [255, 0, 0];
 
-  range(0, 256).forEach((row) =>
-    range(0, 256).forEach((col) => {
-      pixels.push(
-        ...paletteColors[backgroundPalette[tileMaps[selectedTileMap][row][col]]]
-      );
-    })
-  );
+  for (let row = 0; row < 256; row++) {
+    for (let col = 0; col < 256; col++) {
+      pixels.push(...paletteColors[tileMaps[selectedTileMap][row][col]]);
+    }
+  }
 
   const x1 = scrollX;
   const x2 = Math.min(scrollX + 160, 255);

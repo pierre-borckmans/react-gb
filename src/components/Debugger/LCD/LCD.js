@@ -13,9 +13,7 @@ const LCD = (props) => {
   const [windowSelected, setWindowSelected] = useState(false);
   const [spritesSelected, setSpritesSelected] = useState(true);
 
-  const paletteColors = config.paletteColors;
-  const backgroundPalette = ppu.getBackgroundPalette();
-  const spritesPalette = ppu.getObjectPalette0();
+  const paletteColors = config.paletteColors.gb2;
 
   const allLayers = ppu.getAllLayers();
   const backgroundLayer = ppu.getBackgroundLayer();
@@ -30,8 +28,7 @@ const LCD = (props) => {
   range(0, 144).forEach((row) =>
     range(0, 160).forEach((col) => {
       if (backgroundSelected) {
-        const pixel =
-          paletteColors[backgroundPalette[backgroundLayer[row][col]]];
+        const pixel = paletteColors[backgroundLayer[row][col]];
 
         pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
         pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
@@ -41,7 +38,7 @@ const LCD = (props) => {
         const pixel =
           windowLayer[row][col] === null
             ? null
-            : paletteColors[backgroundPalette[windowLayer[row][col]]];
+            : paletteColors[windowLayer[row][col]];
 
         if (pixel !== null) {
           pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
@@ -53,7 +50,7 @@ const LCD = (props) => {
         const pixel =
           spritesLayer[row][col] === null
             ? null
-            : paletteColors[spritesPalette[spritesLayer[row][col]]];
+            : paletteColors[spritesLayer[row][col]];
 
         if (pixel !== null) {
           pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];

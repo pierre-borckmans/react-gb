@@ -7,7 +7,7 @@ import { range, reverse } from 'lodash';
 
 const Sprites = (props) => {
   const { config, ppu } = props;
-  const paletteColors = config.paletteColors;
+  const paletteColors = config.paletteColors.neutral;
   const spritePalettes = [ppu.getObjectPalette0(), ppu.getObjectPalette1()];
 
   const sprites = ppu.getSprites();

@@ -6,9 +6,7 @@ import Container from '../../../Shared/Container/Container';
 
 const Tiles = (props) => {
   const { config, ppu } = props;
-  const paletteColors = config.paletteColors;
-
-  const backgroundPalette = ppu.getBackgroundPalette();
+  const paletteColors = config.paletteColors.neutral;
 
   const tileSet = ppu.getTileSet();
 
@@ -16,7 +14,7 @@ const Tiles = (props) => {
     const pixels = [];
     tile.forEach((row) =>
       row.forEach((col) => {
-        pixels.push(...paletteColors[backgroundPalette[col]]);
+        pixels.push(...paletteColors[col]);
       })
     );
     return pixels;

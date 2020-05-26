@@ -81,14 +81,6 @@ const MODES = {
   VBLANK: 1,
 };
 
-const tileSet = Array(384)
-  .fill()
-  .map(() =>
-    Array(8)
-      .fill()
-      .map(() => Array(8).fill(0))
-  );
-
 // 17556 cycles/frames * 60 fps = 1053360 cycles / s
 // 1mbHz (1024*1024) / 17556 cycles/frames = 59.7275 fps
 
@@ -104,22 +96,6 @@ const getPalette = (addr) => {
 };
 
 const updateTile = (tileIdx) => {
-  tileSet[tileIdx] = [];
-  for (let row = 0; row < 8; row++) {
-    tileSet[tileIdx][row] = [];
-    const offset = 0x8000 + tileIdx * 16 + row * 2;
-    const byte1 = mmu.read(offset);
-    const byte2 = mmu.read(offset + 1);
-    for (let col = 7; col >= 0; col--) {
-      const bit1 = (byte1 & (0x01 << col)) >> col;
-      const bit2 = (byte2 & (0x01 << col)) >> col;
-      const pixel = (bit2 << 1) + bit1;
-      tileSet[tileIdx][row][7 - col] = pixel;
-    }
-  }
-};
-
-const getTileSet = () => {
   // 384 tiles
   // 8x8 pixels
   // each pixel = 2 bits
@@ -130,10 +106,22 @@ const getTileSet = () => {
   // one map can be used at a time
   // each map can only use max 256 different tiles
 
-  // for (let tileIdx = 0; tileIdx < 384; tileIdx++) {
-  //   updateTile(tileIdx);
-  // }
-  return tileSet;
+  data.tileSet[tileIdx] = [];
+  data.tileSetWithBackgroundPalette[tileIdx] = [];
+  for (let row = 0; row < 8; row++) {
+    data.tileSet[tileIdx][row] = [];
+    data.tileSetWithBackgroundPalette[tileIdx][row] = [];
+    const offset = 0x8000 + tileIdx * 16 + row * 2;
+    const byte1 = mmu.read(offset);
+    const byte2 = mmu.read(offset + 1);
+    for (let col = 7; col >= 0; col--) {
+      const bit1 = (byte1 & (0x01 << col)) >> col;
+      const bit2 = (byte2 & (0x01 << col)) >> col;
+      const pixel = (bit2 << 1) + bit1;
+      data.tileSet[tileIdx][row][7 - col] = pixel;
+      data.tileSetWithBackgroundPalette[tileIdx][row][7 - col] = pixel;
+    }
+  }
 };
 
 const getSprites = () => {
@@ -163,7 +151,7 @@ const getSprites = () => {
 const getSprite = (spriteIdx) => {
   const sprites = getSprites();
   const sprite = sprites[spriteIdx];
-  const tile = getTileSet()[sprite.tileIdx];
+  const tile = data.tileSet[sprite.tileIdx];
   return tile;
 };
 
@@ -316,6 +304,20 @@ const reset = () => {
   data = {
     cycles: 0,
     modeCycles: 0,
+    tileSet: Array(384)
+      .fill()
+      .map(() =>
+        Array(8)
+          .fill()
+          .map(() => Array(8).fill(0))
+      ),
+    tileSetWithBackgroundPalette: Array(384)
+      .fill()
+      .map(() =>
+        Array(8)
+          .fill()
+          .map(() => Array(8).fill(0))
+      ),
     scanLines: Array(SCREEN_HEIGHT)
       .fill()
       .map(() => Array(SCREEN_WIDTH).fill(0)),
@@ -437,8 +439,6 @@ const startDMATransfer = () => {
 };
 
 const renderBackgroundScanLine = () => {
-  const tileSet = getTileSet();
-
   // Tilemap = 32*32
   const tileMapStartAddr =
     registers.BACKGROUND_TILEMAP === 0
@@ -456,9 +456,11 @@ const renderBackgroundScanLine = () => {
   const tileStartCol = registers.SCROLLX % 8;
 
   const backgroundScanLine = new Array(SCREEN_WIDTH);
+  const backgroundPalette = getBackgroundPalette();
 
   for (let i = 0; i < SCREEN_WIDTH; i++) {
-    const color = tileSet[tileIdx][tileRow][(tileStartCol + i) % 8];
+    const color =
+      backgroundPalette[data.tileSet[tileIdx][tileRow][(tileStartCol + i) % 8]];
     backgroundScanLine[i] = color;
     if ((tileStartCol + i + 1) % 8 === 0) {
       tileMapCol = (tileMapCol + 1) % 32;
@@ -482,6 +484,7 @@ const renderWindowScanLine = () => {
     const y = registers.LCDC_YCOORD - registers.WINY;
     const tileMapRow = y >> 3;
     const tileRow = y % 8;
+    const backgroundPalette = getBackgroundPalette();
 
     for (let i = 0; i < SCREEN_WIDTH; i++) {
       if (i >= registers.WINX - 7) {
@@ -493,7 +496,7 @@ const renderWindowScanLine = () => {
         let tileIdx = getTileIndex(tileMapOffset);
 
         const tileCol = x % 8;
-        const color = tileSet[tileIdx][tileRow][tileCol];
+        const color = backgroundPalette[tileSet[tileIdx][tileRow][tileCol]];
         windowScanLine[i] = color;
       }
     }
@@ -520,6 +523,9 @@ const renderSpritesScanLine = () => {
   const backgroundLine = data.backgroundScanLines[registers.LCDC_YCOORD];
   const windowLine = data.backgroundScanLines[registers.LCDC_YCOORD];
 
+  const spritePalette0 = getObjectPalette0();
+  const spritePalette1 = getObjectPalette1();
+
   visibleSpritesOnLine.forEach((sprite) => {
     const tile = tiles[sprite.tileIdx];
     const flippedTile = sprite.flipY
@@ -532,8 +538,12 @@ const renderSpritesScanLine = () => {
     for (let col = 0; col < 8; col++) {
       const backgroundPixel = backgroundLine[sprite.x + col - 8];
       const windowPixel = windowLine[sprite.x + col - 8];
-      const pixelColor =
-        flippedTile[registers.LCDC_YCOORD - sprite.y + 16][col];
+      const pixel = flippedTile[registers.LCDC_YCOORD - sprite.y + 16][col];
+
+      const pixelColor = sprite.palette
+        ? spritePalette1[pixel]
+        : spritePalette0[pixel];
+
       if (
         pixelColor &&
         (sprite.priority === 0 || (!backgroundPixel && !windowPixel))
@@ -562,6 +572,10 @@ const getTileIndex = (tileMapAddress) => {
   return tileIdxCorrected;
 };
 
+const getTileSet = () => {
+  return data.tileSetWithBackgroundPalette;
+};
+
 const getTileMaps = () => {
   const tileSet = getTileSet();
 
@@ -573,6 +587,8 @@ const getTileMaps = () => {
         .map(() => Array(BUFFER_WIDTH).fill(0))
     );
 
+  const backgroundPalette = getBackgroundPalette();
+
   for (let tileMapIdx = 0; tileMapIdx < 2; tileMapIdx++) {
     const tileMapStartAddr =
       tileMapIdx === 0 ? START_TILEMAP0_ADDR : START_TILEMAP1_ADDR;
@@ -581,7 +597,8 @@ const getTileMaps = () => {
       for (let col = 0; col < BUFFER_WIDTH; col++) {
         const tileMapAddress = tileMapStartAddr + (row >> 3) * 32 + (col >> 3);
         const tile = tileSet[getTileIndex(tileMapAddress)];
-        tileMaps[tileMapIdx][row][col] = tile[row % 8][col % 8];
+        tileMaps[tileMapIdx][row][col] =
+          backgroundPalette[tile[row % 8][col % 8]];
       }
     }
   }

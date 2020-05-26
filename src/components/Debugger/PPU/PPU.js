@@ -8,7 +8,7 @@ import Container from '../../Shared/Container/Container';
 const PPU = (props) => {
   const { config, ppu } = props;
 
-  const paletteColors = config.paletteColors;
+  const paletteColors = config.paletteColors.gb2;
 
   const backgroundPalette = ppu.getBackgroundPalette();
   const objectPalette0 = ppu.getObjectPalette0();
