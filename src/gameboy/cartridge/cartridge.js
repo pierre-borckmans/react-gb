@@ -1,7 +1,7 @@
 import mmu from '../mmu/mmu';
 import mbc from './mbc/mbc';
 
-import rom from '../../assets/roms/rom1.gb';
+import rom from '../../assets/roms/rom3.gb';
 
 import testRomCpu1 from '../../assets/roms/tests/cpu_instrs/01-special.gb';
 import testRomCpu2 from '../../assets/roms/tests/cpu_instrs/02-interrupts.gb';
@@ -23,6 +23,7 @@ import testRomMemTimingAll from '../../assets/roms/tests/mem_timing.gb';
 import testRomMemTiming2All from '../../assets/roms/tests/mem_timing2.gb';
 import testRomInterruptTiming from '../../assets/roms/tests/interrupt_time.gb';
 import testRomHaltBug from '../../assets/roms/tests/halt_bug.gb';
+import testRomPpuDmgAcid2 from '../../assets/roms/tests/ppu/dmg-acid2.gb';
 
 import { range } from 'lodash';
 
@@ -47,6 +48,7 @@ const testRoms = {
   'test timing: mem2: all': testRomMemTiming2All,
   'test timing: interrupt': testRomInterruptTiming,
   'test bug: halt': testRomHaltBug,
+  'test ppu: dmg acid2': testRomPpuDmgAcid2,
 };
 
 const SIZE = 0x80000;

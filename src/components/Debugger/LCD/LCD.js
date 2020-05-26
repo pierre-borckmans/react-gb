@@ -10,7 +10,7 @@ const LCD = (props) => {
   const { config, ppu } = props;
 
   const [backgroundSelected, setBackgroundSelected] = useState(true);
-  const [windowSelected, setWindowSelected] = useState(false);
+  const [windowSelected, setWindowSelected] = useState(true);
   const [spritesSelected, setSpritesSelected] = useState(true);
 
   const paletteColors = config.paletteColors.gb2;
@@ -20,7 +20,7 @@ const LCD = (props) => {
   const windowLayer = ppu.getWindowLayer();
   const spritesLayer = ppu.getSpritesLayer();
 
-  const emptyColor = [0, 255, 0];
+  const emptyColor = [200, 200, 200];
   const pixels = Array(144 * 160)
     .fill()
     .flatMap(() => emptyColor);

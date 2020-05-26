@@ -10,20 +10,14 @@ const Sprites = (props) => {
   const paletteColors = config.paletteColors.neutral;
   const spritePalettes = [ppu.getObjectPalette0(), ppu.getObjectPalette1()];
 
-  const sprites = ppu.getSprites();
+  const sprites = ppu.getSpritesTable();
 
-  const spriteToPixelGrid = (tile, spriteInfos) => {
-    const flippedTile = spriteInfos.flipY
-      ? tile
-          .map((row) => (spriteInfos.flipX ? row.slice().reverse() : row))
-          .slice()
-          .reverse()
-      : tile.map((row) => (spriteInfos.flipX ? row.slice().reverse() : row));
+  const spriteToPixelGrid = (sprite, spriteInfos) => {
+    const spriteHeight = sprite.length;
     const pixels = [];
-    const spritePalette = spritePalettes[spriteInfos.palette];
-    range(0, 8).forEach((row) =>
+    range(0, spriteHeight).forEach((row) =>
       range(0, 8).forEach((col) => {
-        pixels.push(...paletteColors[spritePalette[flippedTile[row][col]]]);
+        pixels.push(...paletteColors[sprite[row][col]]);
       })
     );
     return pixels;
@@ -48,20 +42,29 @@ const Sprites = (props) => {
             </tr>
           </thead>
           <tbody>
-            {sprites.map((sprite, idx) => {
-              const pixels = spriteToPixelGrid(ppu.getSprite(idx), sprite);
+            {sprites.map((spriteInfos, idx) => {
+              const sprite = ppu.getSprite(idx);
+              const pixels = spriteToPixelGrid(sprite, spriteInfos);
               return (
                 <tr key={idx}>
                   <td>{idx}</td>
-                  <td>{<PixelGrid width={8} height={8} pixels={pixels} />}</td>
-                  <td>{sprite.tileIdx}</td>
-                  <td>{sprite.x}</td>
-                  <td>{sprite.y}</td>
-                  <td>{sprite.tileIdx}</td>
-                  <td>{sprite.priority}</td>
-                  <td>{sprite.flipX}</td>
-                  <td>{sprite.flipY}</td>
-                  <td>{sprite.palette}</td>
+                  <td>
+                    {
+                      <PixelGrid
+                        width={8}
+                        height={sprite.length}
+                        pixels={pixels}
+                      />
+                    }
+                  </td>
+                  <td>{spriteInfos.tileIdx}</td>
+                  <td>{spriteInfos.x}</td>
+                  <td>{spriteInfos.y}</td>
+                  <td>{spriteInfos.tileIdx}</td>
+                  <td>{spriteInfos.priority}</td>
+                  <td>{spriteInfos.flipX}</td>
+                  <td>{spriteInfos.flipY}</td>
+                  <td>{spriteInfos.palette}</td>
                 </tr>
               );
             })}
