@@ -551,7 +551,7 @@ const renderSpritesScanLine = () => {
           registers.LCDC_YCOORD < sprite.y - 16 + spriteHeight
       )
       .sort((a, b) => (a.x >= b.x ? 1 : -1)) // FIX the moles next ot the nose (left and right)
-      .slice(0, 100)
+      .slice(0, 10)
       .reverse();
 
     const backgroundLine = data.backgroundScanLines[registers.LCDC_YCOORD];
@@ -586,8 +586,8 @@ const renderSpritesScanLine = () => {
         const pixelColor = spritePalette[pixel];
 
         if (
-          pixelColor &&
-          (sprite.priority === 0 || (!backgroundPixel && !windowPixel))
+          (sprite.priority === 0 && pixel) ||
+          (backgroundPixel === 0 && windowPixel === 0)
         ) {
           spritesScanLine[sprite.x + col - 8] = pixelColor;
         }
