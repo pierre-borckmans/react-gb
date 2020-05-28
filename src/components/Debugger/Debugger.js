@@ -15,8 +15,6 @@ import TileMaps from './PPU/TileMaps/TileMaps';
 import Serial from './Serial/Serial';
 import Timer from './Timer/Timer';
 
-import Gamepad from './Gamepad/Gamepad';
-
 import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
 import LCD from './LCD/LCD';
@@ -188,7 +186,6 @@ const Debugger = (props) => {
         <Interrupt interrupts={interrupts} />
         <Serial serial={serial} />
         <Timer timer={timer} />
-        <Gamepad />
       </div>
       SPACE=Run until next breakpoint, ENTER=Step
     </Fragment>

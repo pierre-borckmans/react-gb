@@ -65,5 +65,6 @@ const gameboy = {
 };
 
 keyboard.init();
+gamepad.init();
 
 export default gameboy;
