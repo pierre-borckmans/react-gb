@@ -3,23 +3,21 @@ import React from 'react';
 import './Sprites.css';
 import Container from '../../../Shared/Container/Container';
 import PixelGrid from '../../../Shared/PixelGrid/PixelGrid';
-import { range, reverse } from 'lodash';
 
 const Sprites = (props) => {
   const { config, ppu } = props;
   const paletteColors = config.paletteColors.neutral;
-  const spritePalettes = [ppu.getObjectPalette0(), ppu.getObjectPalette1()];
 
   const sprites = ppu.getSpritesTable();
 
-  const spriteToPixelGrid = (sprite, spriteInfos) => {
+  const spriteToPixelGrid = (sprite) => {
     const spriteHeight = sprite.length;
     const pixels = [];
-    range(0, spriteHeight).forEach((row) =>
-      range(0, 8).forEach((col) => {
+    for (let row = 0; row < spriteHeight; row++) {
+      for (let col = 0; col < 8; col++) {
         pixels.push(...paletteColors[sprite[row][col]]);
-      })
-    );
+      }
+    }
     return pixels;
   };
 
@@ -44,7 +42,7 @@ const Sprites = (props) => {
           <tbody>
             {sprites.map((spriteInfos, idx) => {
               const sprite = ppu.getSprite(idx);
-              const pixels = spriteToPixelGrid(sprite, spriteInfos);
+              const pixels = spriteToPixelGrid(sprite);
               return (
                 <tr key={idx}>
                   <td>{idx}</td>

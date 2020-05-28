@@ -2,6 +2,7 @@ import mmu from '../mmu/mmu';
 import interrupts from '../interrupts/interrupts';
 
 import { format, readBit, getSignedByte } from '../../utils/utils';
+import config from '../config';
 
 const LCD_CTRL_ADDR = 0xff40;
 const LCDC_STATUS_ADDR = 0xff41;
@@ -355,6 +356,7 @@ const reset = () => {
     spritesScanLines: Array(SCREEN_HEIGHT)
       .fill()
       .map(() => Array(SCREEN_WIDTH).fill(0)),
+
     windowLineCounter: 0,
   };
 
@@ -483,14 +485,15 @@ const renderBackgroundScanLine = () => {
   const tileStartCol = registers.SCROLLX % 8;
 
   const backgroundScanLine = new Array(SCREEN_WIDTH).fill(0);
+
   const backgroundPalette = getBackgroundPalette();
 
   for (let i = 0; i < SCREEN_WIDTH; i++) {
     if (registers.BACKGROUND_ENABLED) {
-      const color =
-        backgroundPalette[
-          data.tileSet[tileIdx][tileRow][(tileStartCol + i) % 8]
-        ];
+      const colorBeforePalette =
+        data.tileSet[tileIdx][tileRow][(tileStartCol + i) % 8];
+
+      const color = backgroundPalette[colorBeforePalette];
       backgroundScanLine[i] = color;
     }
     if ((tileStartCol + i + 1) % 8 === 0) {
@@ -526,7 +529,9 @@ const renderWindowScanLine = () => {
         let tileIdx = getTileIndex(tileMapOffset);
 
         const tileCol = x % 8;
-        const color = backgroundPalette[tileSet[tileIdx][tileRow][tileCol]];
+
+        const colorBeforePalette = tileSet[tileIdx][tileRow][tileCol];
+        const color = backgroundPalette[colorBeforePalette];
         windowScanLine[i] = color;
       }
     }
@@ -550,57 +555,119 @@ const renderSpritesScanLine = () => {
           registers.LCDC_YCOORD >= sprite.y - 16 &&
           registers.LCDC_YCOORD < sprite.y - 16 + spriteHeight
       )
-      .sort((a, b) => (a.x >= b.x ? 1 : -1)) // FIX the moles next ot the nose (left and right)
-      .slice(0, 10)
-      .reverse();
+      .slice(0, 10);
 
     const backgroundLine = data.backgroundScanLines[registers.LCDC_YCOORD];
-    const windowLine = data.backgroundScanLines[registers.LCDC_YCOORD];
+    const windowLine = data.windowScanLines[registers.LCDC_YCOORD];
 
-    visibleSpritesOnLine.forEach((sprite) => {
-      const spritePalette =
-        sprite.palette === 0
-          ? ppu.getObjectPalette0()
-          : ppu.getObjectPalette1();
-      const spriteRow = registers.LCDC_YCOORD - sprite.y + 16;
+    for (let col = 0; col < SCREEN_WIDTH; col++) {
+      const spritesForCol = visibleSpritesOnLine
+        .filter((sprite) => col >= sprite.x - 8 && col < sprite.x)
+        .sort((sprite1, sprite2) => (sprite1.x >= sprite2.x ? 1 : -1));
 
-      const tile =
-        registers.SPRITES_SIZE === 0
-          ? data.tileSet[sprite.tileIdx]
-          : [
-              ...data.tileSet[sprite.tileIdx & 0xfe],
-              ...data.tileSet[sprite.tileIdx | 0x01],
-            ];
-      const flippedTile = sprite.flipY
-        ? tile
-            .map((row) => (sprite.flipX ? row.slice().reverse() : row))
-            .slice()
-            .reverse()
-        : tile.map((row) => (sprite.flipX ? row.slice().reverse() : row));
+      const spritePixelsForCol = spritesForCol
+        .map((sprite) => {
+          const spriteRow = registers.LCDC_YCOORD - sprite.y + 16;
+          const spriteCol = col - (sprite.x - 8);
 
-      for (let col = 0; col < 8; col++) {
-        const backgroundPixel = backgroundLine[sprite.x + col - 8];
-        const windowPixel = windowLine[sprite.x + col - 8];
-        const pixel = flippedTile[spriteRow][col];
+          const tile =
+            registers.SPRITES_SIZE === 0
+              ? data.tileSet[sprite.tileIdx]
+              : [
+                  ...data.tileSet[sprite.tileIdx & 0xfe],
+                  ...data.tileSet[sprite.tileIdx | 0x01],
+                ];
+          const flippedTile = sprite.flipY
+            ? tile
+                .map((row) => (sprite.flipX ? row.slice().reverse() : row))
+                .slice()
+                .reverse()
+            : tile.map((row) => (sprite.flipX ? row.slice().reverse() : row));
 
-        const pixelColor = spritePalette[pixel];
+          const spritePixelColor = flippedTile[spriteRow][spriteCol];
+
+          return {
+            color: spritePixelColor,
+            priority: sprite.priority,
+            palette: sprite.palette,
+          };
+        })
+        .filter((pixel) => pixel.color !== 0);
+
+      if (spritePixelsForCol.length > 0) {
+        const spritePixelForCol = spritePixelsForCol[0];
+
+        const spritePalette =
+          spritePixelForCol.palette === 0
+            ? ppu.getObjectPalette0()
+            : ppu.getObjectPalette1();
+
+        const spritePriority = spritePixelForCol.priority;
+        const spritePixelColor = spritePixelForCol.color;
+
+        const backgroundPixelColor = backgroundLine[col];
+        const windowPixelColor = windowLine[col];
 
         if (
-          (sprite.priority === 0 && pixel) ||
-          (backgroundPixel === 0 && windowPixel === 0)
+          (spritePriority === 0 && spritePixelColor !== 0) ||
+          (!backgroundPixelColor && !windowPixelColor)
         ) {
-          spritesScanLine[sprite.x + col - 8] = pixelColor;
+          spritesScanLine[col] = spritePalette[spritePixelColor];
         }
       }
-    });
+    }
   }
   data.spritesScanLines[registers.LCDC_YCOORD] = spritesScanLine;
 };
 
 const renderScanLine = () => {
-  renderBackgroundScanLine();
-  renderWindowScanLine();
-  renderSpritesScanLine();
+  if (registers.LCD_ENABLED) {
+    renderBackgroundScanLine();
+    renderWindowScanLine();
+    renderSpritesScanLine();
+  }
+};
+
+const renderCanvas = (canvas, backgroundLayer, windowLayer, spritesLayer) => {
+  const ctx = canvas.getContext('2d');
+  const paletteColors = config.paletteColors.gb2;
+  const emptyColor = config.emptyColor;
+
+  const pixels = [];
+
+  for (let row = 0; row < SCREEN_HEIGHT; row++) {
+    for (let col = 0; col < SCREEN_WIDTH; col++) {
+      const backgroundPixel = paletteColors[data.backgroundScanLines[row][col]];
+
+      const windowPixel = paletteColors[data.windowScanLines[row][col]];
+
+      const spritesPixel = paletteColors[data.spritesScanLines[row][col]];
+
+      const pixel =
+        (spritesLayer && spritesPixel !== null && spritesPixel) ||
+        (windowLayer && windowPixel !== null && windowPixel) ||
+        (backgroundLayer && backgroundPixel !== null && backgroundPixel) ||
+        emptyColor;
+
+      pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
+      pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
+      pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
+    }
+  }
+
+  const imageData = ctx.createImageData(160, 144);
+  for (let i = 0; i < pixels.length / 3; i++) {
+    const x = i % 160;
+    const y = Math.floor(i / 160);
+    const offset = (y * 160 + x) * 4;
+    imageData.data[offset] = pixels[3 * i];
+
+    imageData.data[offset + 1] = pixels[3 * i + 1];
+    imageData.data[offset + 2] = pixels[3 * i + 2];
+    imageData.data[offset + 3] = 255;
+  }
+
+  ctx.putImageData(imageData, 0, 0);
 };
 
 const getTileIndex = (tileMapAddress) => {
@@ -699,6 +766,8 @@ const ppu = {
   START_TILESET1_ADDR,
   END_TILESET0_ADDR,
   updateTile,
+
+  renderCanvas,
 };
 
 export default ppu;

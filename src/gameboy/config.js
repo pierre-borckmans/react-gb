@@ -20,6 +20,7 @@ const config = {
       [29, 33, 33],
     ],
   },
+  emptyColor: [200, 200, 200],
 };
 
 export default config;
