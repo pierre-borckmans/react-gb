@@ -72,11 +72,11 @@ const read = (address) => {
     case ROM0:
       return mbc.read(address);
     case ROM1:
-      return mbc.read(address - START_ROM0);
+      return mbc.read(address);
     case VIDEO_RAM:
       return videoRam.read(address);
     case EXTERNAL_RAM:
-      return mbc.read(address - START_EXTERNAL_RAM);
+      return mbc.read(address);
     case WORK_RAM:
       return workRam.read(address - START_WORK_RAM);
     case ECHO_RAM:
@@ -105,11 +105,11 @@ const write = (address, value) => {
     case ROM0:
       return mbc.write(address, value);
     case ROM1:
-      return mbc.write(address - START_ROM0, value);
+      return mbc.write(address, value);
     case VIDEO_RAM:
       return videoRam.write(address, value);
     case EXTERNAL_RAM:
-      return externalRam.write(address - START_EXTERNAL_RAM, value);
+      return mbc.write(address, value);
     case WORK_RAM:
       return workRam.write(address - START_WORK_RAM, value);
     case ECHO_RAM:

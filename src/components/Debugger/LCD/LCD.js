@@ -1,69 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Container from '../../Shared/Container/Container';
-import PixelGrid from '../../Shared/PixelGrid/PixelGrid';
-
-import { range } from 'lodash';
 
 import './LCD.css';
 
 const LCD = (props) => {
-  const { config, ppu } = props;
+  const { ppu } = props;
+  const scale = props.scale || 1;
+
+  const canvasRef = useRef();
+  const animationRef = useRef();
 
   const [backgroundSelected, setBackgroundSelected] = useState(true);
   const [windowSelected, setWindowSelected] = useState(true);
   const [spritesSelected, setSpritesSelected] = useState(true);
 
-  const paletteColors = config.paletteColors.gb2;
+  useEffect(() => {
+    const draw = () => {
+      ppu.renderCanvas(
+        canvasRef.current,
+        backgroundSelected,
+        windowSelected,
+        spritesSelected
+      );
+      animationRef.current = requestAnimationFrame(draw);
+    };
+    animationRef.current = requestAnimationFrame(draw);
 
-  const allLayers = ppu.getAllLayers();
-  const backgroundLayer = ppu.getBackgroundLayer();
-  const windowLayer = ppu.getWindowLayer();
-  const spritesLayer = ppu.getSpritesLayer();
+    return () => cancelAnimationFrame(animationRef.current);
+  }, [backgroundSelected, windowSelected, spritesSelected]);
 
-  const emptyColor = [200, 200, 200];
-  const pixels = Array(144 * 160)
-    .fill()
-    .flatMap(() => emptyColor);
-
-  range(0, 144).forEach((row) =>
-    range(0, 160).forEach((col) => {
-      if (backgroundSelected) {
-        const pixel = paletteColors[backgroundLayer[row][col]];
-
-        pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
-        pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
-        pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
-      }
-      if (windowSelected) {
-        const pixel =
-          windowLayer[row][col] === null
-            ? null
-            : paletteColors[windowLayer[row][col]];
-
-        if (pixel !== null) {
-          pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
-          pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
-          pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
-        }
-      }
-      if (spritesSelected) {
-        const pixel =
-          spritesLayer[row][col] === null
-            ? null
-            : paletteColors[spritesLayer[row][col]];
-
-        if (pixel !== null) {
-          pixels[row * 160 * 3 + col * 3 + 0] = pixel[0];
-          pixels[row * 160 * 3 + col * 3 + 1] = pixel[1];
-          pixels[row * 160 * 3 + col * 3 + 2] = pixel[2];
-        }
-      }
-    })
-  );
   return (
     <Container title="LCD" visible={props.visible}>
-      <div className="lcd-canvas-div">
-        <PixelGrid width={160} height={144} pixels={pixels} />
+      <div
+        className="lcd-canvas-div"
+        style={{
+          height: 144 * scale,
+          width: 160 * scale,
+        }}
+      >
+        <canvas
+          ref={canvasRef}
+          width={160}
+          height={144}
+          style={{
+            width: 160 * scale,
+            height: 144 * scale,
+          }}
+        />
       </div>
       <div>
         <input

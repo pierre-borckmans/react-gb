@@ -43,7 +43,11 @@ const read = (address) => {
     address >= mmu.START_EXTERNAL_RAM &&
     address <= mmu.END_EXTERNAL_RAM
   ) {
-    return externalRam.read(getRamOffset() + (address - RAM_BANK_SIZE));
+    if (registers.externalRamEnabled) {
+      return externalRam.read(getRamOffset() + (address - RAM_BANK_SIZE));
+    } else {
+      return 0xff;
+    }
   } else {
     throw new Error(
       `Trying to read from invalid ROM or RAM address ${format(
@@ -90,7 +94,9 @@ const write = (address, value) => {
     address >= mmu.START_EXTERNAL_RAM &&
     address <= mmu.END_EXTERNAL_RAM
   ) {
-    externalRam.write(getRamOffset() + (address - RAM_BANK_SIZE), value);
+    if (registers.externalRamEnabled) {
+      externalRam.write(getRamOffset() + (address - RAM_BANK_SIZE), value);
+    }
   } else {
     throw new Error(
       `Trying to write to invalid ROM or RAM address ${format(

@@ -27,6 +27,7 @@ const Debugger = (props) => {
   const isRunning = debugger_.isRunning();
   const [stepsPerSecond, setStepsPerSecond] = useState(0);
   const [cyclesPerSecond, setCyclesPerSecond] = useState(0);
+  const [debuggerEnabled, setDebuggerEnabled] = useState(false);
 
   const config = gameboy.getConfig();
 
@@ -41,14 +42,16 @@ const Debugger = (props) => {
   const serial = gameboy.getSerial();
   const timer = gameboy.getTimer();
 
-  useEffect(() => {
-    // gameboy.getKeyboard().onKeyEvent(handleDebuggerChange);
-  }, []);
+  const toggleDebugger = () => {
+    setDebuggerEnabled(!debuggerEnabled);
+  };
 
   const handleCPUChange = () => {
-    setCPU({ ...cpu });
     setStepsPerSecond(debugger_.getStepsPerSecond());
     setCyclesPerSecond(debugger_.getMachineCyclesPerSecond());
+    if (debuggerEnabled) {
+      setCPU({ ...cpu });
+    }
   };
 
   const handleDebuggerChange = () => setDebugger({ ...debugger_ });
@@ -114,6 +117,9 @@ const Debugger = (props) => {
     <Fragment>
       <div className="debugger">
         <div className="debugger_controls">
+          <button onClick={toggleDebugger}>
+            Debug {debuggerEnabled ? 'off' : 'on'}
+          </button>
           <button onClick={loadROM}>Load rom</button>
           <div className="spacer" />
           <button onClick={isRunning ? pause : run} style={{ width: 50 }}>
@@ -141,51 +147,57 @@ const Debugger = (props) => {
             cyclesPerSecond / 17556
           ).toFixed(2)} frames/s`}</span>
         </div>
-        <div className="debugger_row">
-          <MMU
-            debugger_={debugger_}
-            cpu={cpu}
-            mmu={mmu}
-            onCPUChange={handleCPUChange}
-            onDebuggerChange={handleDebuggerChange}
-          />
-          <CPU
-            cpu={cpu}
-            onCPUChange={handleCPUChange}
-            onDebuggerChange={handleDebuggerChange}
-          />
-        </div>
-        <div className="debugger_row">
-          <Breakpoints
-            debugger_={debugger_}
-            onDebuggerChange={handleDebuggerChange}
-          />
-          <Cartridge
-            cartridge={cartridge}
-            onDebuggerChange={handleDebuggerChange}
-          />
-          <MBC
-            cartridge={cartridge}
-            mbc={mbc}
-            onDebuggerChange={handleDebuggerChange}
-          />
-        </div>
-        <div className="debugger_row">
-          <LCD config={config} ppu={ppu} visible />
-          <TileMaps config={config} ppu={ppu} visible />
-          <Tiles config={config} ppu={ppu} visible />
-          <Sprites config={config} ppu={ppu} visible />
-          <PPU
-            config={config}
-            ppu={ppu}
-            onDebuggerChange={handleDebuggerChange}
-          />
-        </div>
-        <APU apu={apu} />
-        <Joypad debugger_={debugger_} joypad={joypad} />
-        <Interrupt interrupts={interrupts} />
-        <Serial serial={serial} />
-        <Timer timer={timer} />
+        {debuggerEnabled ? (
+          <div>
+            <div className="debugger_row">
+              <MMU
+                debugger_={debugger_}
+                cpu={cpu}
+                mmu={mmu}
+                onCPUChange={handleCPUChange}
+                onDebuggerChange={handleDebuggerChange}
+              />
+              <CPU
+                cpu={cpu}
+                onCPUChange={handleCPUChange}
+                onDebuggerChange={handleDebuggerChange}
+              />
+            </div>
+            <div className="debugger_row">
+              <Breakpoints
+                debugger_={debugger_}
+                onDebuggerChange={handleDebuggerChange}
+              />
+              <Cartridge
+                cartridge={cartridge}
+                onDebuggerChange={handleDebuggerChange}
+              />
+              <MBC
+                cartridge={cartridge}
+                mbc={mbc}
+                onDebuggerChange={handleDebuggerChange}
+              />
+            </div>
+            <div className="debugger_row">
+              <LCD config={config} ppu={ppu} visible />
+              <TileMaps config={config} ppu={ppu} visible />
+              <Tiles config={config} ppu={ppu} visible />
+              <Sprites config={config} ppu={ppu} visible />
+              <PPU
+                config={config}
+                ppu={ppu}
+                onDebuggerChange={handleDebuggerChange}
+              />
+            </div>
+            <APU apu={apu} />
+            <Joypad debugger_={debugger_} joypad={joypad} />
+            <Interrupt interrupts={interrupts} />
+            <Serial serial={serial} />
+            <Timer timer={timer} />
+          </div>
+        ) : (
+          <LCD config={config} ppu={ppu} scale={3} visible />
+        )}
       </div>
       SPACE=Run until next breakpoint, ENTER=Step
     </Fragment>
