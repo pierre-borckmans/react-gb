@@ -43,11 +43,11 @@ const LCD_CTRL_LCD_ENABLE_BIT = 7;
 
 // LCD CONTROL
 const LCD_STATUS_MODE_BITS = [0, 1];
-const LCD_STATUS_YCOORD_COINCIDENCE_FLAG = 2;
+const LCD_STATUS_YCOORD_COINCIDENCE_FLAG_BIT = 2;
 const LCD_STATUS_MODE_0_HBLANK_INTERRUPT_BIT = 3;
 const LCD_STATUS_MODE_1_VBLANK_INTERRUPT_BIT = 4;
 const LCD_STATUS_MODE_2_OAM_INTERRUPT_BIT = 5;
-const LCD_STATUS_YCOORD_COINCIDENCE_INTERRUPT = 6;
+const LCD_STATUS_YCOORD_COINCIDENCE_INTERRUPT_BIT = 6;
 
 let registers = {};
 let data = {};
@@ -226,24 +226,27 @@ const readLCDStatus = () => {
       LCD_STATUS_MODE_BITS[0]) |
     ((registers.MODE & (1 << LCD_STATUS_MODE_BITS[1]) ? 1 : 0) <<
       LCD_STATUS_MODE_BITS[1]) |
+    ((registers.YCOORD_COINCIDENCE_FLAG ? 1 : 0) <<
+      LCD_STATUS_YCOORD_COINCIDENCE_FLAG_BIT) |
     ((registers.HBLANK_INTERRUPT ? 1 : 0) <<
       LCD_STATUS_MODE_0_HBLANK_INTERRUPT_BIT) |
     ((registers.VBLANK_INTERRUPT ? 1 : 0) <<
       LCD_STATUS_MODE_1_VBLANK_INTERRUPT_BIT) |
-    ((registers.OAM_INTERRUPT ? 1 : 0) << LCD_STATUS_MODE_2_OAM_INTERRUPT_BIT)
+    ((registers.OAM_INTERRUPT ? 1 : 0) << LCD_STATUS_MODE_2_OAM_INTERRUPT_BIT) |
+    ((registers.YCOORD_COINCIDENCE_INTERRUPT ? 1 : 0) <<
+      LCD_STATUS_YCOORD_COINCIDENCE_INTERRUPT_BIT)
   );
 };
 
 const writeLCDStatus = (value) => {
-  registers.MODE =
-    (value & (1 << LCD_STATUS_MODE_BITS[0])) |
-    (value & (1 << LCD_STATUS_MODE_BITS[1]));
   registers.HBLANK_INTERRUPT =
     value & (1 << LCD_STATUS_MODE_0_HBLANK_INTERRUPT_BIT) ? 1 : 0;
   registers.VBLANK_INTERRUPT =
     value & (1 << LCD_STATUS_MODE_1_VBLANK_INTERRUPT_BIT) ? 1 : 0;
   registers.OAM_INTERRUPT =
     value & (1 << LCD_STATUS_MODE_2_OAM_INTERRUPT_BIT) ? 1 : 0;
+  registers.YCOORD_COINCIDENCE_INTERRUPT =
+    value & (1 << LCD_STATUS_YCOORD_COINCIDENCE_INTERRUPT_BIT) ? 1 : 0;
 };
 
 const read = (address) => {
@@ -396,6 +399,8 @@ reset();
 // TODO: understand interrupts better (when , how, whem are the flags reset, etc...)
 // TODO: and possiblity to render lines in a more fine-grained fashion
 const step = (stepMachineCycles) => {
+  registers.YCOORD_COINCIDENCE_FLAG = 0;
+
   data.cycles += stepMachineCycles;
   data.modeCycles += stepMachineCycles;
 
@@ -412,6 +417,10 @@ const step = (stepMachineCycles) => {
         registers.MODE = MODES.HBLANK;
         data.modeCycles -= CYCLES_PIXEL_TRANSFER;
 
+        if (registers.HBLANK_INTERRUPT === 1) {
+          interrupts.setLCDStatInterruptFlag();
+        }
+
         renderScanLine();
       }
       break;
@@ -422,18 +431,26 @@ const step = (stepMachineCycles) => {
         registers.LCDC_YCOORD++;
 
         if (
-          // registers.YCOORD_COINCIDENCE_FLAG === 1 &&
+          registers.YCOORD_COINCIDENCE_INTERRUPT === 1 &&
           registers.LCDC_YCOORD === registers.LCDC_YCOORD_COMPARE
         ) {
-          registers.YCOORD_COINCIDENCE_INTERRUPT = 1;
+          registers.YCOORD_COINCIDENCE_FLAG = 1;
           interrupts.setLCDStatInterruptFlag();
         }
 
         if (registers.LCDC_YCOORD < SCREEN_HEIGHT) {
           registers.MODE = MODES.OAM_SEARCH;
+
+          if (registers.OAM_INTERRUPT === 1) {
+            interrupts.setLCDStatInterruptFlag();
+          }
         } else {
           registers.MODE = MODES.VBLANK;
-          // renderCanvas();
+
+          if (registers.VBLANK_INTERRUPT === 1) {
+            interrupts.setLCDStatInterruptFlag();
+          }
+          interrupts.setVBlankInterruptFlag();
         }
       }
       break;
@@ -447,7 +464,6 @@ const step = (stepMachineCycles) => {
           // Back to new frame
           registers.LCDC_YCOORD = 0;
           registers.MODE = MODES.OAM_SEARCH;
-          interrupts.setVBlankInterruptFlag();
           data.cycles = 0;
           data.windowLineCounter = 0;
         }
