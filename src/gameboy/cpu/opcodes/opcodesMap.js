@@ -618,11 +618,11 @@ const getOpcodeLabels = (base, cpu) => {
   const d8 = format(base, cpu.readImmediate8());
   const r8 = `${PCp2}${signedImm > 0 ? '+' : '-'}${format(
     base,
-    Math.abs(signedImm)
+    Math.abs(signedImm),
   )}`;
   const SPpR8 = `${SP}${signedImm > 0 ? '+' : '-'}${format(
     base,
-    Math.abs(signedImm)
+    Math.abs(signedImm),
   )}`;
   const d16 = format(base, cpu.readImmediate16(), 16);
   const a8 = `0xFF00+${format(base, +cpu.readImmediate8(), 8)}`;
@@ -923,12 +923,11 @@ const getOpcodeLabels = (base, cpu) => {
     `RST 38H`,
   ];
 
-  const $RR = (reg16) =>
-    format(base, cpu.readAddress8(cpu.readReg16(reg16)), 8);
+  const $RR = reg16 => format(base, cpu.readAddress8(cpu.readReg16(reg16)), 8);
   const r8Value = format(
     base,
     cpu.getPC() + 2 + cpu.readSignedImmediate8(),
-    16
+    16,
   );
   const a8Value = format(base, 0xff00 + cpu.readImmediate8(), 16);
   const Cpff = format(base, 0xff00 + cpu.readReg8('C'), 16);

@@ -34,7 +34,7 @@ const getRamOffset = () => {
   return registers.ramBank * RAM_BANK_SIZE;
 };
 
-const read = (address) => {
+const read = address => {
   if (address >= mmu.START_ROM0 && address <= mmu.END_ROM0) {
     return cartridge.read(address);
   } else if (address >= mmu.START_ROM1 && address <= mmu.END_ROM1) {
@@ -53,8 +53,8 @@ const read = (address) => {
       `Trying to read from invalid ROM or RAM address ${format(
         'hex',
         address,
-        16
-      )}`
+        16,
+      )}`,
     );
   }
 };
@@ -102,8 +102,8 @@ const write = (address, value) => {
       `Trying to write to invalid ROM or RAM address ${format(
         'hex',
         address,
-        16
-      )}`
+        16,
+      )}`,
     );
   }
 };
@@ -120,7 +120,7 @@ const reset = () => {
 
 reset();
 
-const setType = (type) => {
+const setType = type => {
   registers.type = type;
 };
 

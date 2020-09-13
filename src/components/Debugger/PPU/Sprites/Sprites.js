@@ -4,13 +4,13 @@ import './Sprites.css';
 import Container from '../../../Shared/Container/Container';
 import PixelGrid from '../../../Shared/PixelGrid/PixelGrid';
 
-const Sprites = (props) => {
+const Sprites = props => {
   const { config, ppu } = props;
   const paletteColors = config.paletteColors.neutral;
 
   const sprites = ppu.getSpritesTable();
 
-  const spriteToPixelGrid = (sprite) => {
+  const spriteToPixelGrid = sprite => {
     const spriteHeight = sprite.length;
     const pixels = [];
     for (let row = 0; row < spriteHeight; row++) {

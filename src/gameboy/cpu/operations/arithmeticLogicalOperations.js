@@ -15,7 +15,7 @@ const INC16_RR = (cpu, reg16) => {
 
 // INC SP
 // - - - -
-const INC16_SP = (cpu) => {
+const INC16_SP = cpu => {
   const value = cpu.getSP();
   const newValue = (value + 1) & 0xffff;
   cpu.setSP(newValue);
@@ -37,7 +37,7 @@ const DEC16_RR = (cpu, reg16) => {
 
 // DEC SP
 // - - - -
-const DEC16_SP = (cpu) => {
+const DEC16_SP = cpu => {
   const value = cpu.getSP();
   const newValue = (value - 1) & 0xffff;
   cpu.setSP(newValue);
@@ -82,7 +82,7 @@ const ADD16_RR_SP = (cpu, reg16) => {
 
 // ADD SP,r8
 // 0 0 H C
-const ADD16_SP_r8 = (cpu) => {
+const ADD16_SP_r8 = cpu => {
   const r8 = cpu.readSignedImmediate8();
   const sum = cpu.getSP() + r8;
 
@@ -336,7 +336,7 @@ const SUB8_$RR = (cpu, reg16) => {
 
 // SUB d8
 // Z 1 H C
-const SUB8_d8 = (cpu) => {
+const SUB8_d8 = cpu => {
   const regAValue = cpu.readReg8('A');
   const d8 = cpu.readImmediate8();
   const newValue = regAValue - d8;
@@ -447,7 +447,7 @@ const AND8_$RR = (cpu, reg16) => {
 
 // AND d8
 // Z 0 1 0
-const AND8_d8 = (cpu) => {
+const AND8_d8 = cpu => {
   const regAValue = cpu.readReg8('A');
   const r8 = cpu.readImmediate8();
   const newValue = regAValue & r8;
@@ -497,7 +497,7 @@ const XOR8_$RR = (cpu, reg16) => {
 
 // XOR d8
 // Z 0 0 0
-const XOR8_d8 = (cpu) => {
+const XOR8_d8 = cpu => {
   const newValue = cpu.readReg8('A') ^ cpu.readImmediate8();
   cpu.writeReg8('A', newValue);
 
@@ -545,7 +545,7 @@ const OR8_$RR = (cpu, reg16) => {
 
 // OR d8
 // Z 0 0 0
-const OR8_d8 = (cpu) => {
+const OR8_d8 = cpu => {
   const newValue = cpu.readReg8('A') | cpu.readImmediate8();
   cpu.writeReg8('A', newValue);
 
@@ -596,7 +596,7 @@ const CP8_$RR = (cpu, reg16) => {
 
 // CP d8
 // Z 1 H C
-const CP8_d8 = (cpu) => {
+const CP8_d8 = cpu => {
   const regAValue = cpu.readReg8('A');
   const d8 = cpu.readImmediate8();
   const sum = regAValue - d8;
@@ -613,7 +613,7 @@ const CP8_d8 = (cpu) => {
 
 // DAA
 // Z - 0 C
-const DAA8 = (cpu) => {
+const DAA8 = cpu => {
   let A = cpu.readReg8('A');
   let correction = 0;
 
@@ -677,7 +677,7 @@ const DAA8 = (cpu) => {
 
 // CPL
 // - 1 1 -
-const CPL8 = (cpu) => {
+const CPL8 = cpu => {
   cpu.writeReg8('A', cpu.readReg8('A') ^ 0xff);
 
   const Z = cpu.getFlag('Z');
@@ -692,7 +692,7 @@ const CPL8 = (cpu) => {
 
 // SCF
 // - 0 0 1
-const SCF8 = (cpu) => {
+const SCF8 = cpu => {
   const Z = cpu.getFlag('Z');
   const N = 0;
   const H = 0;
@@ -705,7 +705,7 @@ const SCF8 = (cpu) => {
 
 // CCF
 // - 0 0 C
-const CCF8 = (cpu) => {
+const CCF8 = cpu => {
   const Z = cpu.getFlag('Z');
   const N = 0;
   const H = 0;

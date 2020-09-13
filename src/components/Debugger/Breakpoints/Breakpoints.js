@@ -6,7 +6,7 @@ import { format } from '../../../utils/utils';
 import './Breakpoints.css';
 import Container from '../../Shared/Container/Container';
 
-const Breakpoints = (props) => {
+const Breakpoints = props => {
   const [breakpointType, setBreakpointType] = useState('address');
   const [breakpointValue, setBreakpointValue] = useState('');
 
@@ -52,13 +52,13 @@ const Breakpoints = (props) => {
     props.onDebuggerChange();
   };
 
-  const getBreakpoint = (bp) => (
+  const getBreakpoint = bp => (
     <div
       key={bp.id}
       className={classNames(
         'breakpoint',
         { disabled: !bp.enabled },
-        { highlighted: currentBreakpoint && bp.id === currentBreakpoint.id }
+        { highlighted: currentBreakpoint && bp.id === currentBreakpoint.id },
       )}
     >
       <button
@@ -90,7 +90,7 @@ const Breakpoints = (props) => {
             {format(
               'hex',
               bp.registers[0].value,
-              bp.registers[0].name.length === 1 ? 8 : 16
+              bp.registers[0].name.length === 1 ? 8 : 16,
             )}
           </div>
         ) : null}
@@ -112,7 +112,7 @@ const Breakpoints = (props) => {
         <div>
           <select
             defaultValue={breakpointType}
-            onChange={(e) => setBreakpointType(e.target.value)}
+            onChange={e => setBreakpointType(e.target.value)}
           >
             <option value="address">Address</option>
             <option value="opcode">Opcode</option>
@@ -137,7 +137,7 @@ const Breakpoints = (props) => {
           </select>
           <input
             defaultValue=""
-            onChange={(e) => setBreakpointValue(e.target.value)}
+            onChange={e => setBreakpointValue(e.target.value)}
           />
         </div>
         <button onClick={addBreakPoint}>Add breakpoint</button>

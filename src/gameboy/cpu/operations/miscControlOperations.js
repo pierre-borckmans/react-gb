@@ -2,20 +2,20 @@ import prefixCBOpcodesMap from '../opcodes/prefixCBOpcodesMap';
 
 // NOP
 // - - - -
-const NOP = (cpu) => {
+const NOP = cpu => {
   cpu.incPC(1);
   cpu.incClockCycles(4);
 };
 
 // STOP 0
 // - - - -
-const STOP = (cpu) => {
+const STOP = cpu => {
   cpu.incPC(2);
 };
 
 // HALT
 // - - - -
-const HALT = (cpu) => {
+const HALT = cpu => {
   cpu.setHalt(true);
 
   // /* Check halt bug */
@@ -33,14 +33,14 @@ const HALT = (cpu) => {
 
 // PREFIX CB
 // - - - -
-const PREFIX_CB = (cpu) => {
+const PREFIX_CB = cpu => {
   const opcode = cpu.readImmediate8();
   prefixCBOpcodesMap[opcode](cpu);
 };
 
 // DI
 // - - - -
-const DI = (cpu) => {
+const DI = cpu => {
   cpu.incPC(1);
   cpu.incClockCycles(4);
   cpu.setInterruptMasterEnable(0);
@@ -48,7 +48,7 @@ const DI = (cpu) => {
 
 // EI
 // - - - -
-const EI = (cpu) => {
+const EI = cpu => {
   cpu.incPC(1);
   cpu.incClockCycles(4);
   cpu.setInterruptMasterEnable(1);

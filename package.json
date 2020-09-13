@@ -19,7 +19,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettier": "prettier --single-quote --print-width 80 \"src/**/*.+(js|css)\""
+    "prettier": "prettier --single-quote --trailing-comma all --print-width 80 \"src/**/*.+(js|css)\"",
+    "format": "npm run prettier -- --write",
+    "check-format": "npm run prettier -- --check"
   },
   "eslintConfig": {
     "extends": "react-app"

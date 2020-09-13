@@ -9,7 +9,7 @@ import Container from '../../Shared/Container/Container';
 
 const bases = ['hex', 'bin', 'dec'];
 
-const CPU = (props) => {
+const CPU = props => {
   const [base, setBase] = useState(bases[0]);
 
   const handleClick = () => {
@@ -74,7 +74,7 @@ const CPU = (props) => {
 
         <div className="subsection">Flags</div>
         <div className="flags">
-          {['Z', 'N', 'H', 'C'].map((flag) => (
+          {['Z', 'N', 'H', 'C'].map(flag => (
             <div
               key={flag}
               className={classNames('flag', {
@@ -89,7 +89,7 @@ const CPU = (props) => {
         <div className="subsection">Registers (16bit)</div>
         <div
           className="register_16bit"
-          onContextMenu={(e) => {
+          onContextMenu={e => {
             e.preventDefault();
             jumpToPC();
           }}
@@ -112,7 +112,7 @@ const CPU = (props) => {
           {opcodeLabelWithValues}
         </div>
         <button
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             skipBootRom();
           }}

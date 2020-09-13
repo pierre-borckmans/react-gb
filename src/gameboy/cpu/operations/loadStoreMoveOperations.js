@@ -14,7 +14,7 @@ const LD16_RR_d16 = (cpu, reg16) => {
 
 // LD SP,d16
 // - - - -
-const LD16_SP_d16 = (cpu) => {
+const LD16_SP_d16 = cpu => {
   const d16 = cpu.readImmediate16();
   cpu.setSP(d16);
 
@@ -53,7 +53,7 @@ const LD16_RR_SPpr8 = (cpu, reg16) => {
 
 // LD (a16), SP
 // - - - -
-const LD16_$a16_SP = (cpu) => {
+const LD16_$a16_SP = cpu => {
   const a16 = cpu.readImmediate16();
   const SP = cpu.getSP();
   cpu.writeAddress16(a16, SP);

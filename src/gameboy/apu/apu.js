@@ -50,7 +50,7 @@ const reset = () => {
 
 reset();
 
-const read = (address) => {
+const read = address => {
   switch (address) {
     case CHANNEL1_SWEEP_REGISTER_ADDR:
       return registers.CHANNEL1_SWEEP_REGISTER;

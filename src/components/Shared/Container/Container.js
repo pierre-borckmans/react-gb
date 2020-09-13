@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import './Container.css';
 
-const Container = (props) => {
+const Container = props => {
   const [collapsed, setCollapsed] = useState(!props.visible);
 
   return (

@@ -4,7 +4,7 @@ import Container from '../../Shared/Container/Container';
 
 import './Cartridge.css';
 
-const Cartridge = (props) => {
+const Cartridge = props => {
   const { cartridge } = props;
 
   const [selectedRom, setSelectedRom] = useState(null);
@@ -16,7 +16,7 @@ const Cartridge = (props) => {
     props.onDebuggerChange();
   };
 
-  const keyListener = (event) => {
+  const keyListener = event => {
     if (event.code === 'KeyR') {
       loadSelectedRom();
     }
@@ -44,12 +44,12 @@ const Cartridge = (props) => {
       <div className="subsection">
         <select
           defaultValue="placeholder"
-          onChange={(e) => setSelectedRom(e.target.value)}
+          onChange={e => setSelectedRom(e.target.value)}
         >
           <option disabled value="placeholder">
             -- select a rom --
           </option>
-          {testRoms.map((rom) => (
+          {testRoms.map(rom => (
             <option value={rom} key={rom}>
               {rom}
             </option>

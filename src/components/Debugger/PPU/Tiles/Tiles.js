@@ -4,18 +4,18 @@ import TilesGrid from '../../../Shared/TilesGrid/TilesGrid';
 import './Tiles.css';
 import Container from '../../../Shared/Container/Container';
 
-const Tiles = (props) => {
+const Tiles = props => {
   const { config, ppu } = props;
   const paletteColors = config.paletteColors.neutral;
 
   const tileSet = ppu.getTileSet();
 
-  const tileToPixels = (tile) => {
+  const tileToPixels = tile => {
     const pixels = [];
-    tile.forEach((row) =>
-      row.forEach((col) => {
+    tile.forEach(row =>
+      row.forEach(col => {
         pixels.push(...paletteColors[col]);
-      })
+      }),
     );
     return pixels;
   };

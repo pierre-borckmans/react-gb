@@ -34,35 +34,35 @@ const getRightButton = () => registers.rightButtonPressed;
 const getUpButton = () => registers.upButtonPressed;
 const getDownButton = () => registers.downButtonPressed;
 
-const setStartButton = (pressed) => {
+const setStartButton = pressed => {
   registers.startButtonPressed = pressed;
 };
 
-const setSelectButton = (pressed) => {
+const setSelectButton = pressed => {
   registers.selectButtonPressed = pressed;
 };
 
-const setAButton = (pressed) => {
+const setAButton = pressed => {
   registers.aButtonPressed = pressed;
 };
 
-const setBButton = (pressed) => {
+const setBButton = pressed => {
   registers.bButtonPressed = pressed;
 };
 
-const setUpButton = (pressed) => {
+const setUpButton = pressed => {
   registers.upButtonPressed = pressed;
 };
 
-const setDownButton = (pressed) => {
+const setDownButton = pressed => {
   registers.downButtonPressed = pressed;
 };
 
-const setLeftButton = (pressed) => {
+const setLeftButton = pressed => {
   registers.leftButtonPressed = pressed;
 };
 
-const setRightButton = (pressed) => {
+const setRightButton = pressed => {
   registers.rightButtonPressed = pressed;
 };
 
@@ -97,7 +97,7 @@ const read = () => {
   }
 };
 
-const write = (value) => {
+const write = value => {
   registers.buttonKeysSelected = !(value & (1 << SELECT_BUTTON_KEYS_BIT));
   registers.directionKeysSelected = !(value & (1 << SELECT_DIRECTION_KEYS_BIT));
 

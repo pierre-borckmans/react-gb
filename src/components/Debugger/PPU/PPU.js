@@ -5,7 +5,7 @@ import { range } from 'lodash';
 import './PPU.css';
 import Container from '../../Shared/Container/Container';
 
-const PPU = (props) => {
+const PPU = props => {
   const { config, ppu } = props;
 
   const paletteColors = config.paletteColors.gb2;
@@ -14,11 +14,11 @@ const PPU = (props) => {
   const objectPalette0 = ppu.getObjectPalette0();
   const objectPalette1 = ppu.getObjectPalette1();
 
-  const rgbFromArray = (color) => `rgb(${color[0]},${color[1]},${color[2]})`;
+  const rgbFromArray = color => `rgb(${color[0]},${color[1]},${color[2]})`;
 
-  const getPalette = (palette) => (
+  const getPalette = palette => (
     <div className="palette">
-      {range(0, 4).map((i) => (
+      {range(0, 4).map(i => (
         <div
           key={i}
           className="palette_color"

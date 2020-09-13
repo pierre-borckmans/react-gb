@@ -20,7 +20,7 @@ import './Debugger.css';
 import LCD from './LCD/LCD';
 import Sprites from './PPU/Sprites/Sprites';
 
-const Debugger = (props) => {
+const Debugger = props => {
   const gameboy = props.gameboy;
 
   const [debugger_, setDebugger] = useState(dbg);
@@ -57,7 +57,7 @@ const Debugger = (props) => {
   const handleDebuggerChange = () => setDebugger({ ...debugger_ });
 
   const run = () => {
-    debugger_.run((frames) => {
+    debugger_.run(frames => {
       if (frames % 30 === 0 || !debugger_.isRunning()) {
         handleCPUChange();
       }
@@ -77,7 +77,7 @@ const Debugger = (props) => {
     handleCPUChange();
   };
 
-  const keyListener = (event) => {
+  const keyListener = event => {
     if (event.code === 'Space') {
       document.activeElement.blur();
       if (!debugger_.isRunning()) {
@@ -136,11 +136,11 @@ const Debugger = (props) => {
           <span className="steps_per_second">{`${debugger_.getTotalSteps()} ops`}</span>
           <div className="spacer" />
           <span className="steps_per_second">{`${stepsPerSecond.toFixed(
-            0
+            0,
           )} ops/s`}</span>
           <div className="spacer" />
           <span className="steps_per_second">{`${cyclesPerSecond.toFixed(
-            0
+            0,
           )} cycles/s`}</span>
           <div className="spacer" />
           <span className="steps_per_second">{`${(

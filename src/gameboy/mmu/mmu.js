@@ -65,9 +65,9 @@ const reset = () => {
 reset();
 
 const isBootComplete = () => registers.bootComplete;
-const setBootComplete = (complete) => (registers.bootComplete = complete);
+const setBootComplete = complete => (registers.bootComplete = complete);
 
-const read = (address) => {
+const read = address => {
   switch (getMemoryType(address)) {
     case ROM0:
       return mbc.read(address);
@@ -134,7 +134,7 @@ const writeBit = (address, bitIdx, bit) => {
   write(address, newValue);
 };
 
-const getMemoryType = (address) => {
+const getMemoryType = address => {
   if (address >= START_ROM0 && address <= END_ROM0) {
     return ROM0;
   } else if (address >= START_ROM1 && address <= END_ROM1) {
@@ -165,11 +165,11 @@ const getMemoryType = (address) => {
   }
 };
 
-const getMemoryPage = (page) => {
+const getMemoryPage = page => {
   const memoryRange = page
     ? range(page * 256, (page + 1) * 256)
     : range(0, 256);
-  return memoryRange.map((i) => mmu.read(i));
+  return memoryRange.map(i => mmu.read(i));
 };
 
 const mmu = {

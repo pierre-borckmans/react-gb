@@ -55,11 +55,11 @@ const reset = () => {
   halt = false;
 
   //TODO remove
-  // skipBootRom();
+  skipBootRom();
 };
 reset();
 
-const getFlag = (flag) => {
+const getFlag = flag => {
   switch (flag.toUpperCase()) {
     case 'C':
       return (registers.F & 0x10) === 0x10 ? 1 : 0;
@@ -102,7 +102,7 @@ const setFlag = (flag, value) => {
   }
 };
 
-const readReg8 = (reg8) => {
+const readReg8 = reg8 => {
   if (reg8.length !== 1) {
     throw new Error(`Invalid 8bit Register ${reg8}`);
   }
@@ -116,7 +116,7 @@ const writeReg8 = (reg8, value) => {
   registers[reg8] = value & 0xff;
 };
 
-const readReg16 = (reg16) => {
+const readReg16 = reg16 => {
   if (reg16.length !== 2) {
     throw new Error(`Invalid 16bit Register ${reg16}`);
   }
@@ -139,19 +139,19 @@ const writeReg16 = (reg16, value) => {
 };
 
 const getPC = () => registers.PC;
-const setPC = (PC) => (registers.PC = PC);
-const incPC = (inc) => (registers.PC = Math.min(0xffff, registers.PC + inc));
-const decPC = (dec) => (registers.PC = Math.max(0x0000, registers.PC - dec));
+const setPC = PC => (registers.PC = PC);
+const incPC = inc => (registers.PC = Math.min(0xffff, registers.PC + inc));
+const decPC = dec => (registers.PC = Math.max(0x0000, registers.PC - dec));
 
 const getSP = () => registers.SP;
-const setSP = (SP) => (registers.SP = SP);
-const incSP = (inc) => (registers.SP += inc);
-const decSP = (dec) => (registers.SP -= dec);
+const setSP = SP => (registers.SP = SP);
+const incSP = inc => (registers.SP += inc);
+const decSP = dec => (registers.SP -= dec);
 
 const getClockCycles = () => cycles.clock;
 const getMachineCycles = () => cycles.machine;
 
-const incClockCycles = (incClockCycles) => {
+const incClockCycles = incClockCycles => {
   cycles.clock += incClockCycles;
   cycles.machine = Math.floor(cycles.clock / 4);
 
@@ -159,14 +159,14 @@ const incClockCycles = (incClockCycles) => {
   ppu.step(incClockCycles / 4);
 };
 
-const setInterruptMasterEnable = (active) =>
+const setInterruptMasterEnable = active =>
   (registers.interruptMasterEnable = active);
 const getInterruptMasterEnable = () => registers.interruptMasterEnable;
 
-const setHalt = (active) => (halt = active);
+const setHalt = active => (halt = active);
 const getHalt = () => halt;
 
-const setHaltBug = (active) => (haltBug = active);
+const setHaltBug = active => (haltBug = active);
 const getHaltBug = () => haltBug;
 
 /// --------
@@ -184,11 +184,11 @@ const readImmediate16 = () => {
   return (mmu.read(registers.PC + 2) << 8) | mmu.read(registers.PC + 1);
 };
 
-const readAddress8 = (add8) => {
+const readAddress8 = add8 => {
   return mmu.read(add8);
 };
 
-const readAddress16 = (add16) => {
+const readAddress16 = add16 => {
   return (mmu.read(add16 + 1) << 8) | mmu.read(add16);
 };
 
@@ -201,7 +201,7 @@ const writeAddress16 = (add16, value) => {
   mmu.write(add16, value & 0x00ff);
 };
 
-const stackPush = (value) => {
+const stackPush = value => {
   decSP(2);
   writeAddress16(getSP(), value);
 };
@@ -219,7 +219,7 @@ const step = () => {
     incClockCycles(4);
   } else {
     const fetchOpcode = () => readAddress8(registers.PC);
-    const decodeOpcode = (opcode) => opcodesMap[opcode];
+    const decodeOpcode = opcode => opcodesMap[opcode];
 
     const opcode = fetchOpcode();
     const executeOpcodeFn = decodeOpcode(opcode);
@@ -282,7 +282,7 @@ const checkAndServiceInterrupts = () => {
 
 const debugAllOpcodes = () => {
   for (let opcode = 0; opcode < 0xff; opcode++) {
-    const decodeOpcode = (opcode) => opcodesMap[opcode];
+    const decodeOpcode = opcode => opcodesMap[opcode];
     const executeOpcodeFn = decodeOpcode(opcode);
 
     console.log(`Opcode ${opcode}`);

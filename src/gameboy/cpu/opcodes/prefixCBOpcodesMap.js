@@ -292,7 +292,7 @@ const prefixCBOpcodesMap = [
     /* 0xFF SET 7,A    */ cpu => { inst.SET_N_R(cpu, 7, 'A'); }, 
 ];
 
-const getPrefixCBOpcodeLabel = (address) => {
+const getPrefixCBOpcodeLabel = address => {
   const labels = [
     // OFFSET 0x00 ----------------------------------------------------------
     `RLC B`,

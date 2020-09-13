@@ -32,7 +32,7 @@ const reset = () => {
 
 reset();
 
-const step = (stepMachineCycles) => {
+const step = stepMachineCycles => {
   cycles.DIV += stepMachineCycles;
   cycles.TIMA += stepMachineCycles;
 
@@ -79,7 +79,7 @@ const step = (stepMachineCycles) => {
   }
 };
 
-const read = (address) => {
+const read = address => {
   switch (address) {
     case DIVIDER_ADDR:
       return registers.DIV;
@@ -117,7 +117,11 @@ const write = (address, value) => {
       break;
     default:
       throw new Error(
-        `Trying to write to invalid timer address ${format('hex', address, 16)}`
+        `Trying to write to invalid timer address ${format(
+          'hex',
+          address,
+          16,
+        )}`,
       );
   }
 };

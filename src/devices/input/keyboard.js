@@ -7,7 +7,7 @@ const init = () => {
   document.addEventListener('keyup', keyUpListener, false);
 };
 
-const keyDownListener = (event) => {
+const keyDownListener = event => {
   if (event.code === 'KeyA') {
     joypad.setLeftButton(true);
   }
@@ -35,7 +35,7 @@ const keyDownListener = (event) => {
   eventCallback && eventCallback();
 };
 
-const keyUpListener = (event) => {
+const keyUpListener = event => {
   if (event.code === 'KeyA') {
     joypad.setLeftButton(false);
   }
@@ -63,7 +63,7 @@ const keyUpListener = (event) => {
   eventCallback && eventCallback();
 };
 
-const onKeyEvent = (callback) => (eventCallback = callback);
+const onKeyEvent = callback => (eventCallback = callback);
 
 const keyboard = { init, onKeyEvent };
 

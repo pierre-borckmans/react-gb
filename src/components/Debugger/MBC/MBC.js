@@ -2,7 +2,7 @@ import React from 'react';
 import './MBC.css';
 import Container from '../../Shared/Container/Container';
 
-const MBC = (props) => {
+const MBC = props => {
   const { mbc } = props;
   return (
     <Container title="MBC" width={240}>

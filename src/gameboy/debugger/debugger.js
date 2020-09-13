@@ -22,7 +22,7 @@ const getTotalSteps = () => totalSteps;
 let currentBreakpoint = null;
 const getCurrentBreakpoint = () => currentBreakpoint;
 
-const run = async (callback) => {
+const run = async callback => {
   if (running) return;
   running = true;
   let frames = 0;
@@ -37,7 +37,7 @@ const run = async (callback) => {
   currentBreakpoint = null;
 
   let startTime = null;
-  const frame = (timestamp) => {
+  const frame = timestamp => {
     if (!startTime) startTime = timestamp;
     frames++;
     const targetMachineCycles =
@@ -96,12 +96,12 @@ const run = async (callback) => {
   // }
 };
 
-const pause = (callback) => {
+const pause = callback => {
   running = false;
   callback && callback();
 };
 
-const step = (callback) => {
+const step = callback => {
   cpu.step();
   totalSteps++;
   callback && callback();

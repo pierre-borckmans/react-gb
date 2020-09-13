@@ -3,7 +3,7 @@ import React from 'react';
 import './Interrupt.css';
 import Container from '../../Shared/Container/Container';
 
-const Interrupt = (props) => {
+const Interrupt = props => {
   const { interrupts } = props;
   return (
     <Container title="Interrupts" width={200}>

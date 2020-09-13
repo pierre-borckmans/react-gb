@@ -99,7 +99,7 @@ const labels = [
   { address: 0xffff, label: 'IE', color: 'darkcyan' },
 ];
 
-const MMU = (props) => {
+const MMU = props => {
   const cpu = props.cpu;
   const mmu = props.mmu;
   const debugger_ = props.debugger_;
@@ -126,7 +126,7 @@ const MMU = (props) => {
     }
   };
 
-  const keyListener = (event) => {
+  const keyListener = event => {
     if (event.code === 'ArrowRight') {
       nextPage();
       event.preventDefault();
@@ -161,7 +161,7 @@ const MMU = (props) => {
     };
   }, [selectedPage, showLabels, keyListener]);
 
-  const goTo = (target) => {
+  const goTo = target => {
     switch (target) {
       case 'PC':
         setSelectedPage(Math.floor(PC / 256));
@@ -174,10 +174,10 @@ const MMU = (props) => {
     }
   };
 
-  const toggleBreakpoint = (address) => {
+  const toggleBreakpoint = address => {
     const exisistingBreakpoint = find(
       breakpoints,
-      (bp) => bp.address === address
+      bp => bp.address === address,
     );
     if (exisistingBreakpoint) {
       debugger_.removeBreakpoint(exisistingBreakpoint.id);
@@ -187,7 +187,7 @@ const MMU = (props) => {
     props.onDebuggerChange();
   };
 
-  const changeValue = (address) => {
+  const changeValue = address => {
     const value = prompt('New value:');
     if (value && !isNaN(parseInt(value))) {
       mmu.write(address, parseInt(value));
@@ -195,7 +195,7 @@ const MMU = (props) => {
     }
   };
 
-  const highlightAddress = (address) => {
+  const highlightAddress = address => {
     setHighlightedAddress(address);
   };
 
@@ -217,7 +217,7 @@ const MMU = (props) => {
             </span>
           </div>
           <div className="table_header_bytes">
-            {range(0, 16).map((index) => {
+            {range(0, 16).map(index => {
               const selected = index === selectedAddress % 16;
               return (
                 <div
@@ -254,15 +254,15 @@ const MMU = (props) => {
                   const byteAddress = selectedPage * 256 + indexInPage;
                   const selected = byteAddress === selectedAddress;
                   const isBreakpoint = breakpoints
-                    .map((bp) => bp.address)
+                    .map(bp => bp.address)
                     .includes(byteAddress);
                   const label = labels.find(
-                    (l) =>
+                    l =>
                       l.address === byteAddress ||
                       (Array.isArray(l.address) &&
                         range(l.address[0], l.address[1] + 1).includes(
-                          byteAddress
-                        ))
+                          byteAddress,
+                        )),
                   );
                   // TODO
                   // const isBreakpointEnabled = isBreakpoint &&
@@ -270,7 +270,7 @@ const MMU = (props) => {
                     <div
                       key={indexInPage}
                       onClick={() => toggleBreakpoint(byteAddress)}
-                      onContextMenu={(e) => {
+                      onContextMenu={e => {
                         e.preventDefault();
                         changeValue(byteAddress);
                       }}
@@ -349,7 +349,7 @@ const MMU = (props) => {
           {highlightedAddress != null
             ? `${format('hex', highlightedAddress, 16)}: ${getOpcodeLabel(
                 highlightedAddress,
-                cpu
+                cpu,
               )}`
             : '-'}
         </div>

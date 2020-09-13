@@ -85,7 +85,7 @@ const MODES = {
 // 17556 cycles/frames * 60 fps = 1053360 cycles / s
 // 1mbHz (1024*1024) / 17556 cycles/frames = 59.7275 fps
 
-const getPalette = (addr) => {
+const getPalette = addr => {
   const paletteByte = mmu.read(addr);
   const palette = [
     (paletteByte & 0x03) >> 0,
@@ -96,7 +96,7 @@ const getPalette = (addr) => {
   return palette;
 };
 
-const updateTile = (tileIdx) => {
+const updateTile = tileIdx => {
   // 384 tiles
   // 8x8 pixels
   // each pixel = 2 bits
@@ -149,7 +149,7 @@ const getSpritesTable = () => {
   return sprites;
 };
 
-const getSprite = (spriteIdx) => {
+const getSprite = spriteIdx => {
   const sprites = getSpritesTable();
   const sprite = sprites[spriteIdx];
   const spritePalette =
@@ -165,10 +165,10 @@ const getSprite = (spriteIdx) => {
 
   const flippedTile = sprite.flipY
     ? tile
-        .map((row) => (sprite.flipX ? row.slice().reverse() : row))
+        .map(row => (sprite.flipX ? row.slice().reverse() : row))
         .slice()
         .reverse()
-    : tile.map((row) => (sprite.flipX ? row.slice().reverse() : row));
+    : tile.map(row => (sprite.flipX ? row.slice().reverse() : row));
 
   const spritePixels = [];
   for (let row = 0; row < spriteHeight; row++) {
@@ -205,7 +205,7 @@ const readLCDCtrl = () => {
   );
 };
 
-const writeLCDCtrl = (value) => {
+const writeLCDCtrl = value => {
   registers.LCD_ENABLED = value & (1 << LCD_CTRL_LCD_ENABLE_BIT) ? true : false;
   registers.WINDOW_TILEMAP = value & (1 << LCD_CTRL_WINDOW_TILEMAP_BIT) ? 1 : 0;
   registers.WINDOW_ENABLED =
@@ -238,7 +238,7 @@ const readLCDStatus = () => {
   );
 };
 
-const writeLCDStatus = (value) => {
+const writeLCDStatus = value => {
   registers.HBLANK_INTERRUPT =
     value & (1 << LCD_STATUS_MODE_0_HBLANK_INTERRUPT_BIT) ? 1 : 0;
   registers.VBLANK_INTERRUPT =
@@ -249,7 +249,7 @@ const writeLCDStatus = (value) => {
     value & (1 << LCD_STATUS_YCOORD_COINCIDENCE_INTERRUPT_BIT) ? 1 : 0;
 };
 
-const read = (address) => {
+const read = address => {
   switch (address) {
     case LCD_CTRL_ADDR:
       return readLCDCtrl();
@@ -324,7 +324,7 @@ const write = (address, value) => {
       break;
     default:
       throw new Error(
-        `Trying to write to invalid ppu address ${format('hex', address, 16)}`
+        `Trying to write to invalid ppu address ${format('hex', address, 16)}`,
       );
   }
 };
@@ -338,14 +338,14 @@ const reset = () => {
       .map(() =>
         Array(8)
           .fill()
-          .map(() => Array(8).fill(0))
+          .map(() => Array(8).fill(0)),
       ),
     tileSetWithBackgroundPalette: Array(384)
       .fill()
       .map(() =>
         Array(8)
           .fill()
-          .map(() => Array(8).fill(0))
+          .map(() => Array(8).fill(0)),
       ),
     scanLines: Array(SCREEN_HEIGHT)
       .fill()
@@ -396,7 +396,7 @@ const reset = () => {
 };
 reset();
 
-const step = (stepMachineCycles) => {
+const step = stepMachineCycles => {
   data.cycles += stepMachineCycles;
   data.modeCycles += stepMachineCycles;
 
@@ -574,10 +574,10 @@ const renderSpritesScanLine = () => {
   if (registers.SPRITES_ENABLED) {
     const visibleSpritesOnLine = getSpritesTable()
       .filter(
-        (sprite) =>
+        sprite =>
           sprite.x !== 0 &&
           registers.LCDC_YCOORD >= sprite.y - 16 &&
-          registers.LCDC_YCOORD < sprite.y - 16 + spriteHeight
+          registers.LCDC_YCOORD < sprite.y - 16 + spriteHeight,
       )
       .slice(0, 10);
 
@@ -586,11 +586,11 @@ const renderSpritesScanLine = () => {
 
     for (let col = 0; col < SCREEN_WIDTH; col++) {
       const spritesForCol = visibleSpritesOnLine
-        .filter((sprite) => col >= sprite.x - 8 && col < sprite.x)
+        .filter(sprite => col >= sprite.x - 8 && col < sprite.x)
         .sort((sprite1, sprite2) => (sprite1.x >= sprite2.x ? 1 : -1));
 
       const spritePixelsForCol = spritesForCol
-        .map((sprite) => {
+        .map(sprite => {
           const spriteRow = registers.LCDC_YCOORD - sprite.y + 16;
           const spriteCol = col - (sprite.x - 8);
 
@@ -603,10 +603,10 @@ const renderSpritesScanLine = () => {
                 ];
           const flippedTile = sprite.flipY
             ? tile
-                .map((row) => (sprite.flipX ? row.slice().reverse() : row))
+                .map(row => (sprite.flipX ? row.slice().reverse() : row))
                 .slice()
                 .reverse()
-            : tile.map((row) => (sprite.flipX ? row.slice().reverse() : row));
+            : tile.map(row => (sprite.flipX ? row.slice().reverse() : row));
 
           const spritePixelColor = flippedTile[spriteRow][spriteCol];
 
@@ -616,7 +616,7 @@ const renderSpritesScanLine = () => {
             palette: sprite.palette,
           };
         })
-        .filter((pixel) => pixel.color !== 0);
+        .filter(pixel => pixel.color !== 0);
 
       if (spritePixelsForCol.length > 0) {
         const spritePixelForCol = spritePixelsForCol[0];
@@ -694,7 +694,7 @@ const renderCanvas = (canvas, backgroundLayer, windowLayer, spritesLayer) => {
   ctx.putImageData(imageData, 0, 0);
 };
 
-const getTileIndex = (tileMapAddress) => {
+const getTileIndex = tileMapAddress => {
   const tileIdx = mmu.read(tileMapAddress);
   const signedTileIdx = getSignedByte(tileIdx);
   const tileIdxCorrected =
@@ -716,7 +716,7 @@ const getTileMaps = () => {
     .map(() =>
       Array(BUFFER_HEIGHT)
         .fill()
-        .map(() => Array(BUFFER_WIDTH).fill(0))
+        .map(() => Array(BUFFER_WIDTH).fill(0)),
     );
 
   const backgroundPalette = getBackgroundPalette();

@@ -4,7 +4,7 @@
 
 // RLCA
 // 0 0 0 C
-const RLCA = (cpu) => {
+const RLCA = cpu => {
   const value = cpu.readReg8('A');
   const msb = value & 0x80 ? 1 : 0;
 
@@ -26,7 +26,7 @@ const RLCA = (cpu) => {
 
 // RRCA
 // 0 0 0 C
-const RRCA = (cpu) => {
+const RRCA = cpu => {
   const value = cpu.readReg8('A');
   const lsb = value & 0x01 ? 1 : 0;
 
@@ -48,7 +48,7 @@ const RRCA = (cpu) => {
 
 // RLA
 // 0 0 0 C
-const RLA = (cpu) => {
+const RLA = cpu => {
   const value = cpu.readReg8('A');
   const msb = value & 0x80 ? 1 : 0;
 
@@ -70,7 +70,7 @@ const RLA = (cpu) => {
 
 // RCA
 // 0 0 0 C
-const RRA = (cpu) => {
+const RRA = cpu => {
   const value = cpu.readReg8('A');
   const lsb = value & 0x01 ? 1 : 0;
 

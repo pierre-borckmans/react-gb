@@ -1,6 +1,6 @@
 // JR r8
 // - - - -
-const JR_r8 = (cpu) => {
+const JR_r8 = cpu => {
   const r8 = cpu.readSignedImmediate8();
   cpu.incPC(2);
   cpu.incPC(r8);
@@ -33,7 +33,7 @@ const JR_F_r8 = (cpu, F) => {
 
 // JP a16
 // - - - -
-const JP_a16 = (cpu) => {
+const JP_a16 = cpu => {
   const a16 = cpu.readImmediate16();
   cpu.setPC(a16);
   cpu.incClockCycles(16);
@@ -84,7 +84,7 @@ const RST_XXH = (cpu, XX) => {
 
 // RET
 // - - - -
-const RET = (cpu) => {
+const RET = cpu => {
   const popValue = cpu.stackPop();
   cpu.setPC(popValue);
   cpu.incClockCycles(16);
@@ -92,7 +92,7 @@ const RET = (cpu) => {
 
 // RETI
 // - - - -
-const RETI = (cpu) => {
+const RETI = cpu => {
   cpu.setInterruptMasterEnable(1);
   RET(cpu);
 };
@@ -127,7 +127,7 @@ const RET_NF = (cpu, F) => {
 
 // CALL a16
 // - - - -
-const CALL_a16 = (cpu) => {
+const CALL_a16 = cpu => {
   const a16 = cpu.readImmediate16();
   cpu.incPC(3);
 

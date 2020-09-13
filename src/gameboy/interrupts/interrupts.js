@@ -18,7 +18,7 @@ const reset = () => {
 };
 
 const getInterruptEnable = () => registers.interruptEnable;
-const setInterruptEnable = (value) => (registers.interruptEnable = value);
+const setInterruptEnable = value => (registers.interruptEnable = value);
 
 const getVBlankInterruptEnable = () =>
   readBit(registers.interruptEnable, VBLANK_BIT);
@@ -62,7 +62,7 @@ const disableJoypadInterrupt = () => {
 };
 
 const getInterruptFlags = () => registers.interruptFlags;
-const setInterruptFlags = (flags) => (registers.interruptFlags = flags);
+const setInterruptFlags = flags => (registers.interruptFlags = flags);
 
 const getVBlankInterruptFlag = () =>
   readBit(registers.interruptFlags, VBLANK_BIT);
@@ -97,7 +97,7 @@ const resetSerialInterruptFlag = () =>
 const resetJoypadInterruptFlag = () =>
   (registers.interruptFlags = setBit(registers.interruptFlags, JOYPAD_BIT, 0));
 
-const read = (address) => {
+const read = address => {
   switch (address) {
     case INTERRUPT_ENABLE_ADDR:
       return getInterruptEnable();

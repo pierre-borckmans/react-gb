@@ -4,7 +4,7 @@ import PixelGrid from '../PixelGrid/PixelGrid';
 
 import { range } from 'lodash';
 
-const TilesGrid = (props) => {
+const TilesGrid = props => {
   const {
     tiles,
     tileWidth,
@@ -32,8 +32,8 @@ const TilesGrid = (props) => {
         pixels.push(
           ...tiles[gridRowIdx * tilesPerRow + tileIdx].slice(
             tileRowIdx * tileWidth * 3,
-            (tileRowIdx + 1) * tileWidth * 3
-          )
+            (tileRowIdx + 1) * tileWidth * 3,
+          ),
         );
         if (gridColor) {
           pixels.push(...gridColor);

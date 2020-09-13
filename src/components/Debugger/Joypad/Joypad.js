@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import './Joypad.css';
 import Container from '../../Shared/Container/Container';
 
-const Joypad = (props) => {
+const Joypad = props => {
   const { joypad } = props;
 
   const getButton = (name, value) => (

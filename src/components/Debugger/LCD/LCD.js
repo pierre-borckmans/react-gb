@@ -3,7 +3,7 @@ import Container from '../../Shared/Container/Container';
 
 import './LCD.css';
 
-const LCD = (props) => {
+const LCD = props => {
   const { ppu } = props;
   const scale = props.scale || 1;
 
@@ -20,7 +20,7 @@ const LCD = (props) => {
         canvasRef.current,
         backgroundSelected,
         windowSelected,
-        spritesSelected
+        spritesSelected,
       );
       animationRef.current = requestAnimationFrame(draw);
     };
@@ -53,21 +53,21 @@ const LCD = (props) => {
           type="checkbox"
           name="background"
           checked={backgroundSelected}
-          onChange={(e) => setBackgroundSelected(e.target.checked)}
+          onChange={e => setBackgroundSelected(e.target.checked)}
         />
         <label htmlFor="background">Background</label>
         <input
           type="checkbox"
           name="window"
           checked={windowSelected}
-          onChange={(e) => setWindowSelected(e.target.checked)}
+          onChange={e => setWindowSelected(e.target.checked)}
         />
         <label htmlFor="window">Window</label>
         <input
           type="checkbox"
           name="sprites"
           checked={spritesSelected}
-          onChange={(e) => setSpritesSelected(e.target.checked)}
+          onChange={e => setSpritesSelected(e.target.checked)}
         />
         <label htmlFor="sprites">Sprites</label>
       </div>

@@ -19,7 +19,7 @@ const START_PPU_ADDR = 0xff40;
 const END_PPU_ADDR = 0xff4b;
 const INTERRUPT_ENABLE_ADDR = 0xffff;
 
-const read = (address) => {
+const read = address => {
   if (false) {
   } else if (address === JOYPAD_ADDR) {
     return joypad.read();
@@ -57,7 +57,7 @@ const write = (address, value) => {
     return interrupts.write(address, value);
   } else {
     console.error(
-      `Trying to write to invalid I/O address ${format('hex', address, 16)}`
+      `Trying to write to invalid I/O address ${format('hex', address, 16)}`,
     );
   }
 };

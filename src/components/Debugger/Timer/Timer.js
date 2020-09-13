@@ -3,7 +3,7 @@ import React from 'react';
 import './Timer.css';
 import Container from '../../Shared/Container/Container';
 
-const Timer = (props) => {
+const Timer = props => {
   const { timer } = props;
   return (
     <Container title="Timer">

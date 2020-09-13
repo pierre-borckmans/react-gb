@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, createContext } from 'react';
 
-const PixelGrid = (props) => {
+const PixelGrid = props => {
   const { width, height, pixels } = props;
   const shapes = props.shapes || [];
   const scale = props.scale || 1;
@@ -24,7 +24,7 @@ const PixelGrid = (props) => {
 
       ctx.putImageData(imageData, 0, 0);
 
-      shapes.forEach((shape) => {
+      shapes.forEach(shape => {
         if (shape.type === 'line') {
           ctx.beginPath();
           ctx.moveTo(shape.coords[0], shape.coords[1]);
@@ -39,7 +39,7 @@ const PixelGrid = (props) => {
             shape.coords[0],
             shape.coords[1],
             shape.coords[2] - shape.coords[0],
-            shape.coords[3] - shape.coords[1]
+            shape.coords[3] - shape.coords[1],
           );
         }
       });

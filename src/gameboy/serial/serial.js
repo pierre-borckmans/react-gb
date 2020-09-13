@@ -25,14 +25,14 @@ const step = () => {
   // TODO implement
 };
 
-const read = (address) => {
+const read = address => {
   if (address === SERIAL_TRANSFER_DATA_ADDR) {
     return registers.transferData;
   } else if (address === SERIAL_IO_CONTROL_ADDR) {
     return registers.transferControl;
   } else {
     throw new Error(
-      `Trying to read invalid serial address ${format('hex', address, 16)}`
+      `Trying to read invalid serial address ${format('hex', address, 16)}`,
     );
   }
 };
@@ -47,7 +47,7 @@ const write = (address, value) => {
     }
   } else {
     throw new Error(
-      `Trying to write invalid serial address ${format('hex', address, 16)}`
+      `Trying to write invalid serial address ${format('hex', address, 16)}`,
     );
   }
 };

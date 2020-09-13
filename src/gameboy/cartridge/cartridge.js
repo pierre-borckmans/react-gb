@@ -1,54 +1,54 @@
-import mmu from "../mmu/mmu";
-import mbc from "./mbc/mbc";
+import mmu from '../mmu/mmu';
+import mbc from './mbc/mbc';
 
-import rom from "../../assets/roms/rom8.gb";
+import rom from '../../assets/roms/rom2.gb';
 
-import testRomCpu1 from "../../assets/roms/tests/cpu_instrs/01-special.gb";
-import testRomCpu2 from "../../assets/roms/tests/cpu_instrs/02-interrupts.gb";
-import testRomCpu3 from "../../assets/roms/tests/cpu_instrs/03-op sp,hl.gb";
-import testRomCpu4 from "../../assets/roms/tests/cpu_instrs/04-op r,imm.gb";
-import testRomCpu5 from "../../assets/roms/tests/cpu_instrs/05-op rp.gb";
-import testRomCpu6 from "../../assets/roms/tests/cpu_instrs/06-ld r,r.gb";
-import testRomCpu7 from "../../assets/roms/tests/cpu_instrs/07-jr,jp,call,ret,rst.gb";
-import testRomCpu8 from "../../assets/roms/tests/cpu_instrs/08-misc instrs.gb";
-import testRomCpu9 from "../../assets/roms/tests/cpu_instrs/09-op r,r.gb";
-import testRomCpu10 from "../../assets/roms/tests/cpu_instrs/10-bit ops.gb";
-import testRomCpu11 from "../../assets/roms/tests/cpu_instrs/11-op a,(hl).gb";
-import testRomCpuAll from "../../assets/roms/tests/cpu_instrs.gb";
-import testRomInstrTimingAll from "../../assets/roms/tests/instr_timing.gb";
-import testRomMemTiming1 from "../../assets/roms/tests/mem_timing/01-read_timing.gb";
-import testRomMemTiming2 from "../../assets/roms/tests/mem_timing/02-write_timing.gb";
-import testRomMemTiming3 from "../../assets/roms/tests/mem_timing/03-modify_timing.gb";
-import testRomMemTimingAll from "../../assets/roms/tests/mem_timing.gb";
-import testRomMemTiming2All from "../../assets/roms/tests/mem_timing2.gb";
-import testRomInterruptTiming from "../../assets/roms/tests/interrupt_time.gb";
-import testRomHaltBug from "../../assets/roms/tests/halt_bug.gb";
-import testRomPpuDmgAcid2 from "../../assets/roms/tests/ppu/dmg-acid2.gb";
+import testRomCpu1 from '../../assets/roms/tests/cpu_instrs/01-special.gb';
+import testRomCpu2 from '../../assets/roms/tests/cpu_instrs/02-interrupts.gb';
+import testRomCpu3 from '../../assets/roms/tests/cpu_instrs/03-op sp,hl.gb';
+import testRomCpu4 from '../../assets/roms/tests/cpu_instrs/04-op r,imm.gb';
+import testRomCpu5 from '../../assets/roms/tests/cpu_instrs/05-op rp.gb';
+import testRomCpu6 from '../../assets/roms/tests/cpu_instrs/06-ld r,r.gb';
+import testRomCpu7 from '../../assets/roms/tests/cpu_instrs/07-jr,jp,call,ret,rst.gb';
+import testRomCpu8 from '../../assets/roms/tests/cpu_instrs/08-misc instrs.gb';
+import testRomCpu9 from '../../assets/roms/tests/cpu_instrs/09-op r,r.gb';
+import testRomCpu10 from '../../assets/roms/tests/cpu_instrs/10-bit ops.gb';
+import testRomCpu11 from '../../assets/roms/tests/cpu_instrs/11-op a,(hl).gb';
+import testRomCpuAll from '../../assets/roms/tests/cpu_instrs.gb';
+import testRomInstrTimingAll from '../../assets/roms/tests/instr_timing.gb';
+import testRomMemTiming1 from '../../assets/roms/tests/mem_timing/01-read_timing.gb';
+import testRomMemTiming2 from '../../assets/roms/tests/mem_timing/02-write_timing.gb';
+import testRomMemTiming3 from '../../assets/roms/tests/mem_timing/03-modify_timing.gb';
+import testRomMemTimingAll from '../../assets/roms/tests/mem_timing.gb';
+import testRomMemTiming2All from '../../assets/roms/tests/mem_timing2.gb';
+import testRomInterruptTiming from '../../assets/roms/tests/interrupt_time.gb';
+import testRomHaltBug from '../../assets/roms/tests/halt_bug.gb';
+import testRomPpuDmgAcid2 from '../../assets/roms/tests/ppu/dmg-acid2.gb';
 
-import { range } from "lodash";
+import { range } from 'lodash';
 
 const testRoms = {
-  "test cpu: 1 special": testRomCpu1,
-  "test cpu: 2 interrupts": testRomCpu2,
-  "test cpu: 3 op sp,hl": testRomCpu3,
-  "test cpu: 4 op r,imm": testRomCpu4,
-  "test cpu: 5 op rp": testRomCpu5,
-  "test cpu: 6 ld r,r": testRomCpu6,
-  "test cpu: 7 jr,jp,call,ret,rst": testRomCpu7,
-  "test cpu: 8 misc": testRomCpu8,
-  "test cpu: 9 op r,r": testRomCpu9,
-  "test cpu: 10 bit ops": testRomCpu10,
-  "test cpu: 11 op a,(hl)": testRomCpu11,
-  "test cpu: all": testRomCpuAll,
-  "test timing: instr": testRomInstrTimingAll,
-  "test timing: mem: 1 read": testRomMemTiming1,
-  "test timing: mem: 2 write": testRomMemTiming2,
-  "test timing: mem: 3 modify": testRomMemTiming3,
-  "test timing: mem: all": testRomMemTimingAll,
-  "test timing: mem2: all": testRomMemTiming2All,
-  "test timing: interrupt": testRomInterruptTiming,
-  "test bug: halt": testRomHaltBug,
-  "test ppu: dmg acid2": testRomPpuDmgAcid2,
+  'test cpu: 1 special': testRomCpu1,
+  'test cpu: 2 interrupts': testRomCpu2,
+  'test cpu: 3 op sp,hl': testRomCpu3,
+  'test cpu: 4 op r,imm': testRomCpu4,
+  'test cpu: 5 op rp': testRomCpu5,
+  'test cpu: 6 ld r,r': testRomCpu6,
+  'test cpu: 7 jr,jp,call,ret,rst': testRomCpu7,
+  'test cpu: 8 misc': testRomCpu8,
+  'test cpu: 9 op r,r': testRomCpu9,
+  'test cpu: 10 bit ops': testRomCpu10,
+  'test cpu: 11 op a,(hl)': testRomCpu11,
+  'test cpu: all': testRomCpuAll,
+  'test timing: instr': testRomInstrTimingAll,
+  'test timing: mem: 1 read': testRomMemTiming1,
+  'test timing: mem: 2 write': testRomMemTiming2,
+  'test timing: mem: 3 modify': testRomMemTiming3,
+  'test timing: mem: all': testRomMemTimingAll,
+  'test timing: mem2: all': testRomMemTiming2All,
+  'test timing: interrupt': testRomInterruptTiming,
+  'test bug: halt': testRomHaltBug,
+  'test ppu: dmg acid2': testRomPpuDmgAcid2,
 };
 
 const SIZE = 0x80000;
@@ -122,16 +122,16 @@ const bootROM = [
   0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50,
 ];
 
-const loadROM = async (romName) => {
+const loadROM = async romName => {
   await fetch(romName ? testRoms[romName] : rom)
-    .then((raw) => raw.arrayBuffer())
-    .then((buffer) => (loadedROM = [...new Uint8Array(buffer)]));
+    .then(raw => raw.arrayBuffer())
+    .then(buffer => (loadedROM = [...new Uint8Array(buffer)]));
 
   const romType = loadedROM[CARTRIDGE_TYPE_ADDR];
   mbc.setType(romType);
 };
 
-const read = (address) => {
+const read = address => {
   if (address <= 0xff && !mmu.isBootComplete()) {
     return bootROM[address];
   } else {
@@ -151,11 +151,11 @@ const reset = () => {
 
 const getTitle = () =>
   range(TITLE_START_ADDR, TITLE_END_ADDR)
-    .map((addr) => String.fromCharCode(loadedROM[addr]))
-    .join("");
+    .map(addr => String.fromCharCode(loadedROM[addr]))
+    .join('');
 
 const getRegion = () =>
-  loadedROM[DESTINATION_CODE_ADDR] ? "Non-Japan" : "Japan";
+  loadedROM[DESTINATION_CODE_ADDR] ? 'Non-Japan' : 'Japan';
 
 const getCGB = () => loadedROM[GB_OR_CGB_ADDR] === 0x80;
 
@@ -208,59 +208,59 @@ const getRAMSizeAndBanks = () => {
 const getType = () => {
   switch (loadedROM[CARTRIDGE_TYPE_ADDR]) {
     case 0x00:
-      return "ROM ONLY";
+      return 'ROM ONLY';
     case 0x01:
-      return "ROM + MBC1";
+      return 'ROM + MBC1';
     case 0x02:
-      return "ROM + MBC1 + RAM";
+      return 'ROM + MBC1 + RAM';
     case 0x03:
-      return "ROM + MBC1 + RAM + BATTERY";
+      return 'ROM + MBC1 + RAM + BATTERY';
     case 0x05:
-      return "ROM + MBC2";
+      return 'ROM + MBC2';
     case 0x06:
-      return "ROM + MBC2 + BATTERY";
+      return 'ROM + MBC2 + BATTERY';
     case 0x08:
-      return "ROM + RAM";
+      return 'ROM + RAM';
     case 0x09:
-      return "ROM + RAM + BATTERY";
+      return 'ROM + RAM + BATTERY';
     case 0x0b:
-      return "ROM + MMM01";
+      return 'ROM + MMM01';
     case 0x0c:
-      return "ROM + MMM01 + SRAM";
+      return 'ROM + MMM01 + SRAM';
     case 0x0d:
-      return "ROM + MMM01 + SRAM + BATTERY";
+      return 'ROM + MMM01 + SRAM + BATTERY';
     case 0x0f:
-      return "ROM + MBC3 + TIMER + BATTERY";
+      return 'ROM + MBC3 + TIMER + BATTERY';
     case 0x10:
-      return "ROM + MBC3 + TIMER + RAM + BATTERY";
+      return 'ROM + MBC3 + TIMER + RAM + BATTERY';
     case 0x11:
-      return "ROM + MB3";
+      return 'ROM + MB3';
     case 0x12:
-      return "ROM + MBC3 + RAM";
+      return 'ROM + MBC3 + RAM';
     case 0x13:
-      return "ROM + MBC3 + RAM + BATTERY";
+      return 'ROM + MBC3 + RAM + BATTERY';
     case 0x19:
-      return "ROM + MBC5";
+      return 'ROM + MBC5';
     case 0x1a:
-      return "ROM + MBC5 + RAM";
+      return 'ROM + MBC5 + RAM';
     case 0x1b:
-      return "ROM + MBC5 + RAM + BATTERY";
+      return 'ROM + MBC5 + RAM + BATTERY';
     case 0x1c:
-      return "ROM + MBC5 + RUMBLE";
+      return 'ROM + MBC5 + RUMBLE';
     case 0x1d:
-      return "ROM + MBC5 + RUMBLE + SRAM";
+      return 'ROM + MBC5 + RUMBLE + SRAM';
     case 0x1e:
-      return "ROM + MBC5 + RUMBLE + SRAM + BATTERY";
+      return 'ROM + MBC5 + RUMBLE + SRAM + BATTERY';
     case 0x1f:
-      return "POCKET CAMERA";
+      return 'POCKET CAMERA';
     case 0xfd:
-      return "BANDAI TAMA5";
+      return 'BANDAI TAMA5';
     case 0xfe:
-      return "HUDSON HUC3";
+      return 'HUDSON HUC3';
     case 0xff:
-      return "HUDSON HUC1";
+      return 'HUDSON HUC1';
     default:
-      return "UNKNOWN?";
+      return 'UNKNOWN?';
   }
 };
 

@@ -5,9 +5,9 @@ let breakpoints = [];
 
 const getBreakpoints = () => breakpoints;
 
-const addBreakpoint = (breakpoint) => {
+const addBreakpoint = breakpoint => {
   const id = breakpoints.length
-    ? Math.max(...breakpoints.map((bp) => bp.id)) + 1
+    ? Math.max(...breakpoints.map(bp => bp.id)) + 1
     : 1;
   breakpoints = [
     ...breakpoints,
@@ -24,15 +24,15 @@ const addBreakpoint = (breakpoint) => {
   ].sort((b1, b2) => (b1.address > b2.address ? 1 : -1));
 };
 
-const removeBreakpoint = (id) => {
-  breakpoints = [...breakpoints.filter((breakpoint) => breakpoint.id !== id)];
+const removeBreakpoint = id => {
+  breakpoints = [...breakpoints.filter(breakpoint => breakpoint.id !== id)];
 };
 
-const toggleBreakpoint = (id) => {
-  breakpoints = breakpoints.map((breakpoint) =>
+const toggleBreakpoint = id => {
+  breakpoints = breakpoints.map(breakpoint =>
     breakpoint.id !== id
       ? breakpoint
-      : { ...breakpoint, enabled: !breakpoint.enabled }
+      : { ...breakpoint, enabled: !breakpoint.enabled },
   );
 };
 
@@ -41,7 +41,7 @@ const removeAllBreakpoints = () => {
 };
 
 const findMatchingBreakpoint = () => {
-  const breakpoint = find(breakpoints, (bp) => {
+  const breakpoint = find(breakpoints, bp => {
     if (!bp.enabled) return false;
 
     const addressMatch = bp.address !== undefined && cpu.getPC() === bp.address;
@@ -49,7 +49,7 @@ const findMatchingBreakpoint = () => {
       bp.opcode !== undefined && cpu.readAddress8(cpu.getPC()) === bp.opcode;
     const allRegistersMatch =
       bp.registers.length &&
-      every(bp.registers, (register) => {
+      every(bp.registers, register => {
         if (register.name.length === 1) {
           return cpu.readReg8(register.name) === register.value;
         }
@@ -61,12 +61,12 @@ const findMatchingBreakpoint = () => {
       });
     const allFlagsMatch =
       bp.flags.length &&
-      every(bp.flags, (flag) => cpu.getFlag(flag.name) === flag.value);
+      every(bp.flags, flag => cpu.getFlag(flag.name) === flag.value);
     const allInterruptsMatch =
       bp.interrupts.length &&
       every(
         bp.interrupts,
-        (interrupt) => false // TODO cpu.checkInterrupt(interrupt)
+        interrupt => false, // TODO cpu.checkInterrupt(interrupt)
       );
     return (
       addressMatch ||
