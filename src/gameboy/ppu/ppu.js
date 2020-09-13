@@ -41,7 +41,7 @@ const LCD_CTRL_WINDOW_ENABLE_BIT = 5;
 const LCD_CTRL_WINDOW_TILEMAP_BIT = 6;
 const LCD_CTRL_LCD_ENABLE_BIT = 7;
 
-// LCD CONTROL
+// LCD STATUS
 const LCD_STATUS_MODE_BITS = [0, 1];
 const LCD_STATUS_YCOORD_COINCIDENCE_FLAG_BIT = 2;
 const LCD_STATUS_MODE_0_HBLANK_INTERRUPT_BIT = 3;
@@ -185,11 +185,11 @@ const getBackgroundPalette = () => getPalette(BG_PALETTE_ADDR);
 const getObjectPalette0 = () => getPalette(OBJ_PALETTE0_ADDR);
 const getObjectPalette1 = () => getPalette(OBJ_PALETTE1_ADDR);
 
-const getScrollX = () => mmu.read(SCROLLX_ADDR);
-const getScrollY = () => mmu.read(SCROLLY_ADDR);
+const getScrollX = () => registers.SCROLLX;
+const getScrollY = () => registers.SCROLLY;
 
-const getWindowX = () => mmu.read(WINX_ADDR);
-const getWindowY = () => mmu.read(WINY_ADDR);
+const getWindowX = () => registers.WINX;
+const getWindowY = () => registers.WINY;
 
 const readLCDCtrl = () => {
   return (
@@ -396,11 +396,7 @@ const reset = () => {
 };
 reset();
 
-// TODO: understand interrupts better (when , how, whem are the flags reset, etc...)
-// TODO: and possiblity to render lines in a more fine-grained fashion
 const step = (stepMachineCycles) => {
-  registers.YCOORD_COINCIDENCE_FLAG = 0;
-
   data.cycles += stepMachineCycles;
   data.modeCycles += stepMachineCycles;
 
@@ -436,6 +432,8 @@ const step = (stepMachineCycles) => {
         ) {
           registers.YCOORD_COINCIDENCE_FLAG = 1;
           interrupts.setLCDStatInterruptFlag();
+        } else {
+          registers.YCOORD_COINCIDENCE_FLAG = 0;
         }
 
         if (registers.LCDC_YCOORD < SCREEN_HEIGHT) {
@@ -466,6 +464,16 @@ const step = (stepMachineCycles) => {
           registers.MODE = MODES.OAM_SEARCH;
           data.cycles = 0;
           data.windowLineCounter = 0;
+
+          if (
+            registers.YCOORD_COINCIDENCE_INTERRUPT === 1 &&
+            registers.LCDC_YCOORD === registers.LCDC_YCOORD_COMPARE
+          ) {
+            registers.YCOORD_COINCIDENCE_FLAG = 1;
+            interrupts.setLCDStatInterruptFlag();
+          } else {
+            registers.YCOORD_COINCIDENCE_FLAG = 0;
+          }
         }
       }
       break;
