@@ -11,11 +11,15 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"
   },
+  "devDependencies": {
+    "prettier": "^1.18.2"
+  },
   "scripts": {
     "start": "react-scripts start --no-cache",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prettier": "prettier --single-quote --print-width 80 \"src/**/*.+(js|css)\""
   },
   "eslintConfig": {
     "extends": "react-app"
