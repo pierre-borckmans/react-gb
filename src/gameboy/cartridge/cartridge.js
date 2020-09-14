@@ -57,7 +57,10 @@ const SIZE = 0x80000;
 // const NINTENDO_LOGO_END_ADDR = 0x133;
 const TITLE_START_ADDR = 0x134;
 const TITLE_END_ADDR = 0x142;
-const GB_OR_CGB_ADDR = 0x143; // CGB if 0x80
+const GB_OR_CGB_ADDR = 0x143; // CGB if 0x80, CGB only if 0xC0
+const NEW_LICENSEE_CODE_START_ADDR = 0x144;
+const NEW_LICENSEE_CODE_END_ADDR = 0x145;
+const OLD_LICENSEE_CODE_ADDR = 0x14b;
 const GB_OR_SGB_ADDR = 0x146; // SGB if 0x80
 
 const CARTRIDGE_TYPE_ADDR = 0x147;
@@ -70,10 +73,10 @@ const CARTRIDGE_TYPE_ADDR = 0x147;
 // 08 ROM + RAM                             1C ROM + MBC5 + RUMBLE
 // 09 ROM + RAM + BATTERY                   1D ROM + MBC5 + RUMBLE + SRAM
 // 0B ROM + MMM01                           1E ROM + MBC5 + RUMBLE + SRAM + BATTERY
-// 0C ROM + MMM01 + SRAM                    1F POCKET CAMERA
+// 0C ROM + MMM01 + SRAM                    FE POCKET CAMERA
 // 0D ROM + MMM01 + SRAM + BATTERY          FD BANDAI TAMA5
 // 0F ROM + MBC3 + TIMER + BATTERY          FE HUDSON HUC3
-// 10 ROM + MBC3 + TIMER + RAM + BATTERY    FF HUDSON HUC1
+// 10 ROM + MBC3 + TIMER + RAM + BATTERY    FF HUDSON HUC1 + RAM + BATTERY
 
 const ROM_SIZE_ADDR = 0x148;
 // 00   32 KByte -   2 banks
@@ -159,6 +162,96 @@ const getRegion = () =>
 
 const getCGB = () => loadedROM[GB_OR_CGB_ADDR] === 0x80;
 
+const getLicensee = () => {
+  // prettier-ignore
+  const oldLicensees = {
+     '0':'none',                '1':'nintendo',                '8': 'capcom',
+    '09':'hot-b',              '0A':'jaleco',                 '0B': 'coconuts',
+    '0C':'elite systems',      '13':'electronic arts',        '18': 'hudsonsoft',
+    '19':'itc entertainment',  '1A':'yanoman',                '1D': 'clary',
+    '1F':'virgin',             '24':'pcm complete',           '25': 'san-x',
+    '28':'kotobuki systems',   '29':'seta',                   '30': 'infogrames',
+    '31':'nintendo',           '32':'bandai',                 '33': '"see above"',
+    '34':'konami',             '35':'hector',                 '38': 'capcom',
+    '39':'banpresto',          '3C':'*entertainment i',       '3E': 'gremlin',
+    '41':'ubi soft',           '42':'atlus',                  '44': 'malibu',
+    '46':'angel',              '47':'spectrum holoby',        '49': 'irem',
+    '4A':'virgin',             '4D':'malibu',                 '4F': 'u.s. gold',
+    '50':'absolute',           '51':'acclaim',                '52': 'activision',
+    '53':'american sammy',     '54':'gametek',                '55': 'park place',
+    '56':'ljn',                '57':'matchbox',               '59': 'milton bradley',
+    '5A':'mindscape',          '5B':'romstar',                '5C': 'naxat soft',
+    '5D':'tradewest',          '60':'titus',                  '61': 'virgin',
+    '67':'ocean',              '69':'electronic arts',        '6E': 'elite systems',
+    '6F':'electro brain',      '70':'infogrames',             '71': 'interplay',
+    '72':'broderbund',         '73':'sculptered soft',        '75': 'the sales curve',
+    '78':'t*hq',               '79':'accolade',               '7A': 'triffix entertainment',
+    '7C':'microprose',         '7F':'kemco',                  '80': 'misawa entertainment',
+    '83':'lozc',               '86':'*tokuma shoten i',       '8B': 'bullet-proof software',
+    '8C':'vic tokai',          '8E':'ape',                    '8F': 'i-max',
+    '91':'chun soft',          '92':'video system',           '93': 'tsuburava',
+    '95':'varie',              '96':'yonezawa/s pal',         '97': 'kaneko',
+    '99':'arc',                '9A':'nihon bussan',           '9B': 'tecmo',
+    '9C':'imagineer',          '9D':'banpresto',              '9F': 'nova',
+    'A1':'hori electric',      'A2':'bandai',                 'A4': 'konami',
+    'A6':'kawada',             'A7':'takara',                 'A9': 'technos japan',
+    'AA':'broderbund',         'AC':'toei animation',         'AD': 'toho',
+    'AF':'namco',              'B0':'acclaim',                'B1': 'ascii or nexoft',
+    'B2':'bandai',             'B4':'enix',                   'B6': 'hal',
+    'B7':'snk',                'B9':'pony canyon',            'BA': '*culture brain o',
+    'BB':'sunsoft',            'BD':'sony imagesoft',         'BF': 'sammy',
+    'C0':'taito',              'C2':'kemco',                  'C3': 'squaresoft',
+    'C4':'*tokuma shoten i',   'C5':'data east',              'C6': 'tonkin house',
+    'C8':'koei',               'C9':'ufl',                    'CA': 'ultra',
+    'CB':'vap',                'CC':'use',                    'CD': 'meldac',
+    'CE':'*pony canyon or',    'CF':'angel',                  'D0': 'taito',
+    'D1':'sofel',              'D2':'quest',                  'D3': 'sigma enterprises',
+    'D4':'ask kodansha',       'D6':'naxat soft',             'D7': 'copya systems',
+    'D9':'banpresto',          'DA':'tomy',                   'DB': 'ljn',
+    'DD':'ncs',                'DE':'human',                  'DF': 'altron',
+    'E0':'jaleco',             'E1':'towachiki',              'E2': 'uutaka',
+    'E3':'varie',              'E5':'epoch',                  'E7': 'athena',
+    'E8':'asmik',              'E9':'natsume',                'EA': 'king records',
+    'EB':'atlus',              'EC':'epic/sony records',      'EE': 'igs',
+    'F0':'a wave',             'F3':'extreme entertainment',  'FF': 'ljn',
+  };
+
+  // prettier-ignore
+  const newLicensees = {
+    '00': 'none',             '01': 'nintendo',       '08': 'capcom',
+    '13': 'electronic arts',  '18': 'hudsonsoft',     '19': 'b-ai',
+    '20': 'kss',              '22': 'pow',            '24': 'pcm complete',
+    '25': 'san-x',            '28': 'kemco japan',    '29': 'seta',
+    '30': 'viacom',           '31': 'nintendo',       '32': 'bandia',
+    '33': 'ocean/acclaim',    '34': 'konami',         '35': 'hector',
+    '37': 'taito',            '38': 'hudson',         '39': 'banpresto',
+    '41': 'ubi soft',         '42': 'atlus',          '44': 'malibu',
+    '46': 'angel',            '47': 'pullet-proof',   '49': 'irem',
+    '50': 'absolute',         '51': 'acclaim',        '52': 'activision',
+    '53': 'american sammy',   '54': 'konami',         '55': 'hi tech entertainment',
+    '56': 'ljn',              '57': 'matchbox',       '58': 'mattel',
+    '59': 'milton bradley',   '60': 'titus',          '61': 'virgin',
+    '64': 'lucasarts',        '67': 'ocean',          '69': 'electronic arts',
+    '70': 'infogrames',       '71': 'interplay',      '72': 'broderbund',
+    '73': 'sculptured',       '75': 'sci',            '78': 't*hq',
+    '79': 'accolade',         '80': 'misawa',         '83': 'lozc',
+    '86': 'tokuma shoten i*', '87': 'tsukuda ori*',   '91': 'chun soft',
+    '92': 'video system',     '93': 'ocean/acclaim',  '95': 'varie',
+    '96': 'yonezawa/spal',    '97': 'kaneko',         '99': 'pack in soft',
+  };
+
+  const oldCode = loadedROM[OLD_LICENSEE_CODE_ADDR];
+  if (oldCode != 0x33) {
+    return oldLicensees[oldCode.toString(16).toUpperCase()] || 'unknown';
+  } else {
+    const newCode1 = loadedROM[NEW_LICENSEE_CODE_START_ADDR];
+    const newCode2 = loadedROM[NEW_LICENSEE_CODE_END_ADDR];
+    const newCode =
+      String.fromCharCode(newCode1) + String.fromCharCode(newCode2);
+    return newLicensees[newCode] || 'unknown';
+  }
+};
+
 const getSGB = () => loadedROM[GB_OR_SGB_ADDR] === 0x80;
 
 const getROMSizeAndBanks = () => {
@@ -176,7 +269,11 @@ const getROMSizeAndBanks = () => {
     case 0x05:
       return [1024, 64];
     case 0x06:
-      return [2048, 12];
+      return [2048, 128];
+    case 0x07:
+      return [4096, 256];
+    case 0x08:
+      return [8192, 512];
     case 0x52:
       return [1152, 72];
     case 0x53:
@@ -199,7 +296,9 @@ const getRAMSizeAndBanks = () => {
     case 0x03:
       return [32, 4];
     case 0x04:
-      return [128, 1];
+      return [128, 16];
+    case 0x05:
+      return [64, 8];
     default:
       return [0, 0];
   }
@@ -251,14 +350,18 @@ const getType = () => {
       return 'ROM + MBC5 + RUMBLE + SRAM';
     case 0x1e:
       return 'ROM + MBC5 + RUMBLE + SRAM + BATTERY';
-    case 0x1f:
+    case 0x20:
+      return 'MBC6';
+    case 0x22:
+      return 'MBC7 + SENSOR + RUMBLE + RAM + BATTERY';
+    case 0xfc:
       return 'POCKET CAMERA';
     case 0xfd:
       return 'BANDAI TAMA5';
     case 0xfe:
       return 'HUDSON HUC3';
     case 0xff:
-      return 'HUDSON HUC1';
+      return 'HUDSON HUC1 + RAM + BATTER';
     default:
       return 'UNKNOWN?';
   }
@@ -277,6 +380,7 @@ const cartridge = {
   getTitle,
   getType,
   getRegion,
+  getLicensee,
   getCGB,
   getSGB,
   getROMSizeAndBanks,

@@ -34,6 +34,7 @@ const Cartridge = props => {
       <div>Title: {cartridge.getTitle()}</div>
       <div>Type: {cartridge.getType()}</div>
       <div>Region: {cartridge.getRegion()}</div>
+      <div>Licensee: {cartridge.getLicensee().toUpperCase()}</div>
       <div>Color: {cartridge.getCGB() ? 'Yes' : 'No'}</div>
       <div>Super GameBoy: {cartridge.getSGB() ? 'Yes' : 'No'}</div>
       <div>ROM size: {cartridge.getROMSizeAndBanks()[0]} KBytes</div>
