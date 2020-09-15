@@ -5,21 +5,29 @@ import externalRam from '../../mmu/externalRam/externalRam';
 import { format } from '../../../utils/utils';
 
 // TOGGLE EXTERNAL RAM - write 0x0A to enable, any other value to disable
-const START_EXTERNAL_RAM_TOGGLE_ADDR = 0x0000;
-const END_EXTERNAL_RAM_TOGGLE_ADDR = 0x1fff;
+// Before external RAM can be read or written, it must be enabled by writing to this address space.
+// It is recommended to disable external RAM after accessing it, in order to protect its contents
+// from damage during power down of the Game Boy.
+// Practically any value with 0Ah in the lower 4 bits enables RAM, and any other value disables RAM.
+// RAM is automatically disabled when the gameboy is powered off.
+const EXTERNAL_RAM_TOGGLE_START_ADDR = 0x0000;
+const EXTERNAL_RAM_TOGGLE_END_ADDR = 0x1fff;
+
 // ROM BANK = 0x0yyxxxxx
 //                 ----- -> [1-31] bank within selected bank (0 is remapped to 1)
 //               --      -> [0-3]  if MODE is ROM_MODE ==> change ROM bank set to: [1-31],[33-63],[65-95],[97-127]
 //                                 if MODE is RAM_MODE ==> switch RAM bank to: [0-3]
-const START_ROM_BANK_LOW_ADDR = 0x2000;
-const END_ROM_BANK_LOW_ADDR = 0x3fff;
-const START_ROM_BANK_HIGH_ADDR = 0x4000;
-const END_ROM_BANK_HIGH_ADDR = 0x5fff;
-const START_MODE_ADDR = 0x6000;
-const END_MODE_ADDR = 0x7fff;
+const ROM_BANK_NUMBER_START_ADDR = 0x2000;
+const ROM_BANK_NUMBER_END_ADDR = 0x3fff;
 
-const ROM_BANK_SIZE = 0x4000;
-const RAM_BANK_SIZE = 0x2000;
+const RAM_BANK_NUMBER_START_ADDR = 0x4000;
+const RAM_BANK_NUMBER_END_ADDR = 0x5fff;
+
+const BANKING_MODE_START_ADDR = 0x6000;
+const BANKING_MODE_END_ADDR = 0x7fff;
+
+let ROM_BANK_SIZE = 0x4000;
+let RAM_BANK_SIZE = 0x2000;
 
 const ROM_MODE = 0;
 const RAM_MODE = 1;
@@ -61,13 +69,13 @@ const read = address => {
 
 const write = (address, value) => {
   if (
-    address >= START_EXTERNAL_RAM_TOGGLE_ADDR &&
-    address <= END_EXTERNAL_RAM_TOGGLE_ADDR
+    address >= EXTERNAL_RAM_TOGGLE_START_ADDR &&
+    address <= EXTERNAL_RAM_TOGGLE_END_ADDR
   ) {
     registers.externalRamEnabled = (value & 0x0f) === 0x0a; // take the 4 lower bits and check if they equal 0x0a
   } else if (
-    address >= START_ROM_BANK_LOW_ADDR &&
-    address <= END_ROM_BANK_LOW_ADDR
+    address >= ROM_BANK_NUMBER_START_ADDR &&
+    address <= ROM_BANK_NUMBER_END_ADDR
   ) {
     if ([0x1, 0x2, 0x3].includes(registers.type)) {
       const romBankLowBits = value & 0x1f || 1; // keep 5 lower bits only, and set to 1 if is zero
@@ -75,8 +83,8 @@ const write = (address, value) => {
       registers.romBank = romBankHighBits | romBankLowBits;
     }
   } else if (
-    address >= START_ROM_BANK_HIGH_ADDR &&
-    address <= END_ROM_BANK_HIGH_ADDR
+    address >= RAM_BANK_NUMBER_START_ADDR &&
+    address <= RAM_BANK_NUMBER_END_ADDR
   ) {
     if ([0x1, 0x2, 0x3].includes(registers.type)) {
       if (registers.mode === ROM_MODE) {
@@ -88,7 +96,10 @@ const write = (address, value) => {
         registers.rambank = value & 0x3; // keep 2 lower bits
       }
     }
-  } else if (address >= START_MODE_ADDR && address <= END_MODE_ADDR) {
+  } else if (
+    address >= BANKING_MODE_START_ADDR &&
+    address <= BANKING_MODE_END_ADDR
+  ) {
     registers.mode = value & 0x1 ? ROM_MODE : RAM_MODE;
   } else if (
     address >= mmu.START_EXTERNAL_RAM &&
@@ -139,6 +150,7 @@ const mbc = {
   reset,
 
   setType,
+
   getRomBank,
   getRamBank,
   getType,
