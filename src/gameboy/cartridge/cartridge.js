@@ -4,7 +4,7 @@ import mbc from './mbc/mbc';
 // import rom from '../../assets/roms/rom9.gb';
 // import rom from '../../assets/roms/lsdj.gb';
 
-import rom from '../../assets/roms/tests/mooneye/mbc1/bits_bank2.gb';
+import rom from '../../assets/roms/tests/mooneye/mbc1/rom_8Mb.gb';
 
 // ==== OK ====
 // import rom from '../../assets/roms/tests/mooneye/mbc1/bits_bank1.gb';
@@ -19,8 +19,6 @@ import rom from '../../assets/roms/tests/mooneye/mbc1/bits_bank2.gb';
 // import rom from '../../assets/roms/tests/mooneye/mbc1/rom_4Mb.gb';
 
 // ==== FAILING ====
-// import rom from '../../assets/roms/tests/mooneye/mbc1/bits_bank2.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/ram_256kb.gb';
 // import rom from '../../assets/roms/tests/mooneye/mbc1/rom_8Mb.gb';
 // import rom from '../../assets/roms/tests/mooneye/mbc1/rom_16Mb.gb';
 
