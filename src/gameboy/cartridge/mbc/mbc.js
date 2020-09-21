@@ -89,6 +89,7 @@ const write = (address, value) => {
       registers.romBank =
         (romBankHighBits | romBankLowBits) &
         (cartridge.getROMSizeAndBanks()[1] - 1);
+      console.log('rom bank', registers.romBank);
     }
     if (registers.type === 0x5) {
       const romBankLowBits = value; // low 8 bits
@@ -106,10 +107,18 @@ const write = (address, value) => {
         registers.romBank =
           (romBankHighBits | romBankLowBits) &
           (cartridge.getROMSizeAndBanks()[1] - 1);
-      }
-      if (registers.MODE === RAM_MODE) {
-        registers.rambank = value & 0x3; // keep 2 lower bits
+        // console.log(
+        //   'high',
+        //   value.toString(2),
+        //   romBankLowBits.toString(2),
+        //   romBankHighBits.toString(2),
+        //   registers.romBank,
+        // );
+        console.log('rom bank', registers.romBank);
+      } else if (registers.mode === RAM_MODE) {
+        registers.ramBank = value & 0x3; // keep 2 lower bits
         registers.rom0Bank = value << 5;
+        console.log('ram bank', value, registers.ramBank);
       }
     }
     if (registers.type === 0x5) {
@@ -119,14 +128,15 @@ const write = (address, value) => {
         registers.romBank = romBankHighBits | romBankLowBits;
       }
       if (registers.MODE === RAM_MODE) {
-        registers.rambank = value & 0x3; // keep 2 lower bits
+        registers.ramBank = value & 0x3; // keep 2 lower bits
       }
     }
   } else if (
     address >= BANKING_MODE_START_ADDR &&
     address <= BANKING_MODE_END_ADDR
   ) {
-    registers.mode = value & 0x1 ? ROM_MODE : RAM_MODE;
+    // console.log('mode:', value);
+    registers.mode = value & 0x1 ? RAM_MODE : ROM_MODE;
     if (registers.mode === ROM_MODE) {
       registers.ramBank = 0;
     }
