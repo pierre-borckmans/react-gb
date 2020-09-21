@@ -1,7 +1,8 @@
 import mmu from '../mmu/mmu';
 import mbc from './mbc/mbc';
 
-import rom from '../../assets/roms/rom2.gb';
+import rom from '../../assets/roms/rom7.gb';
+// import rom from '../../assets/roms/lsdj.gb';
 
 import testRomCpu1 from '../../assets/roms/tests/cpu_instrs/01-special.gb';
 import testRomCpu2 from '../../assets/roms/tests/cpu_instrs/02-interrupts.gb';

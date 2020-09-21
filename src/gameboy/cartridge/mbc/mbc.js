@@ -1,5 +1,4 @@
 import cartridge from '../cartridge';
-import mmu from '../../mmu/mmu';
 import externalRam from '../../mmu/externalRam/externalRam';
 
 import { format } from '../../../utils/utils';
@@ -26,6 +25,13 @@ const RAM_BANK_NUMBER_END_ADDR = 0x5fff;
 const BANKING_MODE_START_ADDR = 0x6000;
 const BANKING_MODE_END_ADDR = 0x7fff;
 
+const ROM0_START_ADDR = 0x0000;
+const ROM0_END_ADDR = 0x3fff;
+const ROM1_START_ADDR = 0x4000;
+const ROM1_END_ADDR = 0x7fff;
+const EXTERNAL_RAM_START_ADDR = 0xa000;
+const EXTERNAL_RAM_END_ADDR = 0xbfff;
+
 let ROM_BANK_SIZE = 0x4000;
 let RAM_BANK_SIZE = 0x2000;
 
@@ -43,13 +49,13 @@ const getRamOffset = () => {
 };
 
 const read = address => {
-  if (address >= mmu.START_ROM0 && address <= mmu.END_ROM0) {
-    return cartridge.read(address);
-  } else if (address >= mmu.START_ROM1 && address <= mmu.END_ROM1) {
+  if (address >= ROM0_START_ADDR && address <= ROM0_END_ADDR) {
+    return cartridge.read(address + registers.rom0Bank * RAM_BANK_SIZE);
+  } else if (address >= ROM1_START_ADDR && address <= ROM1_END_ADDR) {
     return cartridge.read(getRomOffset() + (address - ROM_BANK_SIZE));
   } else if (
-    address >= mmu.START_EXTERNAL_RAM &&
-    address <= mmu.END_EXTERNAL_RAM
+    address >= EXTERNAL_RAM_START_ADDR &&
+    address <= EXTERNAL_RAM_END_ADDR
   ) {
     if (registers.externalRamEnabled) {
       return externalRam.read(getRamOffset() + (address - RAM_BANK_SIZE));
@@ -82,6 +88,11 @@ const write = (address, value) => {
       const romBankHighBits = registers.romBank & 0x60; // keep bits 6 and 7
       registers.romBank = romBankHighBits | romBankLowBits;
     }
+    if (registers.type === 0x5) {
+      const romBankLowBits = value; // low 8 bits
+      const romBankHighBits = registers.romBank & 0x01; // keep bit 9
+      registers.romBank = romBankHighBits | romBankLowBits;
+    }
   } else if (
     address >= RAM_BANK_NUMBER_START_ADDR &&
     address <= RAM_BANK_NUMBER_END_ADDR
@@ -94,6 +105,17 @@ const write = (address, value) => {
       }
       if (registers.MODE === RAM_MODE) {
         registers.rambank = value & 0x3; // keep 2 lower bits
+        registers.rom0Bank = value << 5;
+      }
+    }
+    if (registers.type === 0x5) {
+      if (registers.mode === ROM_MODE) {
+        const romBankHighBits = (value & 0x01) << 8; // keep bits 1 and 2 only and shift them as bits 6 and 7
+        const romBankLowBits = registers.romBank; // keep 5 lower bits
+        registers.romBank = romBankHighBits | romBankLowBits;
+      }
+      if (registers.MODE === RAM_MODE) {
+        registers.rambank = value & 0x3; // keep 2 lower bits
       }
     }
   } else if (
@@ -101,9 +123,12 @@ const write = (address, value) => {
     address <= BANKING_MODE_END_ADDR
   ) {
     registers.mode = value & 0x1 ? ROM_MODE : RAM_MODE;
+    if (registers.mode === ROM_MODE) {
+      registers.ramBank = 0;
+    }
   } else if (
-    address >= mmu.START_EXTERNAL_RAM &&
-    address <= mmu.END_EXTERNAL_RAM
+    address >= EXTERNAL_RAM_START_ADDR &&
+    address <= EXTERNAL_RAM_END_ADDR
   ) {
     if (registers.externalRamEnabled) {
       externalRam.write(getRamOffset() + (address - RAM_BANK_SIZE), value);
@@ -122,6 +147,7 @@ const write = (address, value) => {
 const reset = () => {
   registers = {
     type: 0,
+    rom0Bank: 0,
     romBank: 1,
     ramBank: 0,
     externalRamEnabled: false,
