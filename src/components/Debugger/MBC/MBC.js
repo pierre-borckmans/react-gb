@@ -7,7 +7,13 @@ const MBC = props => {
   return (
     <Container title="MBC" width={240}>
       <div>Rom type: {mbc.getType()}</div>
-      <div>ROM bank: {mbc.getRomBank()}</div>
+      <div
+        onClick={() => {
+          mbc.setRomBank(prompt('ROM bank'));
+        }}
+      >
+        ROM bank: {mbc.getRomBank()}
+      </div>
       <div>Mode: {mbc.getMode() === mbc.ROM_MODE ? 'ROM' : 'RAM'}</div>
       <div>
         External ram: {mbc.isExternalRamEnabled() ? 'ENABLED' : 'DISABLED'}

@@ -1,8 +1,19 @@
 import mmu from '../mmu/mmu';
 import mbc from './mbc/mbc';
 
-import rom from '../../assets/roms/rom7.gb';
+// import rom from '../../assets/roms/rom9.gb';
 // import rom from '../../assets/roms/lsdj.gb';
+
+// ==== OK ====
+// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_512kb.gb';
+// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_1Mb.gb';
+// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_2Mb.gb';
+// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_4Mb.gb';
+import rom from '../../assets/roms/tests/mooneye/mbc1/rom_4Mb.gb';
+
+// ==== FAILING ====
+// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_8Mb.gb';
+// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_16Mb.gb';
 
 import testRomCpu1 from '../../assets/roms/tests/cpu_instrs/01-special.gb';
 import testRomCpu2 from '../../assets/roms/tests/cpu_instrs/02-interrupts.gb';

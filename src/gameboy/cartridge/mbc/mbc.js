@@ -86,7 +86,9 @@ const write = (address, value) => {
     if ([0x1, 0x2, 0x3].includes(registers.type)) {
       const romBankLowBits = value & 0x1f || 1; // keep 5 lower bits only, and set to 1 if is zero
       const romBankHighBits = registers.romBank & 0x60; // keep bits 6 and 7
-      registers.romBank = romBankHighBits | romBankLowBits;
+      registers.romBank =
+        (romBankHighBits | romBankLowBits) &
+        (cartridge.getROMSizeAndBanks()[1] - 1);
     }
     if (registers.type === 0x5) {
       const romBankLowBits = value; // low 8 bits
@@ -101,7 +103,9 @@ const write = (address, value) => {
       if (registers.mode === ROM_MODE) {
         const romBankHighBits = (value & 0x03) << 5; // keep bits 1 and 2 only and shift them as bits 6 and 7
         const romBankLowBits = registers.romBank & 0x1f; // keep 5 lower bits
-        registers.romBank = romBankHighBits | romBankLowBits;
+        registers.romBank =
+          (romBankHighBits | romBankLowBits) &
+          (cartridge.getROMSizeAndBanks()[1] - 1);
       }
       if (registers.MODE === RAM_MODE) {
         registers.rambank = value & 0x3; // keep 2 lower bits
@@ -161,6 +165,8 @@ const setType = type => {
   registers.type = type;
 };
 
+const setRomBank = bank => (registers.romBank = bank);
+
 const getRomBank = () => registers.romBank;
 const getRamBank = () => registers.ramBank;
 const getType = () => registers.type;
@@ -182,6 +188,8 @@ const mbc = {
   getType,
   getMode,
   isExternalRamEnabled,
+
+  setRomBank,
 };
 
 export default mbc;

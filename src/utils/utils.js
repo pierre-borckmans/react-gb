@@ -1,8 +1,10 @@
 const toHex = (number, pad) =>
-  number
-    .toString(16)
-    .toUpperCase()
-    .padStart(pad || 2, '0');
+  number === undefined
+    ? '??'
+    : number
+        .toString(16)
+        .toUpperCase()
+        .padStart(pad || 2, '0');
 
 const toBin = (number, pad) =>
   number
