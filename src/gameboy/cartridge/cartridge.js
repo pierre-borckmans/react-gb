@@ -1,13 +1,105 @@
 import mmu from '../mmu/mmu';
 
-// import rom from "../../assets/roms/rom9.gb";
+import rom from '../../assets/roms/rom1.gb';
 // import rom from '../../assets/roms/lsdj.gb';
 
-import rom from '../../assets/roms/tests/mooneye/mbc1/bits_bank1.gb';
+// -------- Mooneye GB: ACCEPTANCE -------------------------------------------
+// import rom from "../../assets/roms/tests/mooneye/acceptance/add_sp_e_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_div-S.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_div-dmg0.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_div-dmgABCmgb.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_div2-S.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_hwio-S.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_hwio-dmg0.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_hwio-dmgABCmgb.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_regs-dmg0.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_regs-dmgABC.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_regs-mgb.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_regs-sgb.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/boot_regs-sgb2.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/call_cc_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/call_cc_timing2.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/call_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/call_timing2.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/di_timing-GS.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/div_timing.gb"; // PASS
+// import rom from "../../assets/roms/tests/mooneye/acceptance/ei_sequence.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/ei_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/halt_ime0_ei.gb"; // PASS
+// import rom from "../../assets/roms/tests/mooneye/acceptance/halt_ime0_nointr_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/halt_ime1_timing.gb"; // PASS
+// import rom from "../../assets/roms/tests/mooneye/acceptance/halt_ime1_timing2-GS.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/if_ie_registers.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/intr_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/jp_cc_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/jp_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/ld_hl_sp_e_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/oam_dma_restart.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/oam_dma_start.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/oam_dma_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/pop_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/push_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/rapid_di_ei.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/ret_cc_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/ret_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/reti_intr_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/reti_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/acceptance/rst_timing.gb";
+// --------------------------------------------------------------------
+
+// -------- Mooneye GB: BITS -------------------------------------------
+// import rom from "../../assets/roms/tests/mooneye/bits/mem_oam.gb"; // PASS
+// import rom from "../../assets/roms/tests/mooneye/bits/reg_f.gb"; // PASS
+// import rom from "../../assets/roms/tests/mooneye/bits/unused_hwio-GS.gb";
+// --------------------------------------------------------------------
+
+// -------- Mooneye GB: TIMER -------------------------------------------
+// import rom from "../../assets/roms/tests/mooneye/timer/tim00.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tim01.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tim10.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tim11.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tim00_div_trigger.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tim01_div_trigger.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tim10_div_trigger.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tim11_div_trigger.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/div_write.gb"; // PASS
+// import rom from "../../assets/roms/tests/mooneye/timer/rapid_toggle.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tima_reload.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tima_write_reloading.gb";
+// import rom from "../../assets/roms/tests/mooneye/timer/tma_write_reloading.gb";
+// --------------------------------------------------------------------
+
+// -------- Mooneye GB: OAM DMA -------------------------------------------
+// import rom from "../../assets/roms/tests/mooneye/oam_dma/basic.gb";
+// import rom from "../../assets/roms/tests/mooneye/oam_dma/reg_read.gb"; // PASS
+// import rom from "../../assets/roms/tests/mooneye/oam_dma/sources-GS.gb";
+// --------------------------------------------------------------------
+
+// import rom from "../../assets/roms/tests/mooneye/serial/boot_sclk_align-dmgABCmgb.gb";
+// import rom from "../../assets/roms/tests/mooneye/instr/daa.gb";
+
+// -------- Mooneye GB: PPU -------------------------------------------
+// All fail for now
+// import rom from "../../assets/roms/tests/mooneye/ppu/hblank_ly_scx_timing-GS.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/intr_1_2_timing-GS.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/intr_2_0_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/intr_2_mode0_timing_sprites.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/intr_2_mode0_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/intr_2_mode3_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/intr_2_oam_ok_timing.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/lcdon_timing-GS.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/lcdon_write_timing-GS.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/stat_irq_blocking.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/stat_lyc_onoff.gb";
+// import rom from "../../assets/roms/tests/mooneye/ppu/vblank_stat_intr-GS.gb";
+// --------------------------------------------------------------------
+
+// -------- Mooneye GB: MBC1 -------------------------------------------
+// import rom from "../../assets/roms/tests/mooneye/mbc1/bits_bank1.gb";
 // import rom from "../../assets/roms/tests/mooneye/mbc1/bits_bank2.gb";
 // import rom from "../../assets/roms/tests/mooneye/mbc1/bits_mode.gb";
 // import rom from "../../assets/roms/tests/mooneye/mbc1/bits_ramg.gb";
-// import rom from "../../assets/roms/tests/mooneye/mbc1/ram_64kb.gb"; // fail
+// import rom from "../../assets/roms/tests/mooneye/mbc1/ram_64kb.gb";
 // import rom from "../../assets/roms/tests/mooneye/mbc1/ram_256kb.gb";
 // import rom from "../../assets/roms/tests/mooneye/mbc1/rom_512kb.gb";
 // import rom from "../../assets/roms/tests/mooneye/mbc1/rom_1Mb.gb";
@@ -15,6 +107,7 @@ import rom from '../../assets/roms/tests/mooneye/mbc1/bits_bank1.gb';
 // import rom from "../../assets/roms/tests/mooneye/mbc1/rom_4Mb.gb";
 // import rom from "../../assets/roms/tests/mooneye/mbc1/rom_8Mb.gb";
 // import rom from "../../assets/roms/tests/mooneye/mbc1/rom_16Mb.gb";
+// --------------------------------------------------------------------
 
 import testRomCpu1 from '../../assets/roms/tests/cpu_instrs/01-special.gb';
 import testRomCpu2 from '../../assets/roms/tests/cpu_instrs/02-interrupts.gb';
