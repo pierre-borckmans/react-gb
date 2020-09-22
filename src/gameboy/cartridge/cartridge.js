@@ -1,5 +1,4 @@
 import mmu from '../mmu/mmu';
-import mbc from './mbc/mbc';
 
 // import rom from "../../assets/roms/rom9.gb";
 // import rom from '../../assets/roms/lsdj.gb';
@@ -254,7 +253,7 @@ const getLicensee = () => {
   };
 
   const oldCode = loadedROM[OLD_LICENSEE_CODE_ADDR];
-  if (oldCode != 0x33) {
+  if (oldCode !== 0x33) {
     return oldLicensees[oldCode.toString(16).toUpperCase()] || 'unknown';
   } else {
     const newCode1 = loadedROM[NEW_LICENSEE_CODE_START_ADDR];

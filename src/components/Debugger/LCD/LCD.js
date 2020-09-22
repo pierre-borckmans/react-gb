@@ -27,7 +27,7 @@ const LCD = props => {
     animationRef.current = requestAnimationFrame(draw);
 
     return () => cancelAnimationFrame(animationRef.current);
-  }, [backgroundSelected, windowSelected, spritesSelected]);
+  }, [ppu, backgroundSelected, windowSelected, spritesSelected]);
 
   return (
     <Container title="LCD" visible={props.visible}>

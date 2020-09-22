@@ -1,7 +1,7 @@
-import cartridge from "../cartridge";
-import externalRam from "../../mmu/externalRam/externalRam";
+import cartridge from '../cartridge';
+import externalRam from '../../mmu/externalRam/externalRam';
 
-import { format } from "../../../utils/utils";
+import { format } from '../../../utils/utils';
 
 const EXTERNAL_RAM_TOGGLE_START_ADDR = 0x0000;
 const EXTERNAL_RAM_TOGGLE_END_ADDR = 0x1fff;
@@ -62,7 +62,7 @@ const getRamOffset = () => {
   return getRamBank() * RAM_BANK_SIZE;
 };
 
-const read = (address) => {
+const read = address => {
   if (address >= ROM0_START_ADDR && address <= ROM0_END_ADDR) {
     return cartridge.read(address + getRom0Offset());
   } else if (address >= ROM1_START_ADDR && address <= ROM1_END_ADDR) {
@@ -79,10 +79,10 @@ const read = (address) => {
   } else {
     throw new Error(
       `Trying to read from invalid ROM or RAM address ${format(
-        "hex",
+        'hex',
         address,
-        16
-      )}`
+        16,
+      )}`,
     );
   }
 };
@@ -123,10 +123,10 @@ const write = (address, value) => {
   } else {
     throw new Error(
       `Trying to write to invalid ROM or RAM address ${format(
-        "hex",
+        'hex',
         address,
-        16
-      )}`
+        16,
+      )}`,
     );
   }
 };
@@ -143,7 +143,7 @@ const reset = () => {
 
 reset();
 
-const setRomBank = (bank) => {
+const setRomBank = bank => {
   registers.bankLowBits = bank & 0x1f;
   registers.bankHighBits = (bank & 0x60) >> 5;
 };

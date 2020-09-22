@@ -1,5 +1,3 @@
-import mmu from '../mmu';
-
 const SIZE = 0x80000;
 const data = new Uint8Array(SIZE).fill(0);
 

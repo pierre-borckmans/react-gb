@@ -1,7 +1,5 @@
 import joypad from '../../gameboy/joypad/joypad';
 
-let eventCallback = null;
-
 const init = () => {
   requestAnimationFrame(refreshButtonsLoop);
 };

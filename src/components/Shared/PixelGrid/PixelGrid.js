@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, createContext } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const PixelGrid = props => {
   const { width, height, pixels } = props;
