@@ -1,26 +1,21 @@
 import mmu from '../mmu/mmu';
 import mbc from './mbc/mbc';
 
-// import rom from '../../assets/roms/rom9.gb';
+// import rom from "../../assets/roms/rom9.gb";
 // import rom from '../../assets/roms/lsdj.gb';
 
-import rom from '../../assets/roms/tests/mooneye/mbc1/rom_8Mb.gb';
-
-// ==== OK ====
-// import rom from '../../assets/roms/tests/mooneye/mbc1/bits_bank1.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/bits_bank2.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/bits_mode.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/bits_ramg.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/ram_64kb.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_512kb.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_1Mb.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_2Mb.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_4Mb.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_4Mb.gb';
-
-// ==== FAILING ====
-// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_8Mb.gb';
-// import rom from '../../assets/roms/tests/mooneye/mbc1/rom_16Mb.gb';
+import rom from '../../assets/roms/tests/mooneye/mbc1/bits_bank1.gb';
+// import rom from "../../assets/roms/tests/mooneye/mbc1/bits_bank2.gb";
+// import rom from "../../assets/roms/tests/mooneye/mbc1/bits_mode.gb";
+// import rom from "../../assets/roms/tests/mooneye/mbc1/bits_ramg.gb";
+// import rom from "../../assets/roms/tests/mooneye/mbc1/ram_64kb.gb"; // fail
+// import rom from "../../assets/roms/tests/mooneye/mbc1/ram_256kb.gb";
+// import rom from "../../assets/roms/tests/mooneye/mbc1/rom_512kb.gb";
+// import rom from "../../assets/roms/tests/mooneye/mbc1/rom_1Mb.gb";
+// import rom from "../../assets/roms/tests/mooneye/mbc1/rom_2Mb.gb";
+// import rom from "../../assets/roms/tests/mooneye/mbc1/rom_4Mb.gb";
+// import rom from "../../assets/roms/tests/mooneye/mbc1/rom_8Mb.gb";
+// import rom from "../../assets/roms/tests/mooneye/mbc1/rom_16Mb.gb";
 
 import testRomCpu1 from '../../assets/roms/tests/cpu_instrs/01-special.gb';
 import testRomCpu2 from '../../assets/roms/tests/cpu_instrs/02-interrupts.gb';
@@ -148,10 +143,9 @@ const loadROM = async romName => {
   await fetch(romName ? testRoms[romName] : rom)
     .then(raw => raw.arrayBuffer())
     .then(buffer => (loadedROM = [...new Uint8Array(buffer)]));
-
-  const romType = loadedROM[CARTRIDGE_TYPE_ADDR];
-  mbc.setType(romType);
 };
+
+const getTypeNumber = () => loadedROM[CARTRIDGE_TYPE_ADDR];
 
 const read = address => {
   if (address <= 0xff && !mmu.isBootComplete()) {
@@ -398,6 +392,7 @@ const cartridge = {
 
   getTitle,
   getType,
+  getTypeNumber,
   getRegion,
   getLicensee,
   getCGB,
