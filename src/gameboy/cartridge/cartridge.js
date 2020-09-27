@@ -1,6 +1,6 @@
 import mmu from '../mmu/mmu';
 
-import rom from '../../assets/roms/rom1.gb';
+import rom from '../../assets/roms/rom2.gb';
 // import rom from '../../assets/roms/lsdj.gb';
 
 // -------- Mooneye GB: ACCEPTANCE -------------------------------------------
@@ -132,6 +132,7 @@ import testRomHaltBug from '../../assets/roms/tests/halt_bug.gb';
 import testRomPpuDmgAcid2 from '../../assets/roms/tests/ppu/dmg-acid2.gb';
 
 import { range } from 'lodash';
+import externalRam from '../mmu/externalRam/externalRam';
 
 const testRoms = {
   'test cpu: 1 special': testRomCpu1,
@@ -234,7 +235,8 @@ const bootROM = [
 const loadROM = async romName => {
   await fetch(romName ? testRoms[romName] : rom)
     .then(raw => raw.arrayBuffer())
-    .then(buffer => (loadedROM = [...new Uint8Array(buffer)]));
+    .then(buffer => (loadedROM = [...new Uint8Array(buffer)]))
+    .then(() => externalRam.reset());
 };
 
 const getTypeNumber = () => loadedROM[CARTRIDGE_TYPE_ADDR];
@@ -466,10 +468,14 @@ const getType = () => {
     case 0xfe:
       return 'HUDSON HUC3';
     case 0xff:
-      return 'HUDSON HUC1 + RAM + BATTER';
+      return 'HUDSON HUC1 + RAM + BATTERY';
     default:
       return 'UNKNOWN?';
   }
+};
+
+const isRAMBatteryBuffered = () => {
+  return getType().includes('BATTERY');
 };
 
 const getTestRoms = () => {
@@ -491,6 +497,8 @@ const cartridge = {
   getSGB,
   getROMSizeAndBanks,
   getRAMSizeAndBanks,
+
+  isRAMBatteryBuffered,
 
   getTestRoms,
 };
