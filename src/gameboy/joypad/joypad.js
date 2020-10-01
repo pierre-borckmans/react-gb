@@ -86,14 +86,7 @@ const read = () => {
       ((registers.upButtonPressed ? 0 : 1) << UP_SELECT_BIT)
     );
   } else {
-    return (
-      (1 << SELECT_BUTTON_KEYS_BIT) |
-      (1 << SELECT_DIRECTION_KEYS_BIT) |
-      (1 << RIGHT_A_BIT) |
-      (1 << LEFT_B_BIT) |
-      (1 << UP_SELECT_BIT) |
-      (1 << DOWN_START_BIT)
-    );
+    return 0xff;
   }
 };
 

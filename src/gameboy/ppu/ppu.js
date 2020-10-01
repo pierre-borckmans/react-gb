@@ -266,6 +266,13 @@ const writeLCDStatus = value => {
     value & (1 << LCD_STATUS_MODE_2_OAM_INTERRUPT_BIT) ? 1 : 0;
   registers.YCOORD_COINCIDENCE_INTERRUPT =
     value & (1 << LCD_STATUS_YCOORD_COINCIDENCE_INTERRUPT_BIT) ? 1 : 0;
+
+  // http://www.devrs.com/gb/files/faqs.html#GBBugs
+  if ([MODES.HBLANK, MODES.VBLANK].includes(registers.MODE)) {
+    if (registers.LCD_ENABLED) {
+      interrupts.setLCDStatInterruptFlag();
+    }
+  }
 };
 
 const read = address => {
