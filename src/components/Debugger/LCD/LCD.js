@@ -39,6 +39,7 @@ const LCD = props => {
         }}
       >
         <canvas
+          id="main_canvas"
           ref={canvasRef}
           width={160}
           height={144}

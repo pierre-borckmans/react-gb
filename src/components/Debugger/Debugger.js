@@ -19,6 +19,7 @@ import dbg from '../../gameboy/debugger/debugger';
 import './Debugger.css';
 import LCD from './LCD/LCD';
 import Sprites from './PPU/Sprites/Sprites';
+import tests from '../../tests/tests';
 
 const Debugger = props => {
   const gameboy = props.gameboy;
@@ -113,6 +114,10 @@ const Debugger = props => {
     };
   }, [isRunning, keyListener]);
 
+  const test = () => {
+    tests.check();
+  };
+
   return (
     <Fragment>
       <div className="debugger">
@@ -130,6 +135,7 @@ const Debugger = props => {
           </button>
           <div className="spacer" />
           <button onClick={reset}>Reset</button>
+          <button onClick={test}>Test</button>
           <div className="spacer" />
           <span className="steps_per_second">{`${cpu.getMachineCycles()} cycles`}</span>
           <div className="spacer" />
