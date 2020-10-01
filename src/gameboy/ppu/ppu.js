@@ -231,12 +231,12 @@ const enableLCD = () => {
 };
 
 const disableLCD = () => {
-  data.cycles = 0;
-  data.modeCycles -= 2;
-  data.windowLineCounter = 0;
+  // data.cycles = 0;
+  // data.modeCycles = 0;
+  // data.windowLineCounter = 0;
   data.cyclesUntilLCDEnable = 61;
-  registers.MODE = MODES.HBLANK;
-  registers.LCDC_YCOORD = 0x00;
+  // registers.MODE = MODES.HBLANK;
+  // registers.LCDC_YCOORD = 0x00;
 };
 
 const readLCDStatus = () => {
@@ -460,12 +460,11 @@ const step = stepMachineCycles => {
         data.modeCycles -= CYCLES_HBLANK;
         registers.LCDC_YCOORD++;
 
-        if (
-          registers.YCOORD_COINCIDENCE_INTERRUPT === 1 &&
-          registers.LCDC_YCOORD === registers.LCDC_YCOORD_COMPARE
-        ) {
+        if (registers.LCDC_YCOORD === registers.LCDC_YCOORD_COMPARE) {
           registers.YCOORD_COINCIDENCE_FLAG = 1;
-          interrupts.setLCDStatInterruptFlag();
+          if (registers.YCOORD_COINCIDENCE_INTERRUPT === 1) {
+            interrupts.setLCDStatInterruptFlag();
+          }
         } else {
           registers.YCOORD_COINCIDENCE_FLAG = 0;
         }
