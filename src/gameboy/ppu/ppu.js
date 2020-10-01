@@ -218,6 +218,25 @@ const writeLCDCtrl = value => {
     value & (1 << LCD_CTRL_OBJ_ENABLE_BIT) ? true : false;
   registers.BACKGROUND_ENABLED =
     value & (1 << LCD_CTRL_BACKGROUND_ENABLE_BIT) ? true : false;
+
+  if (!registers.LCD_ENABLED) {
+    enableLCD();
+  } else {
+    disableLCD();
+  }
+};
+
+const enableLCD = () => {
+  data.cyclesUntilLCDEnable = 61;
+};
+
+const disableLCD = () => {
+  data.cycles = 0;
+  data.modeCycles = 0;
+  data.windowLineCounter = 0;
+  data.cyclesUntilLCDEnable = 61;
+  registers.MODE = MODES.HBLANK;
+  registers.LCDC_YCOORD = 0x00;
 };
 
 const readLCDStatus = () => {
@@ -329,10 +348,14 @@ const write = (address, value) => {
   }
 };
 
-const reset = () => {
+const resetData = () => {
   data = {
     cycles: 0,
     modeCycles: 0,
+    windowLineCounter: 0,
+    LCDWasDisabled: false,
+    cyclesUntilLCDEnable: 0,
+
     tileSet: Array(384)
       .fill()
       .map(() =>
@@ -359,9 +382,11 @@ const reset = () => {
     spritesScanLines: Array(SCREEN_HEIGHT)
       .fill()
       .map(() => Array(SCREEN_WIDTH).fill(0)),
-
-    windowLineCounter: 0,
   };
+};
+
+const reset = () => {
+  resetData();
 
   registers = {
     SCROLLY: 0x00,
@@ -397,6 +422,15 @@ const reset = () => {
 reset();
 
 const step = stepMachineCycles => {
+  if (registers.LCD_ENABLED) {
+    if (data.cyclesUntilLCDEnable) {
+      data.cyclesUntilLCDEnable--;
+      return;
+    }
+  } else {
+    return;
+  }
+
   data.cycles += stepMachineCycles;
   data.modeCycles += stepMachineCycles;
 
@@ -645,11 +679,9 @@ const renderSpritesScanLine = () => {
 };
 
 const renderScanLine = () => {
-  if (registers.LCD_ENABLED) {
-    renderBackgroundScanLine();
-    renderWindowScanLine();
-    renderSpritesScanLine();
-  }
+  renderBackgroundScanLine();
+  renderWindowScanLine();
+  renderSpritesScanLine();
 };
 
 const renderCanvas = (canvas, backgroundLayer, windowLayer, spritesLayer) => {
