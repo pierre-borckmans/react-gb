@@ -376,6 +376,12 @@ const resetData = () => {
     backgroundScanLines: Array(SCREEN_HEIGHT)
       .fill()
       .map(() => Array(SCREEN_WIDTH).fill(0)),
+    backgroundScanLinesBeforePalette: Array(SCREEN_HEIGHT)
+      .fill()
+      .map(() => Array(SCREEN_WIDTH).fill(0)),
+    windowScanLinesBeforePalette: Array(SCREEN_HEIGHT)
+      .fill()
+      .map(() => Array(SCREEN_WIDTH).fill(0)),
     windowScanLines: Array(SCREEN_HEIGHT)
       .fill()
       .map(() => Array(SCREEN_WIDTH).fill(0)),
@@ -542,6 +548,7 @@ const renderBackgroundScanLine = () => {
   const tileStartCol = registers.SCROLLX % 8;
 
   const backgroundScanLine = new Array(SCREEN_WIDTH).fill(0);
+  const backgroundScanLineBeforePalette = new Array(SCREEN_WIDTH).fill(0);
 
   const backgroundPalette = getBackgroundPalette();
 
@@ -549,6 +556,7 @@ const renderBackgroundScanLine = () => {
     if (registers.BACKGROUND_ENABLED) {
       const colorBeforePalette =
         data.tileSet[tileIdx][tileRow][(tileStartCol + i) % 8];
+      backgroundScanLineBeforePalette[i] = colorBeforePalette;
 
       const color = backgroundPalette[colorBeforePalette];
       backgroundScanLine[i] = color;
@@ -559,11 +567,15 @@ const renderBackgroundScanLine = () => {
       tileIdx = getTileIndex(tileMapOffset);
     }
   }
+  data.backgroundScanLinesBeforePalette[
+    registers.LCDC_YCOORD
+  ] = backgroundScanLineBeforePalette;
   data.backgroundScanLines[registers.LCDC_YCOORD] = backgroundScanLine;
 };
 
 const renderWindowScanLine = () => {
   let windowScanLine = new Array(SCREEN_WIDTH).fill(null);
+  let windowScanLineBeforePalette = new Array(SCREEN_WIDTH).fill(null);
 
   const tileSet = getTileSet();
 
@@ -588,6 +600,7 @@ const renderWindowScanLine = () => {
         const tileCol = x % 8;
 
         const colorBeforePalette = tileSet[tileIdx][tileRow][tileCol];
+        windowScanLineBeforePalette[i] = colorBeforePalette;
         const color = backgroundPalette[colorBeforePalette];
         windowScanLine[i] = color;
       }
@@ -597,6 +610,9 @@ const renderWindowScanLine = () => {
     }
   }
 
+  data.windowScanLinesBeforePalette[
+    registers.LCDC_YCOORD
+  ] = windowScanLineBeforePalette;
   data.windowScanLines[registers.LCDC_YCOORD] = windowScanLine;
 };
 
@@ -614,8 +630,9 @@ const renderSpritesScanLine = () => {
       )
       .slice(0, 10);
 
-    const backgroundLine = data.backgroundScanLines[registers.LCDC_YCOORD];
-    const windowLine = data.windowScanLines[registers.LCDC_YCOORD];
+    const backgroundLine =
+      data.backgroundScanLinesBeforePalette[registers.LCDC_YCOORD];
+    const windowLine = data.windowScanLinesBeforePalette[registers.LCDC_YCOORD];
 
     for (let col = 0; col < SCREEN_WIDTH; col++) {
       const spritesForCol = visibleSpritesOnLine
