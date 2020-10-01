@@ -7,6 +7,7 @@ import interrupts from '../interrupts/interrupts';
 import jumpCallOperations from './operations/jumpCallOperations';
 
 import { format, readBit } from '../../utils/utils';
+import serial from '../serial/serial';
 
 let registers = {};
 
@@ -157,6 +158,7 @@ const incClockCycles = incClockCycles => {
 
   timer.step(incClockCycles / 4);
   ppu.step(incClockCycles / 4);
+  serial.step(incClockCycles / 4);
 };
 
 const setInterruptMasterEnable = active =>
