@@ -232,7 +232,7 @@ const enableLCD = () => {
 
 const disableLCD = () => {
   data.cycles = 0;
-  data.modeCycles = 0;
+  data.modeCycles -= 2;
   data.windowLineCounter = 0;
   data.cyclesUntilLCDEnable = 61;
   registers.MODE = MODES.HBLANK;
@@ -401,7 +401,7 @@ const reset = () => {
     WINX: 0x00,
 
     // LCD_CTRL
-    LCD_ENABLED: false,
+    LCD_ENABLED: true,
     WINDOW_TILEMAP: 0,
     WINDOW_ENABLED: false,
     BACKGROUND_AND_WINDOW_TILESET: 0,
