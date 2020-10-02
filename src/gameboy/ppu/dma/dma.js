@@ -2,7 +2,7 @@ import mmu from '../../mmu/mmu';
 
 let data = {};
 
-const init = () => {
+const reset = () => {
   data = {
     cycles: 0,
     sourceAddress: 0x00,
@@ -10,12 +10,13 @@ const init = () => {
     restarted: false,
   };
 };
+reset();
 
 const startTransfer = sourceAddress => {
-  data.cycles = 0;
   data.sourceAddress = sourceAddress * 0x100;
-  data.inProgress = true;
   data.restarted = isInProgress();
+  data.cycles = 0;
+  data.inProgress = true;
 };
 
 const step = stepMachineCycles => {
@@ -27,6 +28,7 @@ const step = stepMachineCycles => {
 
   if (data.cycles >= 162) {
     data.inProgress = false;
+    data.restarted = false;
     data.cycles = 0;
 
     for (let i = 0; i < 0xa0; i++) {
@@ -36,10 +38,10 @@ const step = stepMachineCycles => {
 };
 
 const isInProgress = () =>
-  data.restarted || (data.inProgress && data.cycles > 1);
+  data.inProgress || (data.restarted && data.cycles >= 2);
 
 const dma = {
-  init,
+  reset,
   startTransfer,
   step,
   isInProgress,

@@ -19,6 +19,7 @@ const reset = () => {
     data[i] = 0x00;
   }
 };
+reset();
 
 const oam = {
   read,
