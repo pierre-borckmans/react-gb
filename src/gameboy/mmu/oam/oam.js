@@ -1,7 +1,15 @@
+import dma from '../../ppu/dma/dma';
+
 const SIZE = 0xa0;
 const data = new Uint8Array(SIZE).fill(0x0);
 
-const read = address => data[address];
+const read = address => {
+  if (dma.isInProgress()) {
+    return 0xff;
+  } else {
+    return data[address];
+  }
+};
 const write = (address, value) => {
   data[address] = value;
 };
