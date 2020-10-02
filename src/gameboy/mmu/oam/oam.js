@@ -4,7 +4,7 @@ const SIZE = 0xa0;
 const data = new Uint8Array(SIZE).fill(0x0);
 
 const read = address => {
-  if (dma.isInProgress()) {
+  if (dma.isOamBlocked()) {
     return 0xff;
   } else {
     return data[address];

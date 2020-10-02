@@ -14,7 +14,7 @@ reset();
 
 const startTransfer = sourceAddress => {
   data.sourceAddress = sourceAddress * 0x100;
-  data.restarted = isInProgress();
+  data.restarted = isOamBlocked();
   data.cycles = 0;
   data.inProgress = true;
 };
@@ -37,14 +37,14 @@ const step = stepMachineCycles => {
   }
 };
 
-const isInProgress = () =>
-  data.inProgress || (data.restarted && data.cycles >= 2);
+const isOamBlocked = () =>
+  data.restarted || (data.inProgress && data.cycles >= 2);
 
 const dma = {
   reset,
   startTransfer,
   step,
-  isInProgress,
+  isOamBlocked,
 };
 
 export default dma;
