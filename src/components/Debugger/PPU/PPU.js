@@ -11,8 +11,8 @@ const PPU = props => {
   const paletteColors = config.paletteColors.gb2;
 
   const backgroundPalette = ppu.getBackgroundPalette();
-  const objectPalette0 = ppu.getObjectPalette0();
-  const objectPalette1 = ppu.getObjectPalette1();
+  const spritesPalette0 = ppu.getSpritesPalette0();
+  const spritesPalette1 = ppu.getSpritesPalette1();
 
   const rgbFromArray = color => `rgb(${color[0]},${color[1]},${color[2]})`;
 
@@ -33,10 +33,10 @@ const PPU = props => {
     <Container title="PPU" width={290}>
       <div className="subsection">Background palette</div>
       {getPalette(backgroundPalette)}
-      <div className="subsection">Object palette 0</div>
-      {getPalette(objectPalette0)}
-      <div className="subsection">Object palette 1</div>
-      {getPalette(objectPalette1)}
+      <div className="subsection">Sprites palette 0</div>
+      {getPalette(spritesPalette0)}
+      <div className="subsection">Sprites palette 1</div>
+      {getPalette(spritesPalette1)}
       <div className="subsection">Scroll</div>
       <div>
         X: {ppu.getScrollX()}, Y: {ppu.getScrollY()}
@@ -48,11 +48,12 @@ const PPU = props => {
       <div className="subsection">LCDC</div>
       <div>LCD: {ppu.getLCDCLCDEnable() ? 'on' : 'off'}</div>
       <div>background: {ppu.getLCDCBackgroundEnable() ? 'on' : 'off'}</div>
-      <div>object: {ppu.getLCDCObjectEnable() ? 'on' : 'off'}</div>
+      <div>sprites: {ppu.getLCDCSpritesEnable() ? 'on' : 'off'}</div>
       <div>window: {ppu.getLCDCWindowEnable() ? 'on' : 'off'}</div>
       <div>bg tilemap: {ppu.getLCDCBackgroundTilemap()}</div>
       <div>bg&amp;win tileset: {ppu.getLCDCBackgroundAndWindowTileset()}</div>
       <div>window tilemap: {ppu.getLCDCWindowTilemap()}</div>
+      <div>sprites size: {ppu.getLCDCSpritesSize()}</div>
       <div>cycles: {ppu.getCycles()}/17556</div>
     </Container>
   );

@@ -1,6 +1,6 @@
 import mmu from '../mmu/mmu';
 
-import rom from '../../assets/roms/rom12.gb';
+import rom from '../../assets/roms/rom10.gb';
 // import rom from '../../assets/roms/lsdj.gb';
 
 // -------- Mooneye GB: ACCEPTANCE -------------------------------------------

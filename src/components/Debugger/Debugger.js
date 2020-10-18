@@ -68,7 +68,10 @@ const Debugger = props => {
     debugger_.pause(handleCPUChange);
   };
 
-  const step = () => {
+  const step = (nbSteps = 1) => {
+    for (let i = 0; i < nbSteps - 1; i++) {
+      debugger_.step();
+    }
     debugger_.step(handleCPUChange);
   };
 
@@ -92,7 +95,8 @@ const Debugger = props => {
 
     if (event.code === 'Enter') {
       document.activeElement.blur();
-      step();
+      const nbSteps = event.shiftKey ? 17556 : 1;
+      step(nbSteps);
     }
 
     if (event.code === 'Backspace') {

@@ -53,8 +53,8 @@ let registers = {};
 let data = {};
 
 const getLCDCBackgroundEnable = () => registers.BACKGROUND_ENABLED;
-const getLCDCObjectEnable = () => registers.SPRITES_ENABLED;
-const getLCDCObjectSize = () => registers.SPRITES_SIZE;
+const getLCDCSpritesEnable = () => registers.SPRITES_ENABLED;
+const getLCDCSpritesSize = () => registers.SPRITES_SIZE;
 const getLCDCBackgroundTilemap = () => registers.BACKGROUND_TILEMAP;
 const getLCDCBackgroundAndWindowTileset = () =>
   registers.BACKGROUND_AND_WINDOW_TILESET;
@@ -153,7 +153,7 @@ const getSprite = spriteIdx => {
   const sprites = getSpritesTable();
   const sprite = sprites[spriteIdx];
   const spritePalette =
-    sprite.palette === 0 ? ppu.getObjectPalette0() : ppu.getObjectPalette1();
+    sprite.palette === 0 ? ppu.getSpritesPalette0() : ppu.getSpritesPalette1();
   const spriteHeight = registers.SPRITES_SIZE === 0 ? 8 : 16;
   const tile =
     registers.SPRITES_SIZE === 0
@@ -182,8 +182,8 @@ const getSprite = spriteIdx => {
 };
 
 const getBackgroundPalette = () => getPalette(BG_PALETTE_ADDR);
-const getObjectPalette0 = () => getPalette(OBJ_PALETTE0_ADDR);
-const getObjectPalette1 = () => getPalette(OBJ_PALETTE1_ADDR);
+const getSpritesPalette0 = () => getPalette(OBJ_PALETTE0_ADDR);
+const getSpritesPalette1 = () => getPalette(OBJ_PALETTE1_ADDR);
 
 const getScrollX = () => registers.SCROLLX;
 const getScrollY = () => registers.SCROLLY;
@@ -680,8 +680,8 @@ const renderSpritesScanLine = () => {
 
         const spritePalette =
           spritePixelForCol.palette === 0
-            ? ppu.getObjectPalette0()
-            : ppu.getObjectPalette1();
+            ? ppu.getSpritesPalette0()
+            : ppu.getSpritesPalette1();
 
         const spritePriority = spritePixelForCol.priority;
         const spritePixelColor = spritePixelForCol.color;
@@ -809,8 +809,8 @@ const getSpritesLayer = () => {
 
 const ppu = {
   getBackgroundPalette,
-  getObjectPalette0,
-  getObjectPalette1,
+  getSpritesPalette0,
+  getSpritesPalette1,
   getScrollX,
   getScrollY,
   getWindowX,
@@ -827,8 +827,8 @@ const ppu = {
   getSpritesLayer,
 
   getLCDCBackgroundEnable,
-  getLCDCObjectEnable,
-  getLCDCObjectSize,
+  getLCDCSpritesEnable,
+  getLCDCSpritesSize,
   getLCDCBackgroundTilemap,
   getLCDCBackgroundAndWindowTileset,
   getLCDCWindowEnable,
