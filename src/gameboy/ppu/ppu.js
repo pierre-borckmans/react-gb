@@ -1,5 +1,6 @@
 import mmu from '../mmu/mmu';
 import interrupts from '../interrupts/interrupts';
+import dma from './dma/dma';
 
 import { format, readBit, getSignedByte } from '../../utils/utils';
 import config from '../config';
@@ -331,7 +332,7 @@ const write = (address, value) => {
       break;
     case DMA_TRANSFER_AND_START_ADDR:
       registers.DMA_TRANSFER_AND_START = value;
-      startDMATransfer();
+      dma.startTransfer(value);
       break;
     case BG_PALETTE_ADDR:
       registers.BG_PALETTE = value;
@@ -406,7 +407,7 @@ const reset = () => {
     SCROLLX: 0x00,
     LCDC_YCOORD: 0x00,
     LCDC_YCOORD_COMPARE: 0x00,
-    DMA_TRANSFER_AND_START: 0x00,
+    DMA_TRANSFER_AND_START: 0xff,
     BG_PALETTE: 0x00,
     OBJ_PALETTE0: 0x00,
     OBJ_PALETTE1: 0x00,
@@ -529,13 +530,6 @@ const step = stepMachineCycles => {
 };
 
 const getCycles = () => data.cycles;
-
-const startDMATransfer = () => {
-  const startAddress = registers.DMA_TRANSFER_AND_START * 0x100;
-  for (let i = 0; i < 0x9f; i++) {
-    mmu.write(mmu.START_OAM + i, mmu.read(startAddress + i));
-  }
-};
 
 const renderBackgroundScanLine = () => {
   // Tilemap = 32*32

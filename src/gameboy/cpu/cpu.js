@@ -1,6 +1,7 @@
 import opcodesMap from './opcodes/opcodesMap';
 import mmu from '../mmu/mmu';
 import ppu from '../ppu/ppu';
+import dma from '../ppu/dma/dma';
 import timer from '../timer/timer';
 import interrupts from '../interrupts/interrupts';
 
@@ -158,6 +159,7 @@ const incClockCycles = incClockCycles => {
 
   timer.step(incClockCycles / 4);
   ppu.step(incClockCycles / 4);
+  dma.step(incClockCycles / 4);
   serial.step(incClockCycles / 4);
 };
 
