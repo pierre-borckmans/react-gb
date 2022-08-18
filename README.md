@@ -13,5 +13,6 @@ yarn install
 
 Run the emulator
 ```
+export NODE_OPTIONS=--openssl-legacy-provider
 yarn start
 ```
